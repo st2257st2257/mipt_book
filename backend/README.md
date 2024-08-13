@@ -1,4 +1,4 @@
-# Naletay backend
+# MIPT BOOK backend
 
 Python
 
