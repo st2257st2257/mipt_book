@@ -1,0 +1,10 @@
+# PYTHON
+
+__pycache__/
+target/
+
+
+# idea
+.idea/
+**/*.swo
+**/*.swp

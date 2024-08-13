@@ -1,0 +1,95 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: ../backend/backend/
+      dockerfile: Dockerfile
+    environment:
+      - DJANGO_DEBUG=True
+    networks:
+      - mipt_book
+    image: "mipt_book/back:v2"
+    container_name: mipt_book_backend_v2
+    ports:
+      - "80:8000"
+    volumes:
+      - ../backend/backend:/usr/src/app
+    depends_on:
+      pgdb:
+        condition: service_healthy
+
+  redis:
+    image: redis
+    restart: always
+    networks:
+      - mipt_book
+    ports:
+      - "6379:6379"
+
+  pgdb:
+    image: postgres:latest
+    networks:
+      - mipt_book
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=postgres_mipt
+      - POSTGRES_USER=postgres_mipt
+      - POSTGRES_PASSWORD=mipt_book123
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    container_name: pgdb
+    volumes:
+      - ../backend/backend/pgdb:/var/lib/postgresql/data/
+
+  email:
+    build:
+      context: ../email/emailservice/
+      dockerfile: Dockerfile
+    environment:
+      - DJANGO_DEBUG=True
+    networks:
+      - mipt_book
+    image: "mipt_book/email:v1"
+    container_name: mipt_book_email_v1
+    ports:
+      - "8083:8083"
+    volumes:
+      - ../email/emailservice:/usr/src/app
+
+  worker:
+    restart: always
+    build:
+      context: ../email/emailservice/
+      dockerfile: Dockerfile
+    networks:
+      - mipt_book
+    volumes:
+      - ../email/emailservice:/usr/src/app
+    depends_on:
+      - redis
+      - email
+    command: 'celery -A emailservice worker -l info'
+
+  beat:
+    restart: always
+    build:
+      context: ../email/emailservice/
+      dockerfile: Dockerfile
+    networks:
+      - mipt_book
+    volumes:
+      - ../email/emailservice:/usr/src/app
+    depends_on:
+      - redis
+      - email
+      - worker
+    command: 'celery -A emailservice worker -l info'
+
+networks:
+  mipt_book:
+    name: mipt_book
