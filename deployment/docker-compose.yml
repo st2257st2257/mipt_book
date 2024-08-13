@@ -1,3 +1,4 @@
+
 version: "3.9"
 
 services:
@@ -12,7 +13,7 @@ services:
     image: "mipt_book/back:v2"
     container_name: mipt_book_backend_v2
     ports:
-      - "80:8000"
+      - "8000:8000"
     volumes:
       - ../backend/backend:/usr/src/app
     depends_on:
