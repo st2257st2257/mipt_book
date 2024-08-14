@@ -11,3 +11,9 @@ USERS
 - Типо запроса: GET
 - Пример данных: headers: {'Authorization': Token 3100dc1de794362ac07f2929042bd455601070b9}
 - Адрес для тестирования: http://127.0.0.1:8088/test/get/
+
+**Получение данных классов по токену:**
+- API Roles:           http://127.0.0.1:8088/base-info/roles
+- API Institute Group: http://127.0.0.1:8088/base-info/institute_group
+- API Access:          http://127.0.0.1:8088/base-info/access
+- API Preferences:     http://127.0.0.1:8088/base-info/preferences
