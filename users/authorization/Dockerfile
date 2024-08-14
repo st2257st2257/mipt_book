@@ -27,13 +27,13 @@ WORKDIR /usr/src/app
 
 
 
-#CMD ["python", "manage.py", "makemigrations"]
+#
+CMD ["python", "manage.py", "makemigrations"]
 #CMD ["python", "manage.py", "migrate"]
 #CMD ["python", "manage.py", "migrate", "sessions"]
 #CMD ["exec", "gunicorn", "prod.wsgi:application", "-b", "0.0.0.0:8000", "--reload"]
 #CMD ["python", "manage.py", "runsslserver", "--certificate", "rootCA.crt", "--key", "rootCA.key", "0.0.0.0:8000"]
 #CMD ["python", "manage.py", "createsuperuser"]: docker exec -it container_id python manage.py createsuperuser
 
-#
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8088"]
+#CMD ["python", "manage.py", "runserver", "0.0.0.0:8088"]
 #CMD ["sh", "-c", "echo 'y' | python manage.py makemigrations --merge && python manage.py runserver 0.0.0.0:8000"]
