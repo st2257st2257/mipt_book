@@ -76,10 +76,7 @@ services:
       - POSTGRES_USER=postgres_mipt_users
       - POSTGRES_PASSWORD=mipt_book_users123
     healthcheck:
-      # test: [ "CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'" ]
       test: [ "CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} -p 5431'" ]
-      # pg_isready -d DATABASE_NAME -h HOST_NAME -p PORT_NUMBER -U DATABASE_USER
-      # test: ["CMD", "curl", "-f", "http://localhost:5431"]
       interval: 10s
       timeout: 13s
       retries: 3

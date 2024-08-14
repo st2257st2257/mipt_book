@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+<!-- Token 3100dc1de794362ac07f2929042bd455601070b9 -->
+Token: <input type="text" name="token" id="auth_token" style="width: 500px"; value="Token 3100dc1de794362ac07f2929042bd455601070b9"><br><br>
+<button onclick="get_data()">GET DATA</button><br><br>
+Result: <textarea id="textarea" style="width: 500px; height: 100px;"></textarea><br><br>
+
+
+<script>
+function get_data() {
+    const token = document.getElementById("auth_token").value;
+    var a = fetch('http://127.0.0.1:8088/get-info', {
+        method: 'GET',
+        headers: {
+            'Authorization': token
+        }
+    })
+    .then(response => response.json())
+    .then(data =>  document.getElementById("textarea").value=JSON.stringify(data));
+}
+</script>
+
+</body>
+</html>
+
