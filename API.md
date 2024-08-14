@@ -8,4 +8,4 @@ USERS
 **Получение данных по токену:**
 - Адрес: http://127.0.0.1:8088/get-info
 - Типо запроса: GET
-- Пример данных: Заголовоки headers: {'Authorization': Token 3100dc1de794362ac07f2929042bd455601070b9}
+- Пример данных: headers: {'Authorization': Token 3100dc1de794362ac07f2929042bd455601070b9}
