@@ -4,8 +4,10 @@ USERS
 - Адрес: http://127.0.0.1:8088/token
 - Тип запроса: POST
 - Пример данных: {"username": "test_user", "password": "test_pass"}
+- Адрес для тестирования: http://127.0.0.1:8088/test/auth/
 
 **Получение данных по токену:**
 - Адрес: http://127.0.0.1:8088/get-info
 - Типо запроса: GET
 - Пример данных: headers: {'Authorization': Token 3100dc1de794362ac07f2929042bd455601070b9}
+- Адрес для тестирования: http://127.0.0.1:8088/test/auth/
