@@ -36,8 +36,8 @@ class Preferences(models.Model):
 
 
 class User(AbstractUser):
-    third_name = models.CharField(max_length=150, blank=False)
-    token = models.CharField(max_length=255, blank=False)
+    third_name = models.CharField(max_length=150, blank=True)
+    token = models.CharField(max_length=255, blank=True)
     book_rate = models.FloatField(default=7)
     institute_group = models.ForeignKey(
         "InstituteGroup",
@@ -45,7 +45,9 @@ class User(AbstractUser):
         related_name="instituteGroup",
         blank=True,
         null=True)
-    preferences = models.ManyToManyField(Preferences)
+    preferences = models.ManyToManyField(
+        Preferences,
+        blank=True)
     user_role = models.ForeignKey(
         Role,
         on_delete=models.CASCADE,

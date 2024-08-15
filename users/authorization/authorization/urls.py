@@ -17,10 +17,21 @@ from django.contrib import admin
 from django.urls import path, include
 from main import views
 from rest_framework.authtoken.views import obtain_auth_token
+from rest_framework import routers
+
+
+router = routers.DefaultRouter()
+router.register(r'roles', views.RoleViewSet)
+router.register(r'institute_group', views.InstituteGroupViewSet)
+router.register(r'access', views.AccessViewSet)
+router.register(r'preferences', views.PreferencesViewSet)
+
 
 urlpatterns = [
+    path('register/', views.register_user),
     path('admin/', admin.site.urls),
-    path('get-info/', views.Index.as_view()),
+    path('base-info/', include(router.urls)),
+    path('get-info/', views.IndexAuth.as_view()),
     path('token/', obtain_auth_token),
     path('test/', include('test.urls', namespace='test')),
 ]
