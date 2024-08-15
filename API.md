@@ -6,6 +6,12 @@ USERS
 - Пример данных: {"username": "test_user", "password": "test_pass"}
 - Адрес для тестирования: http://127.0.0.1:8088/test/auth/
 
+**Регистрация пользователя:**
+- Адрес: http://127.0.0.1:8088/register
+- Тип запроса: POST
+- Пример данных: {"username": "test_user", "pass": "test_pass", "email": "example@test.com"}
+- Адрес для тестирования: http://127.0.0.1:8088/test/register/
+
 **Получение данных по токену:**
 - Адрес: http://127.0.0.1:8088/get-info
 - Типо запроса: GET

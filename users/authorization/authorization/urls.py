@@ -28,6 +28,7 @@ router.register(r'preferences', views.PreferencesViewSet)
 
 
 urlpatterns = [
+    path('register/', views.register_user),
     path('admin/', admin.site.urls),
     path('base-info/', include(router.urls)),
     path('get-info/', views.IndexAuth.as_view()),

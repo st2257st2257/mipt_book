@@ -6,5 +6,13 @@
 </head>
 <body>
 
+  <form action="http://127.0.0.1:8088/register/" method="post">
+        {% csrf_token %}
+        Username: <input type="text" name="username" value="test_user"><br><br>
+        Password: <input type="text" name="pass" value="test_pass"><br><br>
+        Email: <input type="text" name="email" value="example@test.com"><br><br>
+      <input type="submit" value="Submit">
+  </form>
+
 </body>
 </html>
