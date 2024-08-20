@@ -5,6 +5,10 @@
     <title>Title</title>
     <style>
 
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+
         .button {
             background-color: lightblue;
             border: none;
@@ -23,11 +27,12 @@
         }
 
         div.item {
+            border: 1px solid #ccc;
             display: inline-block; /*Выравниваем элементы в строку */
             width: 100px; /*Ширина элемента */
             height: 40px; /*Высота элемента */
             border-radius: 8px; /*Делаем элементы круглыми */
-            background-color: lightblue; /*Цвет фона элемента */
+            background-color: white; /*Цвет фона элемента */
             margin: 5px; /*Отступы между элементами */
             text-align: center; /*Центрируем текст внутри элемента */
             line-height: 40px; /*Вертикально центрируем текст */
@@ -40,21 +45,172 @@
             background-color: lightgreen; /*Изменяем цвет фона */
         }
     </style>
+
+    <style>
+input[type=range] {
+  -webkit-appearance: none;
+  width: 200px;
+  height: 8px;
+  background: #ddd;
+  outline: none;
+  border-radius: 10px;
+  /Добавляем тень для полосы ползунка */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #4CAF50;
+  cursor: pointer;
+  /Добавляем тень для ползунка */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+input[type=range]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #4CAF50;
+  cursor: pointer;
+  /Добавляем тень для ползунка (Firefox) */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+output {
+  font-family: sans-serif;
+  font-size: 16px;
+  margin-left: 10px;
+}
+    </style>
+
+    <style>
+  .time-selector {
+    display: flex;
+  }
+
+  .time-option {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+    cursor: pointer;
+  }
+
+  .time-option.selected {
+    background-color: lightblue;
+    border-color: blue;
+  }
+    </style>
+
+    <style>
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 23px;
+}
+
+.toggle-switch input {
+  opacity: 0; /* Скрываем стандартный чекбокс */
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-radius: 23px; /* Радиус для создания формы таблетки */
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 17px;
+  width: 17px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-radius: 50%; /* Делаем бегунок круглым */
+}
+
+input:checked + .slider {
+  background-color: #4CAF50; /* Цвет активного состояния */
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #4CAF50; /* Тень при фокусе */
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(17px);
+  -ms-transform: translateX(17px);
+  transform: translateX(17px); /* Перемещаем бегунок вправо */
+}
+</style>
+
+    <style>
+.button1 {
+  background-color: #4CAF50; /Зеленый цвет */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 24px;
+  border-radius: 10px; /Радиус скругления углов */
+  cursor: pointer;
+}
+</style>
+
+<style>
+  .centered-div {
+    /*text-align: center; Центрируем текст внутри div */
+    padding: 20px; /*Добавляем отступы для лучшей читаемости */
+    background-color: white; /*Цвет фона для наглядности */
+  }
+
+  /*Стили для мобильных устройств (экраны меньше 768px) */
+  @media (max-width: 768px) {
+    .centered-div {
+      width: 100%; /*Растягиваем на всю ширину экрана */
+    }
+  }
+
+  /*Стили для планшетов и компьютеров (экраны от 768px) */
+  @media (min-width: 768px) {
+    .centered-div {
+      width: 40%; /*Ограничиваем ширину до 80% */
+      margin: 0 auto; /*Центрируем блок по горизонтали */
+    }
+  }
+</style>
+
+
+
 </head>
 <body>
-
+<div class="centered-div">
 
   <form action="http://127.0.0.1:8000/book/" method="post">
         {% csrf_token %}
-        Type: <input type="text" name="type" value="book_audience"><br><br>
-        Token : <input type="text" name="token" ><br><br>
 
-        Audience : <input type="text"  name="audience" id="audience_id" value="Случайная"><br><br>
+      <h3>Номер аудитории</h3>
         <div class="container">
             <div class="selector" id="selector_building_container">
-                <!--<div class="item button" id="gk">ГК</div>
-                <div class="item button" id="lk">ЛК</div>
-                <div class="item button" id="digit">Цифра</div>-->
             </div>
         </div>
         <div class="container">
@@ -63,134 +219,179 @@
             </div>
         </div>
 
+      <h3>Время бронирования</h3>
+        <div class="time-selector" id="timeSelector">
+            <div class="time-option" data-time="18:00">18:00</div>
+            <div class="time-option" data-time="19:30">19:30</div>
+            <div class="time-option" data-time="21:00">21:00</div>
+            <div class="time-option" data-time="22:30">22:30</div>
+            <div class="time-option" data-time="00:00">00:00</div>
+            <div class="time-option" data-time="01:30">01:30</div>
+            <div class="time-option" data-time="03:00">03:00</div>
+        </div>
+
+
+        <h3>Количество пар</h3>
+        <output>1</output>
+            <input type="range" value="1" min="1" max="6">
+        <output>6</output><br><br>
+
+        <h3>Автоматические ББ
+            <label class="toggle-switch">
+                <input type="checkbox">
+                <span class="slider"></span>
+            </label>
+        </h3>
+
+        <input type="submit" class="button1" value="Забронировать"><br><br>
+
         User : <input type="text" name="user" ><br><br>
         Number bb : <input type="text" name="number_bb" ><br><br>
         Pair Number : <input type="text" name="pair_number" ><br><br>
-      <input type="submit" value="Submit">
+        Type: <input type="text" name="type" value="book_audience"><br><br>
+        Token : <input type="text" name="token" ><br><br>
+        Audience : <input type="text"  name="audience" id="audience_id" value="Случайная"><br><br>
   </form>
 
+  <h2>Заголовок</h2>
+  <p>Этот div будет растянут на всю ширину экрана на мобильных устройствах и ограничен 80% на больших экранах.</p>
+</div>
 
 
 
-    <script>
-		var flag  = 0;
-		var flag_building  = 0;
-		var selected = '0';
-		var building = 'ГК';
+  <script>
+var web_address = 'http://127.0.0.1:8000';
+var flag  = 0;
+var flag_building  = 0;
+var selected = '0';
+var building = 'ГК';
 
-		var build_arr = (JSON.parse(httpGet('http://127.0.0.1:8000/base-info/building/?institute=%D0%9C%D0%A4%D0%A2%D0%98')));
-        var aud_arr = (JSON.parse(httpGet('http://127.0.0.1:8000/base-info/audience/')));
-        // var aud_arr = ["gk", "lk", "digit"];
-        console.log(build_arr);
-        console.log(build_arr[0]);
-        console.log(build_arr[0]['name']);
-        console.log(aud_arr);
-        console.log(aud_arr[0]);
-        console.log(aud_arr[0]['number']);
+var build_arr = (JSON.parse(httpGet(web_address+ '/base-info/building/?institute=%D0%9C%D0%A4%D0%A2%D0%98')));
+var aud_arr = (JSON.parse(httpGet(web_address+ '/base-info/audience/?institute=%D0%9C%D0%A4%D0%A2%D0%98')));
 
-        //
-        for (const item in build_arr){
-            node = document.getElementById('selector_building_container');
-            node.insertAdjacentHTML('afterend', `<div class="item button" id=${build_arr[item]['name']}>${build_arr[item]['name']}</div>`);
+for (const item in build_arr){
+    node = document.getElementById('selector_building_container');
+    node.insertAdjacentHTML('afterend', `<div class="item button" id=${build_arr[item]['name']}>${build_arr[item]['name']}</div>`);
 
-            const button = document.getElementById(`${build_arr[item]['name']}`)
-            button.addEventListener('click', () => {
-			    if (flag_building == 0) {
-				    flag_building = 1;
-				    building = `${build_arr[item]['name']}`;
-			    }
-			    else {
-				    if (`${build_arr[item]['name']}` != building) {
-				        flag_building = 1;
-				        building = `${build_arr[item]['name']}`;
-				    }
-				    else {
-				        flag_building = 0;
-				        building = 'Случайная';
-				        flag = 0;
-				        selected = 'Случайная';
-				    }
-			    }
-			    update_selected_building(building);
-            });
-        };
+    const button = document.getElementById(`${build_arr[item]['name']}`);
+    button.addEventListener('click', () => {
+        if (flag_building == 0) {
+            flag_building = 1;
+            building = `${build_arr[item]['name']}`;
+        }
+        else {
+            if (`${build_arr[item]['name']}` != building) {
+                flag_building = 1;
+                building = `${build_arr[item]['name']}`;
+            }
+            else {
+                flag_building = 0;
+                building = 'Случайная';
+                flag = 0;
+                selected = 'Случайная';
+            }
+        }
+        update_selected_building(building);
+    });
+};
 
 
-        for (const item in aud_arr){
-            node = document.getElementById('selector_container');
-            node.insertAdjacentHTML('afterend', `<div class="item button" id=${aud_arr[item]['number']}>${aud_arr[item]['number']}${aud_arr[item]['building']['name']}</div>`);
+for (const item in aud_arr){
+    node = document.getElementById('selector_container');
+    node.insertAdjacentHTML('afterend', `<div class="item button" id=${aud_arr[item]['number']}>${aud_arr[item]['number']}${aud_arr[item]['building']['name']}</div>`);
 
-            const button = document.getElementById(`${aud_arr[item]['number']}`)
-            button.addEventListener('click', () => {
-                if (flag_building != 0) {
-			        if (flag == 0) {
-				        flag = 1;
-				        selected = `${aud_arr[item]['number']}`;
-			        }
-			        else {
-				        if (`${aud_arr[item]['number']}` != selected) {
-				            flag = 1;
-				            selected = `${aud_arr[item]['number']}`;
-				        }
-				        else {
-				            flag = 0;
-				            selected = 'Случайная';
-				        }
-			        }
-			        update_selected(selected);
-			    }
-            });
-
-          // Обновление нажатия аудиторий
-          function update_selected(selected){
-            for (const item in aud_arr){
-                console.log(`${aud_arr[item]['number']}`);
-                const button = document.getElementById(`${aud_arr[item]['number']}`)
-                button.style.backgroundColor = 'lightblue';
-                button.style.color = 'black';
-                if (`${aud_arr[item]['number']}`== selected) {
-                    button.style.backgroundColor = 'red';
-                    button.style.color = 'white';
-                }
-                if (`${aud_arr[item]['building']['name']}`!= building) {
-                    button.style.display = "none";
+    const button = document.getElementById(`${aud_arr[item]['number']}`)
+    button.addEventListener('click', () => {
+        if (flag_building != 0) {
+            if (flag == 0) {
+                flag = 1;
+                selected = `${aud_arr[item]['number']}`;
+            }
+            else {
+                if (`${aud_arr[item]['number']}` != selected) {
+                    flag = 1;
+                    selected = `${aud_arr[item]['number']}`;
                 }
                 else {
-                    button.style.display = "";
-                }
-                // display: none;
-            }
-            const audience_selector = document.getElementById("audience_id")
-            audience_selector.value = selected;
-          }
-        };
-
-        // Обновление нажатия зданий
-        function update_selected_building(building){
-            for (const item in build_arr){
-                console.log(`${build_arr[item]['name']}`);
-                const button = document.getElementById(`${build_arr[item]['name']}`)
-                button.style.backgroundColor = 'lightblue';
-                button.style.color = 'black';
-                if (`${build_arr[item]['name']}`==building) {
-                    button.style.backgroundColor = 'red';
-                    button.style.color = 'white';
+                    flag = 0;
+                    selected = 'Случайная';
                 }
             }
-            const audience_selector = document.getElementById("audience_id")
-            audience_selector.value = building;
             update_selected(selected);
-          };
+        }
+    });
+};
 
-        // Получение денных от API BACKEND
-        function httpGet(theUrl)
-        {
-            var xmlHttp = new XMLHttpRequest();
-            xmlHttp.open( "GET", theUrl, false );
-            xmlHttp.send( null );
-            return xmlHttp.responseText;
-        };
+
+// Обновление нажатия аудиторий
+function update_selected(selected){
+    for (const item in aud_arr){
+        console.log(`${aud_arr[item]['number']}`);
+        const button = document.getElementById(`${aud_arr[item]['number']}`)
+        button.style.backgroundColor = 'lightblue';
+        button.style.color = 'black';
+
+        if (`${aud_arr[item]['number']}`== selected) {
+            button.style.backgroundColor = '#33C458';
+            button.style.color = 'white';
+        }
+        if (`${aud_arr[item]['building']['name']}`!= building) {
+            button.style.display = "none";
+        }
+        else {
+            button.style.display = "";
+        }
+    }
+    const audience_selector = document.getElementById("audience_id")
+    audience_selector.value = selected;
+};
+
+
+// Обновление нажатия зданий
+function update_selected_building(building){
+    for (const item in build_arr){
+        console.log(`${build_arr[item]['name']}`);
+        const button = document.getElementById(`${build_arr[item]['name']}`)
+        button.style.backgroundColor = 'lightblue';
+        button.style.color = 'black';
+        if (`${build_arr[item]['name']}`==building) {
+            button.style.backgroundColor = '#33C458';
+            button.style.color = 'white';
+        }
+    }
+    const audience_selector = document.getElementById("audience_id")
+    audience_selector.value = building;
+    update_selected(selected);
+};
+
+
+// Получение денных от API BACKEND
+function httpGet(theUrl) {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", theUrl, false );
+    xmlHttp.send( null );
+    return xmlHttp.responseText;
+};
     </script>
+
+<script>
+  const timeSelector = document.getElementById('timeSelector');
+  const timeOptions = document.querySelectorAll('.time-option');
+
+  timeSelector.addEventListener('click', (event) => {
+    const selectedOption = event.target.closest('.time-option');
+
+    if (selectedOption) {
+      timeOptions.forEach(option => option.classList.remove('selected'));
+      selectedOption.classList.add('selected');
+
+      // Получение выбранного времени
+      const selectedTime = selectedOption.dataset.time;
+      console.log("Выбрано время:", selectedTime);
+    }
+  });
+</script>
+
 
 
 </body>
