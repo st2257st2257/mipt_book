@@ -88,17 +88,21 @@ class BookViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        audience = self.request.query_params.get('audience')
+        audience_number = self.request.query_params.get('audience_number')
         user = self.request.query_params.get('user')
         pair_number = self.request.query_params.get('pair_number')
         building_name = self.request.query_params.get('building_name')
         institute = self.request.query_params.get('institute')
+        if audience_number is not None:
+            queryset = queryset.filter(audience__number=audience_number)
+        if user is not None:
+            queryset = queryset.filter(user__username=user)
+        if pair_number is not None:
+            queryset = queryset.filter(pair_number=pair_number)
         if building_name is not None:
-            queryset = super().get_queryset().filter(audience__building__name=building_name)
+            queryset = queryset.filter(audience__building__name=building_name)
         if institute is not None:
             queryset = queryset.filter(audience__building__institute__name=institute)
-        #if status is not None:
-        #    queryset = queryset.filter(audience_status__name=status)
         return self.filter_queryset(queryset)
 
 
