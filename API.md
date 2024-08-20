@@ -23,3 +23,13 @@ USERS
 - API Institute Group: http://127.0.0.1:8088/base-info/institute_group
 - API Access:          http://127.0.0.1:8088/base-info/access
 - API Preferences:     http://127.0.0.1:8088/base-info/preferences
+
+
+BACKEND
+
+**Получение данных классов по токену:**
+- API Institute:           http://127.0.0.1:8000/base-info/institute
+- API Building:           http://127.0.0.1:8000/base-info/building
+- API Audience Status:           http://127.0.0.1:8000/base-info/audience_status
+- API Audience:           http://127.0.0.1:8000/base-info/audience
+- API Book:           http://127.0.0.1:8000/base-info/book

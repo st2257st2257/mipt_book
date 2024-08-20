@@ -2,7 +2,6 @@ from django.shortcuts import render
 from .models import User, Access, Role, InstituteGroup, Preferences
 from .serializers import UserSerializer, AccessSerializer, RoleSerializer, InstituteGroupSerializer, PreferencesSerializer
 
-
 from rest_framework import permissions, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response

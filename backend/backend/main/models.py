@@ -48,7 +48,7 @@ class Audience(models.Model):
         related_name="audienceStatus",
         blank=True,
         null=True)
-    description = models.CharField(max_length=255, blank=True)
+    description = models.CharField(max_length=256, blank=True)
 
     def __str__(self):
         return f'Audience: {self.number}|{self.building.name}'
