@@ -48,7 +48,21 @@
         {% csrf_token %}
         Type: <input type="text" name="type" value="book_audience"><br><br>
         Token : <input type="text" name="token" ><br><br>
-        Audience : <input type="text" name="audience" ><br><br>
+
+        Audience : <input type="text"  name="audience" id="audience_id" value="Случайная"><br><br>
+        <div class="container">
+            <div class="selector" id="selector_building_container">
+                <!--<div class="item button" id="gk">ГК</div>
+                <div class="item button" id="lk">ЛК</div>
+                <div class="item button" id="digit">Цифра</div>-->
+            </div>
+        </div>
+        <div class="container">
+            <div class="selector" id="selector_container">
+                <div class="item button">Случайная</div>
+            </div>
+        </div>
+
         User : <input type="text" name="user" ><br><br>
         Number bb : <input type="text" name="number_bb" ><br><br>
         Pair Number : <input type="text" name="pair_number" ><br><br>
@@ -56,85 +70,126 @@
   </form>
 
 
-    <div class="container">
-        <div class="selector" id="selector_container">
-            <div class="item button">Случайная</div>
-            <!-- <div class="item button">2</div>
-            <div class="item button">3</div>
-			<div class="item button">2</div>
-            <div class="item button">3</div>
-			<div class="item button">2</div>
-            <div class="item">3</div>
-			<div class="item">2</div>
-            <div class="item">3</div>
-			<div class="item">2</div>
-            <div class="item">3</div>
-            <div class="item">4</div>
-            <div class="item">5</div>-->
-        </div>
-    </div>
+
 
     <script>
 		var flag  = 0;
+		var flag_building  = 0;
 		var selected = '0';
+		var building = 'ГК';
 
-        /*const button = document.querySelector('.button');
+		var build_arr = (JSON.parse(httpGet('http://127.0.0.1:8000/base-info/building/?institute=%D0%9C%D0%A4%D0%A2%D0%98')));
+        var aud_arr = (JSON.parse(httpGet('http://127.0.0.1:8000/base-info/audience/')));
+        // var aud_arr = ["gk", "lk", "digit"];
+        console.log(build_arr);
+        console.log(build_arr[0]);
+        console.log(build_arr[0]['name']);
+        console.log(aud_arr);
+        console.log(aud_arr[0]);
+        console.log(aud_arr[0]['number']);
 
-        button.addEventListener('click', () => {
-            // Устанавливаем новый цвет фона для кнопки
-			if (flag == 0) {
-            	button.style.backgroundColor = 'red';
-            	button.style.color = 'black';
-				flag = 1;
-			}
-			else {
-				button.style.backgroundColor = 'blue';
-				button.style.color = 'white';
-				flag = 0;
-			}
-        });*/
+        //
+        for (const item in build_arr){
+            node = document.getElementById('selector_building_container');
+            node.insertAdjacentHTML('afterend', `<div class="item button" id=${build_arr[item]['name']}>${build_arr[item]['name']}</div>`);
 
-        var arr = ["1", "2", "3", "4", "5", "11", "12", "13", "14", "15"];
-        for (const item in arr){
-            node = document.getElementById('selector_container');
-            node.insertAdjacentHTML('afterend', `<div class="item button" id=${arr[item]}>${item}</div>`);
-
-            const button = document.getElementById(`${arr[item]}`)
-
+            const button = document.getElementById(`${build_arr[item]['name']}`)
             button.addEventListener('click', () => {
-                // Устанавливаем новый цвет фона для кнопки
-			    if (flag == 0) {
-            	    // button.style.backgroundColor = 'red';
-            	    // button.style.color = 'black';
-				    flag = 1;
-				    selected = `${arr[item]}`;
+			    if (flag_building == 0) {
+				    flag_building = 1;
+				    building = `${build_arr[item]['name']}`;
 			    }
 			    else {
-				    // button.style.backgroundColor = 'blue';
-				    // button.style.color = 'white';
-				    if (`${arr[item]}` != selected) {
-				        flag = 1;
-				        selected = `${arr[item]}`;
+				    if (`${build_arr[item]['name']}` != building) {
+				        flag_building = 1;
+				        building = `${build_arr[item]['name']}`;
 				    }
 				    else {
+				        flag_building = 0;
+				        building = 'Случайная';
 				        flag = 0;
-				        selected = '0';
+				        selected = 'Случайная';
 				    }
 			    }
-			    update_selected(selected);
+			    update_selected_building(building);
+            });
+        };
+
+
+        for (const item in aud_arr){
+            node = document.getElementById('selector_container');
+            node.insertAdjacentHTML('afterend', `<div class="item button" id=${aud_arr[item]['number']}>${aud_arr[item]['number']}${aud_arr[item]['building']['name']}</div>`);
+
+            const button = document.getElementById(`${aud_arr[item]['number']}`)
+            button.addEventListener('click', () => {
+                if (flag_building != 0) {
+			        if (flag == 0) {
+				        flag = 1;
+				        selected = `${aud_arr[item]['number']}`;
+			        }
+			        else {
+				        if (`${aud_arr[item]['number']}` != selected) {
+				            flag = 1;
+				            selected = `${aud_arr[item]['number']}`;
+				        }
+				        else {
+				            flag = 0;
+				            selected = 'Случайная';
+				        }
+			        }
+			        update_selected(selected);
+			    }
             });
 
+          // Обновление нажатия аудиторий
           function update_selected(selected){
-            for (const item in arr){
-                console.log(`${arr[item]}`);
-                const button = document.getElementById(`${arr[item]}`)
+            for (const item in aud_arr){
+                console.log(`${aud_arr[item]['number']}`);
+                const button = document.getElementById(`${aud_arr[item]['number']}`)
                 button.style.backgroundColor = 'lightblue';
-                if (`${arr[item]}`==selected) {
+                button.style.color = 'black';
+                if (`${aud_arr[item]['number']}`== selected) {
                     button.style.backgroundColor = 'red';
+                    button.style.color = 'white';
+                }
+                if (`${aud_arr[item]['building']['name']}`!= building) {
+                    button.style.display = "none";
+                }
+                else {
+                    button.style.display = "";
+                }
+                // display: none;
+            }
+            const audience_selector = document.getElementById("audience_id")
+            audience_selector.value = selected;
+          }
+        };
+
+        // Обновление нажатия зданий
+        function update_selected_building(building){
+            for (const item in build_arr){
+                console.log(`${build_arr[item]['name']}`);
+                const button = document.getElementById(`${build_arr[item]['name']}`)
+                button.style.backgroundColor = 'lightblue';
+                button.style.color = 'black';
+                if (`${build_arr[item]['name']}`==building) {
+                    button.style.backgroundColor = 'red';
+                    button.style.color = 'white';
                 }
             }
-          }
-        }
+            const audience_selector = document.getElementById("audience_id")
+            audience_selector.value = building;
+            update_selected(selected);
+          };
+
+        // Получение денных от API BACKEND
+        function httpGet(theUrl)
+        {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open( "GET", theUrl, false );
+            xmlHttp.send( null );
+            return xmlHttp.responseText;
+        };
     </script>
 
 
