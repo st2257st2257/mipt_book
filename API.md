@@ -33,3 +33,6 @@ BACKEND
 - API Audience Status:           http://127.0.0.1:8000/base-info/audience_status
 - API Audience:           http://127.0.0.1:8000/base-info/audience
 - API Book:           http://127.0.0.1:8000/base-info/book
+
+**Фильтрация данных классов по токену:**
+- API Building: http://127.0.0.1:8000/base-info/building/?name=<aud_name>&institute=<institute_name>

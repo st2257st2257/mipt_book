@@ -42,12 +42,6 @@ class BuildingViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-        #name = self.request.query_params.get('name')
-        ##institute = self.request.query_params.get('institute')
-        #if name is not None:
-        #    return super().get_queryset().filter(name=name)# Building.objects.filter(name=name)
-        #queryset = super().get_queryset()
-        #return self.filter_queryset(queryset)
         queryset = super().get_queryset()
         name = self.request.query_params.get('name')
         institute = self.request.query_params.get('institute')
