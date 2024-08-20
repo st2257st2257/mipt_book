@@ -31,4 +31,5 @@ urlpatterns = [
     path('book/', views.book_audience),
     path('base-info/', include(router.urls)),
     path('admin/', admin.site.urls),
+    path('test/', include('test.urls', namespace='test')),
 ]

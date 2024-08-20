@@ -16,6 +16,8 @@ from .serializers import \
     BookSerializer, \
     BookHistorySerializer
 
+import datetime
+from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import permissions, viewsets
 from rest_framework.views import APIView
@@ -106,12 +108,49 @@ class BookViewSet(viewsets.ModelViewSet):
         return self.filter_queryset(queryset)
 
 
+def check_token(token: str):
+    return True
+
+
+def get_audience_by_number(number):
+    if len(Audience.objects.filter(number=number)) == 1:
+        return Audience.objects.get(number=number)
+    else:
+        return None
+
+def get_user_by_username(username):
+    if len(UsersWallet.objects.filter(username=username)) == 1:
+        return UsersWallet.objects.get(username=username)
+    else:
+        return None
+
+
+# @api_view(['POST'])
 @csrf_exempt
-@api_view(['POST'])
+@api_view(('POST', 'GET'))
 def book_audience(request):
     if request.method == 'POST':
-        serializer = BookSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if request.POST.get('type') == "book_audience":
+            if check_token(request.POST['token']):
+                new_book = Book(
+                    audience=get_audience_by_number(request.POST.get('audience')),
+                    user=get_user_by_username(request.POST.get('user')),
+                    number_bb=request.POST.get('number_bb'),
+                    pair_number=request.POST.get('pair_number'),
+                    date=datetime.date(2024, 8, 20), #request.POST.get('date'),
+                    booking_time=datetime.time(10, 33, 45),#request.POST.get('booking_time'),
+                    visibility=1)
+                new_book.save()
+                return Response(
+                    {
+                        "result": True,"audience": new_book.audience.number,
+                        "user": new_book.user.username},
+                    status=status.HTTP_201_CREATED)
+            else:
+                return Response(
+                    {"Error": "BAD_TOKEN"},
+                    status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            return Response(
+                {"Error": "BAD_REQUEST_TYPE"},
+                status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)

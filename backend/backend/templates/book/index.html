@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+
+        .button {
+            background-color: lightblue;
+            border: none;
+            cursor: pointer;
+        }
+
+
+        div.container {
+            width: 300px; /*Ширина контейнера */
+            overflow-x: auto; /*Включаем горизонтальную прокрутку */
+            white-space: nowrap; /*Предотвращаем перенос элементов */
+        }
+
+        div.selector {
+            display: inline-block; /*Выравниваем элементы в строку */
+        }
+
+        div.item {
+            display: inline-block; /*Выравниваем элементы в строку */
+            width: 100px; /*Ширина элемента */
+            height: 40px; /*Высота элемента */
+            border-radius: 8px; /*Делаем элементы круглыми */
+            background-color: lightblue; /*Цвет фона элемента */
+            margin: 5px; /*Отступы между элементами */
+            text-align: center; /*Центрируем текст внутри элемента */
+            line-height: 40px; /*Вертикально центрируем текст */
+            font-size: 18px; /*Размер текста */
+            cursor: pointer; /*Меняем курсор при наведении */
+        }
+
+        /*Стили для активного элемента */
+        div.item.active {
+            background-color: lightgreen; /*Изменяем цвет фона */
+        }
+    </style>
+</head>
+<body>
+
+
+  <form action="http://127.0.0.1:8000/book/" method="post">
+        {% csrf_token %}
+        Type: <input type="text" name="type" value="book_audience"><br><br>
+        Token : <input type="text" name="token" ><br><br>
+        Audience : <input type="text" name="audience" ><br><br>
+        User : <input type="text" name="user" ><br><br>
+        Number bb : <input type="text" name="number_bb" ><br><br>
+        Pair Number : <input type="text" name="pair_number" ><br><br>
+      <input type="submit" value="Submit">
+  </form>
+
+
+    <div class="container">
+        <div class="selector" id="selector_container">
+            <div class="item button">Случайная</div>
+            <!-- <div class="item button">2</div>
+            <div class="item button">3</div>
+			<div class="item button">2</div>
+            <div class="item button">3</div>
+			<div class="item button">2</div>
+            <div class="item">3</div>
+			<div class="item">2</div>
+            <div class="item">3</div>
+			<div class="item">2</div>
+            <div class="item">3</div>
+            <div class="item">4</div>
+            <div class="item">5</div>-->
+        </div>
+    </div>
+
+    <script>
+		var flag  = 0;
+		var selected = '0';
+
+        /*const button = document.querySelector('.button');
+
+        button.addEventListener('click', () => {
+            // Устанавливаем новый цвет фона для кнопки
+			if (flag == 0) {
+            	button.style.backgroundColor = 'red';
+            	button.style.color = 'black';
+				flag = 1;
+			}
+			else {
+				button.style.backgroundColor = 'blue';
+				button.style.color = 'white';
+				flag = 0;
+			}
+        });*/
+
+        var arr = ["1", "2", "3", "4", "5", "11", "12", "13", "14", "15"];
+        for (const item in arr){
+            node = document.getElementById('selector_container');
+            node.insertAdjacentHTML('afterend', `<div class="item button" id=${arr[item]}>${item}</div>`);
+
+            const button = document.getElementById(`${arr[item]}`)
+
+            button.addEventListener('click', () => {
+                // Устанавливаем новый цвет фона для кнопки
+			    if (flag == 0) {
+            	    // button.style.backgroundColor = 'red';
+            	    // button.style.color = 'black';
+				    flag = 1;
+				    selected = `${arr[item]}`;
+			    }
+			    else {
+				    // button.style.backgroundColor = 'blue';
+				    // button.style.color = 'white';
+				    if (`${arr[item]}` != selected) {
+				        flag = 1;
+				        selected = `${arr[item]}`;
+				    }
+				    else {
+				        flag = 0;
+				        selected = '0';
+				    }
+			    }
+			    update_selected(selected);
+            });
+
+          function update_selected(selected){
+            for (const item in arr){
+                console.log(`${arr[item]}`);
+                const button = document.getElementById(`${arr[item]}`)
+                button.style.backgroundColor = 'lightblue';
+                if (`${arr[item]}`==selected) {
+                    button.style.backgroundColor = 'red';
+                }
+            }
+          }
+        }
+    </script>
+
+
+</body>
+</html>
+
+
+
+

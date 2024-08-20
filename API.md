@@ -42,7 +42,7 @@ BACKEND | Все адреса в формате http://127.0.0.1:8000/address, �
    - building_name   | Примеры: "ГК", "ЛК", "ВМК"
    - institute       | Примеры: "МФТИ", "МГУ"
    - status          | Примеры: "Свободно", "Занято", "Скоро освободиться", "Отсутствует для бронировани"
-3. API Audience: /base-info/book/?audience_number=123&user=test_user&pair_number=2&building_name=ГК&institute=МФТИ
+3. API Book: /base-info/book/?audience_number=123&user=test_user&pair_number=2&building_name=ГК&institute=МФТИ
    - building_name   | Примеры: "ГК", "ЛК", "ВМК"
    - institute       | Примеры: "МФТИ", "МГУ"
    - audience_number | Примеры: "512","513","514"
