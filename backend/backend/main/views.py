@@ -48,7 +48,7 @@ class BuildingViewSet(viewsets.ModelViewSet):
         if name is not None:
             queryset = super().get_queryset().filter(name=name)
         if institute is not None:
-            queryset = queryset.filter(description=institute)
+            queryset = queryset.filter(institute__name=institute)
         return self.filter_queryset(queryset)
 
 
@@ -69,6 +69,15 @@ class AudienceViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        building_name = self.request.query_params.get('building_name')
+        institute = self.request.query_params.get('institute')
+        status = self.request.query_params.get('status')
+        if building_name is not None:
+            queryset = super().get_queryset().filter(building__name=building_name)
+        if institute is not None:
+            queryset = queryset.filter(building__institute__name=institute)
+        if status is not None:
+            queryset = queryset.filter(audience_status__name=status)
         return self.filter_queryset(queryset)
 
 
@@ -79,6 +88,17 @@ class BookViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        audience = self.request.query_params.get('audience')
+        user = self.request.query_params.get('user')
+        pair_number = self.request.query_params.get('pair_number')
+        building_name = self.request.query_params.get('building_name')
+        institute = self.request.query_params.get('institute')
+        if building_name is not None:
+            queryset = super().get_queryset().filter(audience__building__name=building_name)
+        if institute is not None:
+            queryset = queryset.filter(audience__building__institute__name=institute)
+        #if status is not None:
+        #    queryset = queryset.filter(audience_status__name=status)
         return self.filter_queryset(queryset)
 
 

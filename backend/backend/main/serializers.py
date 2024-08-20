@@ -63,7 +63,19 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Book
-        fields = ['audience', 'user', 'number_bb', 'pair_number', 'date', 'booking_time']
+        fields = ['audience', 'number_bb', 'pair_number', 'date', 'booking_time']
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['audience'] = {
+            'number': instance.audience.number,
+            'description': instance.audience.description,
+            'audience_status': instance.audience.audience_status.name
+        }
+        response['user'] = {
+            'username': instance.user.username
+        }
+        return response
 
 
 class BookHistorySerializer(serializers.HyperlinkedModelSerializer):
