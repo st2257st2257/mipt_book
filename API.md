@@ -19,26 +19,26 @@ USERS | Все адреса в формате http://127.0.0.1:8088/address, е�
 - Адрес для тестирования: /test/get/
 
 **Получение данных классов по токену:**
-- API Roles:           /base-info/roles
-- API Institute Group: /base-info/institute_group
-- API Access:          /base-info/access
-- API Preferences:     /base-info/preferences
+1. API Roles:           /base-info/roles
+2. API Institute Group: /base-info/institute_group
+3. API Access:          /base-info/access
+4. API Preferences:     /base-info/preferences
 
 
 BACKEND | Все адреса в формате http://127.0.0.1:8000/address, если где-то стоит /adress, читать: http://127.0.0.1:8000/address
 
 **Получение данных классов по токену:**
-- API Institute:                 /base-info/institute
-- API Building:                  /base-info/building
-- API Audience Status:           /base-info/audience_status
-- API Audience:                  /base-info/audience
-- API Book:                      /base-info/book
+1. API Institute:                 /base-info/institute
+2. API Building:                  /base-info/building
+3. API Audience Status:           /base-info/audience_status
+4. API Audience:                  /base-info/audience
+5. API Book:                      /base-info/book
 
 **Фильтрация данных классов без токена:**
 1. API Building: /base-info/building/?name=<audience_name>&institute=<institute_name>
-- name          | Примеры: "512","513","514"
-- institute     | Примеры: "МФТИ", "МГУ"
+   - name          | Примеры: "512","513","514"
+   - institute     | Примеры: "МФТИ", "МГУ"
 2. API Audience: /base-info/building/?building_name=<building_name>&institute=<institute_name>&status=<Свободно>
-- building_name | Примеры: "ГК", "ЛК", "ВМК"
-- institute     | Примеры: "МФТИ", "МГУ"
-- status        | Примеры: "Свободно", "Занято", "Скоро освободиться", "Отсутствует для бронировани"
+   - building_name | Примеры: "ГК", "ЛК", "ВМК"
+   - institute     | Примеры: "МФТИ", "МГУ"
+   - status        | Примеры: "Свободно", "Занято", "Скоро освободиться", "Отсутствует для бронировани"
