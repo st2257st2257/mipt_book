@@ -35,10 +35,10 @@ BACKEND | Все адреса в формате http://127.0.0.1:8000/address, �
 - API Book:                      /base-info/book
 
 **Фильтрация данных классов без токена:**
-- API Building: /base-info/building/?name=<audience_name>&institute=<institute_name>
-a) name          | Примеры: "512","513","514"
-b) institute     | Примеры: "МФТИ", "МГУ"
-- API Audience: /base-info/building/?building_name=<building_name>&institute=<institute_name>&status=<Свободно>
-a) building_name | Примеры: "ГК", "ЛК", "ВМК"
-b) institute     | Примеры: "МФТИ", "МГУ"
-c) status        | Примеры: "Свободно", "Занято", "Скоро освободиться", "Отсутствует для бронировани"
+1. API Building: /base-info/building/?name=<audience_name>&institute=<institute_name>
+- name          | Примеры: "512","513","514"
+- institute     | Примеры: "МФТИ", "МГУ"
+2. API Audience: /base-info/building/?building_name=<building_name>&institute=<institute_name>&status=<Свободно>
+- building_name | Примеры: "ГК", "ЛК", "ВМК"
+- institute     | Примеры: "МФТИ", "МГУ"
+- status        | Примеры: "Свободно", "Занято", "Скоро освободиться", "Отсутствует для бронировани"
