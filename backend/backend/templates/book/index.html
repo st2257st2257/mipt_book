@@ -17,7 +17,7 @@
 
 
         div.container {
-            width: 300px; /*Ширина контейнера */
+            width: 100%; /* 340pxШирина контейнера */
             overflow-x: auto; /*Включаем горизонтальную прокрутку */
             white-space: nowrap; /*Предотвращаем перенос элементов */
         }
@@ -89,7 +89,8 @@ output {
 
     <style>
   .time-selector {
-    display: flex;
+    display: ruby;
+    width: 300px;
   }
 
   .time-option {
@@ -97,6 +98,7 @@ output {
     border: 1px solid #ccc;
     border-radius: 5px;
     margin-right: 10px;
+    margin-top: 10px;
     cursor: pointer;
   }
 
@@ -163,6 +165,7 @@ input:checked + .slider:before {
 
     <style>
 .button1 {
+  width: 100%;
   background-color: #4CAF50; /Зеленый цвет */
   border: none;
   color: white;
@@ -174,6 +177,20 @@ input:checked + .slider:before {
   border-radius: 10px; /Радиус скругления углов */
   cursor: pointer;
 }
+.button-lk {
+  width: 20%;
+  background-color: #007AFF; /Зеленый цвет */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 18px;
+  border-radius: 10px; /Радиус скругления углов */
+  cursor: pointer;
+}
+
 </style>
 
 <style>
@@ -186,16 +203,38 @@ input:checked + .slider:before {
   /*Стили для мобильных устройств (экраны меньше 768px) */
   @media (max-width: 768px) {
     .centered-div {
-      width: 100%; /*Растягиваем на всю ширину экрана */
+      width: 80%; /*Растягиваем на всю ширину экрана */
     }
   }
 
   /*Стили для планшетов и компьютеров (экраны от 768px) */
   @media (min-width: 768px) {
     .centered-div {
-      width: 40%; /*Ограничиваем ширину до 80% */
+      width: 30%; /*Ограничиваем ширину до 80% */
       margin: 0 auto; /*Центрируем блок по горизонтали */
     }
+  }
+</style>
+
+
+    <style>
+  .container-head {
+    position: relative; /* Позиционирование относительно контейнера */
+    height: 100px; /* Высота контейнера (для демонстрации) */
+  }
+
+  .left-element, .right-element {
+    position: absolute;
+    top: 50%; /* Выравниваем по вертикали по центру */
+    transform: translateY(-50%); /* Корректировка вертикального выравнивания */
+  }
+
+  .left-element {
+    left: 0; /* Привязываем к левому краю */
+  }
+
+  .right-element {
+    right: 0; /* Привязываем к правому краю */
   }
 </style>
 
@@ -204,6 +243,11 @@ input:checked + .slider:before {
 </head>
 <body>
 <div class="centered-div">
+
+    <div class="container-head">
+        <div class="left-element button-lk">ББ: 26 единиц</div>
+        <div class="right-element button-lk">Личный кабинет</div>
+    </div>
 
   <form action="http://127.0.0.1:8000/book/" method="post">
         {% csrf_token %}
@@ -221,6 +265,7 @@ input:checked + .slider:before {
 
       <h3>Время бронирования</h3>
         <div class="time-selector" id="timeSelector">
+            <div class="time-option" data-time="17:00">17:00</div>
             <div class="time-option" data-time="18:00">18:00</div>
             <div class="time-option" data-time="19:30">19:30</div>
             <div class="time-option" data-time="21:00">21:00</div>
@@ -233,28 +278,32 @@ input:checked + .slider:before {
 
         <h3>Количество пар</h3>
         <output>1</output>
-            <input type="range" value="1" min="1" max="6">
+            <input type="range" value="1" min="1" max="6" style="width: 80%;">
         <output>6</output><br><br>
 
-        <h3>Автоматические ББ
-            <label class="toggle-switch">
-                <input type="checkbox">
-                <span class="slider"></span>
-            </label>
-        </h3>
+
+      <div class="container-head" style="height: 60px;">
+          <div class="left-element">
+              <h3>Автоматические ББ</h3>
+          </div>
+          <div class="right-element">
+              <label class="toggle-switch">
+                  <input type="checkbox">
+                  <span class="slider"></span>
+              </label>
+          </div>
+      </div>
+
 
         <input type="submit" class="button1" value="Забронировать"><br><br>
 
-        User : <input type="text" name="user" ><br><br>
+        User : <input type="text" name="user" value="st2257"><br><br>
         Number bb : <input type="text" name="number_bb" ><br><br>
         Pair Number : <input type="text" name="pair_number" ><br><br>
         Type: <input type="text" name="type" value="book_audience"><br><br>
         Token : <input type="text" name="token" ><br><br>
         Audience : <input type="text"  name="audience" id="audience_id" value="Случайная"><br><br>
   </form>
-
-  <h2>Заголовок</h2>
-  <p>Этот div будет растянут на всю ширину экрана на мобильных устройствах и ограничен 80% на больших экранах.</p>
 </div>
 
 
@@ -328,12 +377,12 @@ function update_selected(selected){
     for (const item in aud_arr){
         console.log(`${aud_arr[item]['number']}`);
         const button = document.getElementById(`${aud_arr[item]['number']}`)
-        button.style.backgroundColor = 'lightblue';
+        button.style.backgroundColor = 'white';
         button.style.color = 'black';
 
         if (`${aud_arr[item]['number']}`== selected) {
-            button.style.backgroundColor = '#33C458';
-            button.style.color = 'white';
+            button.style.backgroundColor = 'lightblue';
+            // button.style.color = 'white';
         }
         if (`${aud_arr[item]['building']['name']}`!= building) {
             button.style.display = "none";
@@ -352,11 +401,11 @@ function update_selected_building(building){
     for (const item in build_arr){
         console.log(`${build_arr[item]['name']}`);
         const button = document.getElementById(`${build_arr[item]['name']}`)
-        button.style.backgroundColor = 'lightblue';
+        button.style.backgroundColor = 'white';
         button.style.color = 'black';
         if (`${build_arr[item]['name']}`==building) {
-            button.style.backgroundColor = '#33C458';
-            button.style.color = 'white';
+            button.style.backgroundColor = 'lightblue';
+            // button.style.color = 'white';
         }
     }
     const audience_selector = document.getElementById("audience_id")
