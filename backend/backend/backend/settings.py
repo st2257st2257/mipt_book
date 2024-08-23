@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'main',
     'test',
     'rest_framework',
+    'sslserver',
 ]
 
 MIDDLEWARE = [

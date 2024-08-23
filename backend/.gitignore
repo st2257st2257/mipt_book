@@ -8,3 +8,7 @@ target/
 .idea/
 **/*.swo
 **/*.swp
+
+# certificate
+mipt.crt
+mipt.key
