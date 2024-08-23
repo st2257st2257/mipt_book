@@ -1,0 +1,6 @@
+copy mipt.key ../../email/emailservice
+copy mipt.key ../../tg_app/tg_miptbook
+copy mipt.key ../../users/authorization
+copy mipt.crt ../../email/emailservice
+copy mipt.crt ../../tg_app/tg_miptbook
+copy mipt.crt ../../users/authorization
