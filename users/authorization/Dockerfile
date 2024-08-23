@@ -29,7 +29,8 @@ WORKDIR /usr/src/app
 # 3.1) docker ps -a
 # 3.2) docker exec -it container_id python manage.py createsuperuser
 
-CMD ["sh", "-c", "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8088"]
+# CMD ["sh", "-c", "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8088"]
+CMD ["sh", "-c", "python manage.py makemigrations && python manage.py migrate && python manage.py runsslserver --certificate mipt.crt --key mipt.key 0.0.0.0:8088"]
 
 
 # ANY OTHER COMMANDS:

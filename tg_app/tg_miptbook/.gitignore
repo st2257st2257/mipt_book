@@ -21,3 +21,12 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# idea
+.idea/
+**/*.swo
+**/*.swp
+
+# certificate
+mipt.crt
+mipt.key

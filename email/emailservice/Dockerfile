@@ -19,7 +19,6 @@ COPY . .
 EXPOSE 8083
 WORKDIR /usr/src/app
 
-# CMD ["python", "manage.py", "makemigrations"]
-# CMD ["python", "manage.py", "migrate"]
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8083"]
+#CMD ["python", "manage.py", "runserver", "0.0.0.0:8083"]
+CMD ["sh", "-c", "python manage.py makemigrations && python manage.py migrate && python manage.py runsslserver --certificate mipt.crt --key mipt.key 0.0.0.0:8083"]
 # CMD ["celery", "worker", "-A", "emailservice", "--loglevel=debug", "--concurrency=4"]
