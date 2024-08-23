@@ -17,4 +17,7 @@ COPY . .
 EXPOSE 3000
 
 # Запускаем приложение с помощью npm start
-CMD ["npm", "start"]
+# CMD ["npm", "start"]
+# CMD ["HTTPS=true", "npm", "start"]
+#CMD ["sh", "-c", "HTTPS=true npm start"]
+CMD ["sh", "-c", "HTTPS=true SSL_CRT_FILE=mipt.crt SSL_KEY_FILE=mipt.key npm start"]
