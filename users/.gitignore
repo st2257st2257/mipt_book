@@ -12,3 +12,6 @@ target/
 # certificate
 mipt.crt
 mipt.key
+
+# database
+pgdb_users/
