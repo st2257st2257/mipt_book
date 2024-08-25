@@ -35,8 +35,8 @@ function selectBuilding(building: IBuilding){
 function selectRandom(){
   let audiences_sel_building : IAudience[] = [];
 
-  for(let key in audience_arr){
-    let cur_item = audience_arr[key];
+  for(let key in audience_arr.value){
+    let cur_item = audience_arr.value[key];
     if (cur_item.building.name != building_name_selected.value) continue;
     audiences_sel_building.push(cur_item);
   }
