@@ -1,19 +1,24 @@
 <script setup lang="ts">
-const timeSelector = document.getElementById('timeSelector');
-const timeOptions = document.querySelectorAll('.time-option');
 
-timeSelector.addEventListener('click', (event) => {
-  const selectedOption = event.target.closest('.time-option');
+function onMounted(){
+  const timeSelector = document.getElementById('timeSelector');
+  const timeOptions = document.querySelectorAll('.time-option');
 
-  if (selectedOption) {
-    timeOptions.forEach(option => option.classList.remove('selected'));
-    selectedOption.classList.add('selected');
+  timeSelector!.addEventListener('click', (event : Event) => {
+    const selectedOption = event!.target!.closest('.time-option');
 
-    // Получение выбранного времени
-    const selectedTime = selectedOption.dataset.time;
-    console.log("Выбрано время:", selectedTime);
-  }
-});
+    if (selectedOption) {
+      timeOptions.forEach(option => option.classList.remove('selected'));
+      selectedOption.classList.add('selected');
+
+      // Получение выбранного времени
+      const selectedTime = selectedOption.dataset.time;
+      console.log("Выбрано время:", selectedTime);
+    }
+  });
+}
+
+
 </script>
 
 <template>
