@@ -35,6 +35,7 @@ ALLOWED_HOSTS = [
     'localhost',
     'localhost:8000',
     'mipt.site',
+    'mipt.site:8000',
     '127.0.0.1:3000',
     'localhost:3000',
 ]
