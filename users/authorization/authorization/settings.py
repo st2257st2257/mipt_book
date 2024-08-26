@@ -25,7 +25,19 @@ SECRET_KEY = 'django-insecure-8sb)cd7%#s693k6iq=gev-^1_qd*m4qklnf9#ps!2jfe#(cpo=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    '127.0.0.1:8000',
+    '127.0.0.1:8088',
+    'localhost',
+    'localhost:8000',
+    'localhost:8088',
+    'mipt.site',
+    'mipt.site:8000',
+    'mipt.site:8088',
+    '127.0.0.1:3000',
+    'localhost:3000',
+]
 
 
 # Application definition
