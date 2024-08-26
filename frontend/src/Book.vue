@@ -61,4 +61,22 @@ import BookAmount from "@/components/book/BookAmount.vue";
     margin: 0 auto; /*Центрируем блок по горизонтали */
   }
 }
+.container-head {
+  position: relative; /* Позиционирование относительно контейнера */
+  height: 100px; /* Высота контейнера (для демонстрации) */
+}
+
+.left-element, .right-element {
+  position: absolute;
+  top: 50%; /* Выравниваем по вертикали по центру */
+  transform: translateY(-50%); /* Корректировка вертикального выравнивания */
+}
+
+.left-element {
+  left: 0; /* Привязываем к левому краю */
+}
+
+.right-element {
+  right: 0; /* Привязываем к правому краю */
+}
 </style>

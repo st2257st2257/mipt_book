@@ -1,5 +1,7 @@
 <script setup lang="ts">
 
+
+
 function onMounted(){
   const timeSelector = document.getElementById('timeSelector');
   const timeOptions = document.querySelectorAll('.time-option');
@@ -37,11 +39,12 @@ function onMounted(){
 
 <style scoped>
 .time-selector {
-  display: ruby;
-  width: 300px;
+  width: 100%;
+  overflow: scroll;
 }
 
 .time-option {
+  display: inline-block;
   padding: 5px 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
