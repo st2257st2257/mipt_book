@@ -128,12 +128,12 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Pet'
+                  $ref: '#/components/schemas/Institute'
             application/xml:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Pet'
+                  $ref: '#/components/schemas/Institute'
         '400':
           description: Invalid status value
       security:
@@ -272,12 +272,12 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Pet'
+                  $ref: '#/components/schemas/AudienceStatus'
             application/xml:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Pet'
+                  $ref: '#/components/schemas/AudienceStatus'
         '400':
           description: Invalid status value
       security:
@@ -547,6 +547,39 @@ components:
           example: Dogs
       xml:
         name: category
+    Audience:
+      type: object
+      properties:
+        number:
+          type: string
+          example: 510
+        description:
+          type: string
+          example: Аудитория Свободна
+      xml:
+        name: audience_status
+    AudienceStatus:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Свободно
+        description:
+          type: string
+          example: Аудитория Свободна
+      xml:
+        name: audience_status
+    Institute:
+      type: object
+      properties:
+        name:
+          type: string
+          example: МФТИ
+        description:
+          type: string
+          example: Московский Физико-Технический Институт
+      xml:
+        name: institute
     User:
       type: object
       properties:
