@@ -145,16 +145,6 @@ services:
       - "8081:3000"  # Проброс портов: хост:контейнер
 
   # документация к проекту
-  #swagger:
-  #  build:
-  #    context: ../swagger/swagger-api/
-  #    dockerfile: Dockerfile
-  #  # image: swaggerapi/swagger-editor
-  #  ports:
-  #    - "8087:8080"
-  #  networks:
-  #    - mipt_book
-
   swagger-ui:
     image: swaggerapi/swagger-ui
     container_name: swagger-ui

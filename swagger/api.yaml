@@ -1,4 +1,3 @@
-# copy https://editor.swagger.io/ and paste or yourself yaml
 openapi: 3.0.3
 info:
   title: Swagger Petstore - OpenAPI 3.0
@@ -26,8 +25,8 @@ externalDocs:
 servers:
   - url: https://petstore3.swagger.io/api/v3
 tags:
-  - name: pet
-    description: Everything about your Petssss
+  - name: backend
+    description: Адрес начинается с :8088/
     externalDocs:
       description: Find out more
       url: http://swagger.io
@@ -39,49 +38,10 @@ tags:
   - name: user
     description: Operations about user
 paths:
-  /pet:
-    put:
-      tags:
-        - pet
-      summary: Update an existing pet
-      description: Update an existing pet by Id
-      operationId: updatePet
-      requestBody:
-        description: Update an existent pet in the store
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Pet'
-          application/xml:
-            schema:
-              $ref: '#/components/schemas/Pet'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Pet'
-        required: true
-      responses:
-        '200':
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Pet'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/Pet'
-        '400':
-          description: Invalid ID supplied
-        '404':
-          description: Pet not found
-        '422':
-          description: Validation exception
-      security:
-        - petstore_auth:
-            - write:pets
-            - read:pets
+  /backend:
     post:
       tags:
-        - pet
+        - backend
       summary: Add a new pet to the store
       description: Add a new pet to the store
       operationId: addPet
@@ -104,7 +64,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Pet'
+                $ref: '#/components/schemas/Pet'          
             application/xml:
               schema:
                 $ref: '#/components/schemas/Pet'
@@ -116,13 +76,37 @@ paths:
         - petstore_auth:
             - write:pets
             - read:pets
-  /pet/findByStatus:
     get:
       tags:
-        - pet
-      summary: Finds Pets by status
-      description: Multiple status values can be provided with comma separated strings
-      operationId: findPetsByStatus
+        - backend
+      summary: Add a new pet to the store
+      description: Add a new pet to the store
+      operationId: addPetе
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Pet'
+        '400':
+          description: Invalid input
+        '422':
+          description: Validation exception
+      security:
+        - petstore_auth:
+            - write:pets
+            - read:pets
+  /base-info/institute:
+    get:
+      tags:
+        - backend
+      summary: Получение списка заданий
+      description: Получение списка доступных в системе институтов
+      operationId: findPetsByStatuss
       parameters:
         - name: status
           in: query
@@ -136,6 +120,123 @@ paths:
               - available
               - pending
               - sold
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pet'          
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pet'
+        '400':
+          description: Invalid status value
+      security:
+        - petstore_auth:
+            - write:pets
+            - read:pets
+  /base-info/building:
+    get:
+      tags:
+        - backend
+      summary: Получение списка институтов
+      description: Получение списка доступных в системе зданий по фильтру
+      operationId: findBuildingByNameAndInstitute
+      parameters:
+        - name: building_name
+          in: query
+          description: Получение зданий по указанному измени здания
+          required: false
+          explode: true
+          schema:
+            type: string
+            default: available
+            enum:
+              - ГК
+              - ЛК
+              - Цифра
+        - name: institute
+          in: query
+          description: Получение зданий по имени института
+          required: false
+          explode: true
+          schema:
+            type: string
+            default: available
+            enum:
+              - МФТИ
+              - МГУ
+              - ВШЭ
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pet'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pet'
+        '400':
+          description: Invalid status value
+      security:
+        - petstore_auth:
+            - write:pets
+            - read:pets
+  /base-info/audience:
+    get:
+      tags:
+        - backend
+      summary: Получение списка доступных аудиторий
+      description: Получение списка доступных в системе аудиторий по фильтрам
+      operationId: findAudienceByNameAndInstituteAndBuildingName
+      parameters:
+        - name: building_name
+          in: query
+          description: Получение аудиторий по указанному измени здания
+          required: false
+          explode: true
+          schema:
+            type: string
+            default: available
+            enum:
+              - ГК
+              - ЛК
+              - Цифра
+        - name: institute
+          in: query
+          description: Получение аудиторий по имени института
+          required: false
+          explode: true
+          schema:
+            type: string
+            default: available
+            enum:
+              - МФТИ
+              - МГУ
+              - ВШЭ
+        - name: status
+          in: query
+          description: Получение аудиторий по стутусу
+          required: false
+          explode: true
+          schema:
+            type: string
+            default: available
+            enum:
+              - Свободно
+              - Занято
+              - Скоро освободиться
+              - Отсутствует для бронирования
       responses:
         '200':
           description: successful operation
@@ -193,10 +294,10 @@ paths:
         - petstore_auth:
             - write:pets
             - read:pets
-  /pet/{petId}:
+  /backend/{petId}:
     get:
       tags:
-        - pet
+        - backend
       summary: Find pet by ID
       description: Returns a single pet
       operationId: getPetById
@@ -229,7 +330,7 @@ paths:
             - read:pets
     post:
       tags:
-        - pet
+        - backend
       summary: Updates a pet in the store with form data
       description: ''
       operationId: updatePetWithForm
@@ -260,7 +361,7 @@ paths:
             - read:pets
     delete:
       tags:
-        - pet
+        - backend
       summary: Deletes a pet
       description: delete a pet
       operationId: deletePet
@@ -285,10 +386,10 @@ paths:
         - petstore_auth:
             - write:pets
             - read:pets
-  /pet/{petId}/uploadImage:
+  /backend/{petId}/uploadImage:
     post:
       tags:
-        - pet
+        - backend
       summary: uploads an image
       description: ''
       operationId: uploadFile
