@@ -19,8 +19,8 @@ let audience_number_selected = ref<String>("");
 
 onMounted(() =>{
   let web_address = 'https://mipt.site:8000';
-  building_arr = ref(JSON.parse(httpGet(new URL('/base-info/building/?institute=%D0%9C%D0%A4%D0%A2%D0%98', web_address))));
-  audience_arr = ref(JSON.parse(httpGet(new URL('/base-info/audience/?institute=%D0%9C%D0%A4%D0%A2%D0%98', web_address))));
+  building_arr.value = JSON.parse(httpGet(new URL('/base-info/building/?institute=%D0%9C%D0%A4%D0%A2%D0%98', web_address)));
+  audience_arr.value = JSON.parse(httpGet(new URL('/base-info/audience/?institute=%D0%9C%D0%A4%D0%A2%D0%98', web_address)));
 });
 
 function selectAudience(audience: IAudience | null){
@@ -30,6 +30,8 @@ function selectAudience(audience: IAudience | null){
 
 function selectBuilding(building: IBuilding){
   building_name_selected.value = building.name;
+  is_random_selected.value = false;
+  audience_number_selected.value = "";
 }
 
 function selectRandom(){
