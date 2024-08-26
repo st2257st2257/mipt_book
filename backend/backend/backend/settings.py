@@ -34,10 +34,14 @@ ALLOWED_HOSTS = [
     '127.0.0.1:8000',
     'localhost',
     'localhost:8000',
+    'mipt.site',
+    '127.0.0.1:3000',
+    'localhost:3000',
 ]
-CORS_ORIGIN_WHITELIST = [
-    'http://127.0.0.1:8000',
-]
+
+#CORS_ORIGIN_WHITELIST = [
+#    'http://127.0.0.1:8000',
+#]
 
 
 # Application definition
