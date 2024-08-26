@@ -30,11 +30,6 @@ tags:
     externalDocs:
       description: Find out more
       url: http://swagger.io
-  - name: store
-    description: Access to Petstore orders
-    externalDocs:
-      description: Find out more about our store
-      url: http://swagger.io
   - name: user
     description: Operations about user
 paths:
@@ -76,26 +71,29 @@ paths:
         - petstore_auth:
             - write:pets
             - read:pets
+  /base-info/book:
     get:
       tags:
         - backend
-      summary: Add a new pet to the store
-      description: Add a new pet to the store
-      operationId: addPetе
+      summary: Получение списка текущих бронирований
+      description: Получение списка забронированных аудиторий поо фильтрам
+      operationId: findBook
       responses:
         '200':
-          description: Successful operation
+          description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Pet'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
             application/xml:
               schema:
-                $ref: '#/components/schemas/Pet'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
         '400':
-          description: Invalid input
-        '422':
-          description: Validation exception
+          description: Invalid status value
       security:
         - petstore_auth:
             - write:pets
@@ -107,19 +105,6 @@ paths:
       summary: Получение списка заданий
       description: Получение списка доступных в системе институтов
       operationId: findPetsByStatuss
-      parameters:
-        - name: status
-          in: query
-          description: Status values that need to be considered for filter
-          required: false
-          explode: true
-          schema:
-            type: string
-            default: available
-            enum:
-              - available
-              - pending
-              - sold
       responses:
         '200':
           description: successful operation
@@ -180,12 +165,12 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Pet'
+                  $ref: '#/components/schemas/Building'
             application/xml:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Pet'
+                  $ref: '#/components/schemas/Building'
         '400':
           description: Invalid status value
       security:
@@ -245,12 +230,12 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Pet'
+                  $ref: '#/components/schemas/Audience'
             application/xml:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Pet'
+                  $ref: '#/components/schemas/Audience'
         '400':
           description: Invalid status value
       security:
@@ -547,15 +532,71 @@ components:
           example: Dogs
       xml:
         name: category
+    Building:
+      type: object
+      properties:
+        name:
+          type: string
+          example: ГК
+        institute:
+          type: Institute
+          xml:
+            name: institute
+          $ref: '#/components/schemas/Institute'
+        description:
+          type: string
+          example: Главный корпус
+      xml:
+        name: building
+    Book:
+      type: object
+      properties:
+        audience:
+          type: Audience
+          xml:
+            name: audience
+          $ref: '#/components/schemas/Audience'
+        number_bb:
+          type: integer
+          example: 2.0
+        pair_number:
+          type: integer
+          example: 2
+        date:
+          type: string
+          example: "01.01.1970"
+        booking_time:
+          type: string
+          example: "09:41:00.112233"
+        user:
+          type: UsersWallet
+          xml:
+            name: user
+          $ref: '#/components/schemas/UsersWallet'
+      xml:
+        name: building
     Audience:
       type: object
       properties:
         number:
           type: string
           example: 510
+        building:
+          type: Building
+          xml:
+            name: building
+          $ref: '#/components/schemas/Building'
+        number_of_users:
+          type: integer
+          example: 20
+        audience_status:
+          type: AudienceStatus
+          xml:
+            name: audience_status
+          $ref: '#/components/schemas/AudienceStatus'
         description:
           type: string
-          example: Аудитория Свободна
+          example: Аудитория 510
       xml:
         name: audience_status
     AudienceStatus:
@@ -578,6 +619,14 @@ components:
         description:
           type: string
           example: Московский Физико-Технический Институт
+      xml:
+        name: institute
+    UsersWallet:
+      type: object
+      properties:
+        username:
+          type: string
+          example: st2257
       xml:
         name: institute
     User:
