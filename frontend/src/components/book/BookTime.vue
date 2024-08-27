@@ -24,7 +24,6 @@ function onMounted(){}
 function isOld(date : Date){
   let now = new Date();
   let result = now.getTime() > date.getTime();
-  console.log(result);
   return result;
 }
 function formatTime(date: Date){
