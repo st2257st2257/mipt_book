@@ -29,18 +29,11 @@ DEBUG = True
 #    'http://127.0.0.1:8000'
 #],
 
-ALLOWED_HOSTS = [
-    '127.0.0.1',
-    '127.0.0.1:8000',
-    'localhost',
-    'localhost:8000',
-    'mipt.site',
-    'mipt.site:8000',
-    '127.0.0.1:3000',
-    'localhost:3000',
-]
+ALLOWED_HOSTS = ['*']
 
 CORS_ALLOW_HEADERS = ['*']
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 #CORS_ORIGIN_WHITELIST = [
 #    'http://127.0.0.1:8000',
