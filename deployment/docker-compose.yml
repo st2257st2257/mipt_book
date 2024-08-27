@@ -100,6 +100,8 @@ services:
       - mipt_book
     image: "mipt_book/email:v1"
     container_name: mipt_book_email_v1
+    #expose:
+    #  - 8083
     ports:
       - "8083:8083"
     volumes:
@@ -143,6 +145,36 @@ services:
       dockerfile: Dockerfile  # Имя Dockerfile (если отличается от стандартного)
     ports:
       - "8081:3000"  # Проброс портов: хост:контейнер
+
+  # документация к проекту
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    container_name: swagger-ui
+    ports:
+      - "8001:8080"
+    volumes:
+      - ../swagger:/usr/share/nginx/html/swagger
+    environment:
+      API_URL: ../swagger/api.yaml
+
+  # nginx
+  #nginx:
+  #  container_name: nginx_v2
+  #  working_dir: /nginx
+  #  image: nginx:stable-alpine
+  #  restart: always
+  #  networks:
+  #    - mipt_book
+  #  ports:
+  #    - "80:80"
+  #  volumes:
+  #    - ./nginx/dev/:/etc/nginx/conf.d:ro
+  #  depends_on:
+  #    - email
+  #    - backend
+  #    - users
+
+
 
 networks:
   mipt_book:

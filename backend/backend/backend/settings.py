@@ -29,15 +29,15 @@ DEBUG = True
 #    'http://127.0.0.1:8000'
 #],
 
-ALLOWED_HOSTS = [
-    '127.0.0.1',
-    '127.0.0.1:8000',
-    'localhost',
-    'localhost:8000',
-]
-CORS_ORIGIN_WHITELIST = [
-    'http://127.0.0.1:8000',
-]
+ALLOWED_HOSTS = ['*']
+
+CORS_ALLOW_HEADERS = ['*']
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+#CORS_ORIGIN_WHITELIST = [
+#    'http://127.0.0.1:8000',
+#]
 
 
 # Application definition
@@ -54,17 +54,21 @@ INSTALLED_APPS = [
     'test',
     'rest_framework',
     'sslserver',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ORIGIN_ALLOW_ALL=True
 
 ROOT_URLCONF = 'backend.urls'
 

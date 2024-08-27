@@ -6,8 +6,9 @@
 1) cd deployment
 2) docker compose up --build
 3) change "#port = 5432" -> "port = 5431" in users/authorization/pgdb_users/postgresql.conf 
-4) docker compose up --build
-5) Create admins by: docker ps -a; docker exec -it container_id python manage.py createsuperuser
+4) Start: copy_keys.sh for linux or windows_copy.txt for windows
+5) docker compose up --build
+6) Create admins by: docker ps -a; docker exec -it container_id python manage.py createsuperuser
 
 Система бронирования:
 - перед использоваем аудитории пользователь должен зарегистироваться в системе и забронировать аудитрию за выделенное ему число баллов бронирования, которые он может потратить на бронирвание аудитории в любое время (изначальный эквивалент одной пары - 1 балл бронирования)
