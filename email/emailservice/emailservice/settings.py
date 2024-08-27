@@ -25,7 +25,18 @@ SECRET_KEY = 'django-insecure-9tn4r%l(6j*i8^sqqj)6w=5u!9e1lkw)h*i3=7n-@i$!km3a=8
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    '127.0.0.1/email',
+    'email',
+    '127.0.0.1:8083',
+    'localhost',
+    'localhost:8083',
+    'mipt.site',
+    'mipt.site:8083',
+    '127.0.0.1:3000',
+    'localhost:3000',
+]
 
 
 # Application definition
@@ -39,6 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_celery_beat',
     "rest_framework",
+    'sslserver',
 ]
 
 MIDDLEWARE = [

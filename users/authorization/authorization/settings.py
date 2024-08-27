@@ -25,7 +25,21 @@ SECRET_KEY = 'django-insecure-8sb)cd7%#s693k6iq=gev-^1_qd*m4qklnf9#ps!2jfe#(cpo=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    '127.0.0.1:8000',
+    '127.0.0.1:8088',
+    'localhost',
+    'localhost:8000',
+    'localhost:8088',
+    'mipt.site',
+    'mipt.site:8000',
+    'mipt.site:8088',
+    '127.0.0.1:3000',
+    'localhost:3000',
+]
+
+CORS_ALLOW_HEADERS = ['*']
 
 
 # Application definition
@@ -41,6 +55,7 @@ INSTALLED_APPS = [
     'test',
     'rest_framework',
     'rest_framework.authtoken',
+    'sslserver',
 ]
 
 REST_FRAMEWORK = {
@@ -52,6 +67,7 @@ REST_FRAMEWORK = {
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',

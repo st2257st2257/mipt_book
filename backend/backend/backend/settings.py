@@ -25,7 +25,26 @@ SECRET_KEY = 'django-insecure-24@o^wa4cv&t*wbqohm!yfsy&v8-^mf9i(ri0#zen$5^0+p7*+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+#CSRF_TRUSTED_ORIGINS = [
+#    'http://127.0.0.1:8000'
+#],
+
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    '127.0.0.1:8000',
+    'localhost',
+    'localhost:8000',
+    'mipt.site',
+    'mipt.site:8000',
+    '127.0.0.1:3000',
+    'localhost:3000',
+]
+
+CORS_ALLOW_HEADERS = ['*']
+
+#CORS_ORIGIN_WHITELIST = [
+#    'http://127.0.0.1:8000',
+#]
 
 
 # Application definition
@@ -39,11 +58,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users',
     'main',
+    'test',
+    'rest_framework',
+    'sslserver',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -56,7 +79,7 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -122,8 +145,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = (
+    BASE_DIR / 'static',
+)
+
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+

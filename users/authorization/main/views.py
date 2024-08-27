@@ -2,7 +2,6 @@ from django.shortcuts import render
 from .models import User, Access, Role, InstituteGroup, Preferences
 from .serializers import UserSerializer, AccessSerializer, RoleSerializer, InstituteGroupSerializer, PreferencesSerializer
 
-
 from rest_framework import permissions, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -33,7 +32,7 @@ class IndexAuth(APIView):
 class RoleViewSet(viewsets.ModelViewSet):
     queryset = Role.objects.all()
     serializer_class = RoleSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -43,7 +42,7 @@ class RoleViewSet(viewsets.ModelViewSet):
 class InstituteGroupViewSet(viewsets.ModelViewSet):
     queryset = InstituteGroup.objects.all()
     serializer_class = InstituteGroupSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -53,7 +52,7 @@ class InstituteGroupViewSet(viewsets.ModelViewSet):
 class AccessViewSet(viewsets.ModelViewSet):
     queryset = Access.objects.all()
     serializer_class = AccessSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -63,7 +62,7 @@ class AccessViewSet(viewsets.ModelViewSet):
 class PreferencesViewSet(viewsets.ModelViewSet):
     queryset = Preferences.objects.all()
     serializer_class = PreferencesSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
         queryset = super().get_queryset()

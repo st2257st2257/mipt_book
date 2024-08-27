@@ -14,3 +14,4 @@ gunicorn
 xlsxwriter
 # confluent_kafka==1.9.0
 kafka
+djangorestframework

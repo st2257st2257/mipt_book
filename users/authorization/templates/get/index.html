@@ -16,7 +16,7 @@ Result: <textarea id="textarea" style="width: 500px; height: 100px;"></textarea>
 <script>
 function get_data() {
     const token = document.getElementById("auth_token").value;
-    var a = fetch('http://127.0.0.1:8088/get-info', {
+    var a = fetch('https://127.0.0.1:8088/get-info', {
         method: 'GET',
         headers: {
             'Authorization': token

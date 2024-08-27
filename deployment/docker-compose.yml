@@ -2,6 +2,7 @@
 version: "3.9"
 
 services:
+  # Запускаем микросервис бэкэнда
   backend:
     build:
       context: ../backend/backend/
@@ -20,6 +21,7 @@ services:
       pgdb:
         condition: service_healthy
 
+  # Запускаем микросервис авторизации
   users:
     build:
       context: ../users/authorization/
@@ -38,6 +40,7 @@ services:
       pgdb_users:
         condition: service_healthy
 
+  # Запускаем брокер сообщений для планировщика задач celery
   redis:
     image: redis
     restart: always
@@ -46,6 +49,7 @@ services:
     ports:
       - "6379:6379"
 
+  # Запускаем базу данных для микросервиса бэкэнда
   pgdb:
     image: postgres:latest
     networks:
@@ -65,6 +69,7 @@ services:
     volumes:
       - ../backend/backend/pgdb:/var/lib/postgresql/data/
 
+  # Запускаем базу данных для микросервиса авторизации
   pgdb_users:
     image: postgres:latest
     networks:
@@ -84,7 +89,7 @@ services:
     volumes:
       - ../users/authorization/pgdb_users:/var/lib/postgresql/data/
 
-
+  # Запускаем микросервис отправки сообщений по протоколу SMTP
   email:
     build:
       context: ../email/emailservice/
@@ -95,11 +100,14 @@ services:
       - mipt_book
     image: "mipt_book/email:v1"
     container_name: mipt_book_email_v1
+    #expose:
+    #  - 8083
     ports:
       - "8083:8083"
     volumes:
       - ../email/emailservice:/usr/src/app
 
+  # Запускаем планировщик событий celery для микросервиса отправки сообщений
   worker:
     restart: always
     build:
@@ -114,6 +122,7 @@ services:
       - email
     command: 'celery -A emailservice worker -l info'
 
+  # Запускаем beat для брокера сообщений
   beat:
     restart: always
     build:
@@ -128,6 +137,44 @@ services:
       - email
       - worker
     command: 'celery -A emailservice worker -l info'
+
+  # Запускаем фронтенд телеграм приложения
+  tg_app_frontend:
+    build:
+      context: ../tg_app/tg_miptbook  # Путь к директории с React-приложением
+      dockerfile: Dockerfile  # Имя Dockerfile (если отличается от стандартного)
+    ports:
+      - "8081:3000"  # Проброс портов: хост:контейнер
+
+  # документация к проекту
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    container_name: swagger-ui
+    ports:
+      - "8001:8080"
+    volumes:
+      - ../swagger:/usr/share/nginx/html/swagger
+    environment:
+      API_URL: ../swagger/api.yaml
+
+  # nginx
+  #nginx:
+  #  container_name: nginx_v2
+  #  working_dir: /nginx
+  #  image: nginx:stable-alpine
+  #  restart: always
+  #  networks:
+  #    - mipt_book
+  #  ports:
+  #    - "80:80"
+  #  volumes:
+  #    - ./nginx/dev/:/etc/nginx/conf.d:ro
+  #  depends_on:
+  #    - email
+  #    - backend
+  #    - users
+
+
 
 networks:
   mipt_book:
