@@ -143,7 +143,8 @@ def book_audience(request):
                 new_book.save()
                 return Response(
                     {
-                        "result": True,"audience": new_book.audience.number,
+                        "result": True,
+                        "audience": new_book.audience.number,
                         "user": new_book.user.username},
                     status=status.HTTP_201_CREATED)
             else:
@@ -154,3 +155,38 @@ def book_audience(request):
             return Response(
                 {"Error": "BAD_REQUEST_TYPE"},
                 status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+
+def _get_timetable():
+    res = []
+    audiences = Audience.objects.all()
+    for item in audiences:
+        val = {item.number: {
+            "status": item.audience_status.name,
+            "day_history": item.day_history.pair,
+            "date": item.day_history.date
+            }
+        }
+        res.append(val)
+    return res
+
+
+@csrf_exempt
+@api_view(('POST', 'GET'))
+def get_timetable(request):
+    if request.method == 'GET':
+        if request.GET.get('type') == "get_timetable":
+            return Response(
+                {
+                    "result": True,
+                    "audience": _get_timetable(),
+                    "user": 1
+                },
+                status=status.HTTP_201_CREATED)
+        else:
+            return render(request,
+                  'timetable/index.html')
+    if request.method == 'POST':
+        return Response(
+                {"Error": "BAD_REQUEST_TYPE"}
+        )
