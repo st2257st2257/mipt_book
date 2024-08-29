@@ -37,10 +37,10 @@ def _get_timetable():
 
 
 def get_book_audience_response(
-        number,
-        user,
-        number_bb,
-        pair_number
+        number: str,
+        user: str,
+        number_bb: int,
+        pair_number: int
 ):
     new_book = Book(
         audience=get_audience_by_number(number),

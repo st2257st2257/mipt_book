@@ -122,44 +122,12 @@ def book_audience(request):
     if request.method == 'POST':
         if request.POST.get('type') == "book_audience":
             if check_token(request.POST['token']):
-                number = request.POST.get('audience')
-                user = request.POST.get('user')
-                number_bb = int(request.POST.get('number_bb'))
-                pair_number = int(request.POST.get('pair_number'))
-                return get_book_audience_response()
-                new_book = Book(
-                    audience=get_audience_by_number(number),
-                    user=get_user_by_username(user),
-                    number_bb=number_bb,
-                    pair_number=pair_number,
-                    date=datetime.datetime.now().date(),
-                    booking_time=datetime.datetime.now().time(),
-                    visibility=1)
-                new_book.save()
-                audience = Audience.objects.get(number=number)
-                if audience.day_history.pair[pair_number][1] == "Свободно":
-                    audience.day_history.pair[pair_number][1] = "Занято"
-                    audience.day_history.save()
-                    audience.save()
-                    return Response(
-                        {
-                            "result": True,
-                            "audience": new_book.audience.number,
-                            "user": new_book.user.username,
-                            "number_bb": number_bb,
-                            "pair_number": pair_number
-                        },
-                        status=status.HTTP_201_CREATED)
-                else:
-                    return Response(
-                        {
-                            "result": False,
-                            "audience": new_book.audience.number,
-                            "status": audience.day_history.pair[pair_number][1],
-                            "number_bb": number_bb,
-                            "pair_number": pair_number
-                        },
-                        status=status.HTTP_204_NO_CONTENT)
+                return get_book_audience_response(
+                    number=request.POST.get('audience'),
+                    user=request.POST.get('user'),
+                    number_bb=int(request.POST.get('number_bb')),
+                    pair_number=int(request.POST.get('pair_number'))
+                )
             else:
                 return Response(
                     {"Error": "BAD_TOKEN"},
