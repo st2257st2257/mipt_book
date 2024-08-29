@@ -28,9 +28,9 @@ router.register(r'audience', views.AudienceViewSet)
 router.register(r'book', views.BookViewSet)
 
 urlpatterns = [
+    path('base-info/', include(router.urls)),
     path('book/', views.book_audience),
     path('timetable/', views.get_timetable),
-    path('base-info/', include(router.urls)),
     path('admin/', admin.site.urls),
     path('test/', include('test.urls', namespace='test')),
 ]

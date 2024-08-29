@@ -16,6 +16,13 @@ from .serializers import \
     BookSerializer, \
     BookHistorySerializer
 
+from .services import \
+    _get_timetable, \
+    check_token, \
+    get_audience_by_number, \
+    get_user_by_username, \
+    get_book_audience_response
+
 import datetime
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -108,23 +115,6 @@ class BookViewSet(viewsets.ModelViewSet):
         return self.filter_queryset(queryset)
 
 
-def check_token(token: str):
-    return True
-
-
-def get_audience_by_number(number):
-    if len(Audience.objects.filter(number=number)) == 1:
-        return Audience.objects.get(number=number)
-    else:
-        return None
-
-def get_user_by_username(username):
-    if len(UsersWallet.objects.filter(username=username)) == 1:
-        return UsersWallet.objects.get(username=username)
-    else:
-        return None
-
-
 # @api_view(['POST'])
 @csrf_exempt
 @api_view(('POST', 'GET'))
@@ -132,21 +122,44 @@ def book_audience(request):
     if request.method == 'POST':
         if request.POST.get('type') == "book_audience":
             if check_token(request.POST['token']):
+                number = request.POST.get('audience')
+                user = request.POST.get('user')
+                number_bb = int(request.POST.get('number_bb'))
+                pair_number = int(request.POST.get('pair_number'))
+                return get_book_audience_response()
                 new_book = Book(
-                    audience=get_audience_by_number(request.POST.get('audience')),
-                    user=get_user_by_username(request.POST.get('user')),
-                    number_bb=request.POST.get('number_bb'),
-                    pair_number=request.POST.get('pair_number'),
-                    date=datetime.date(2024, 8, 20), #request.POST.get('date'),
-                    booking_time=datetime.time(10, 33, 45),#request.POST.get('booking_time'),
+                    audience=get_audience_by_number(number),
+                    user=get_user_by_username(user),
+                    number_bb=number_bb,
+                    pair_number=pair_number,
+                    date=datetime.datetime.now().date(),
+                    booking_time=datetime.datetime.now().time(),
                     visibility=1)
                 new_book.save()
-                return Response(
-                    {
-                        "result": True,
-                        "audience": new_book.audience.number,
-                        "user": new_book.user.username},
-                    status=status.HTTP_201_CREATED)
+                audience = Audience.objects.get(number=number)
+                if audience.day_history.pair[pair_number][1] == "Свободно":
+                    audience.day_history.pair[pair_number][1] = "Занято"
+                    audience.day_history.save()
+                    audience.save()
+                    return Response(
+                        {
+                            "result": True,
+                            "audience": new_book.audience.number,
+                            "user": new_book.user.username,
+                            "number_bb": number_bb,
+                            "pair_number": pair_number
+                        },
+                        status=status.HTTP_201_CREATED)
+                else:
+                    return Response(
+                        {
+                            "result": False,
+                            "audience": new_book.audience.number,
+                            "status": audience.day_history.pair[pair_number][1],
+                            "number_bb": number_bb,
+                            "pair_number": pair_number
+                        },
+                        status=status.HTTP_204_NO_CONTENT)
             else:
                 return Response(
                     {"Error": "BAD_TOKEN"},
@@ -155,20 +168,8 @@ def book_audience(request):
             return Response(
                 {"Error": "BAD_REQUEST_TYPE"},
                 status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
-
-
-def _get_timetable():
-    res = []
-    audiences = Audience.objects.all()
-    for item in audiences:
-        val = {item.number: {
-            "status": item.audience_status.name,
-            "day_history": item.day_history.pair,
-            "date": item.day_history.date
-            }
-        }
-        res.append(val)
-    return res
+    if request.method == 'GET':
+        return render(request, 'book/test.html')
 
 
 @csrf_exempt
