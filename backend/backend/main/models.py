@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib import admin
+from django.contrib.postgres import fields
 
 
 class Institute(models.Model):
@@ -45,7 +46,13 @@ class Audience(models.Model):
     audience_status = models.ForeignKey(
         "AudienceStatus",
         on_delete=models.CASCADE,
-        related_name="audienceStatus",
+        related_name="audience_status_audience",
+        blank=True,
+        null=True)
+    day_history = models.ForeignKey(
+        "DayHistory",
+        on_delete=models.CASCADE,
+        related_name="day_history_audience",
         blank=True,
         null=True)
     description = models.CharField(max_length=256, blank=True)
@@ -98,6 +105,78 @@ class BookHistory(models.Model):
 
     def __str__(self):
         return f'Book|A:{self.audience}|U:{self.user.username}|P:{self.pair_number}|N:{self.number_bb}'
+
+
+class BookPair(models.Model):
+    user = models.ForeignKey(
+        "UsersWallet",
+        on_delete=models.CASCADE,
+        related_name="users_wallet_book_pair",
+        blank=True,
+        null=True)
+    number_bb = models.FloatField(
+        validators=[MinValueValidator(0.0), MaxValueValidator(28.0)],)
+    pair_number = models.IntegerField(default=0)
+    booking_time = models.TimeField(auto_now_add=True)
+    audience_status = models.ForeignKey(
+        "AudienceStatus",
+        on_delete=models.CASCADE,
+        related_name="audience_status_book_pair",
+        blank=True,
+        null=True)
+
+    def set_attributes_from_name(self, name):
+        pass
+
+    def __str__(self):
+        return f'Book: {self.user.username}|{self.number_bb}'
+
+
+class DayHistory(models.Model):
+    audience = models.ForeignKey(
+        "Audience",
+        on_delete=models.CASCADE,
+        related_name="audience_day_history",
+        blank=True,
+        null=True)
+    #tags = fields.ArrayField(
+    #    BookPair(
+    #        number_bb=0,
+    #        pair_number=0
+    #    ),
+    #    blank=True,
+    #    null=True)
+    #pair = models.ArrayField(
+    #    BookPair(
+    #        number_bb=0,
+    #        pair_number=0
+    #    ),
+    #    size=8,
+    #)
+    pair = fields.ArrayField(
+        fields.ArrayField(
+            models.CharField(max_length=255, blank=True),
+            max_length=8,
+            blank=True,
+            null=True
+        ),
+        max_length=8,
+        blank=True,
+        null=True
+    )
+    #pieces = fields.ArrayField(fields.ArrayField(models.IntegerField()))
+    date = models.DateField()
+    booking_time = models.TimeField(auto_now_add=True)
+    visibility = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f'Book|A:{self.audience.number}|U:{self.user.username}'
+
+
+@admin.register(DayHistory)
+class DayHistoryAdmin(admin.ModelAdmin):
+    search_fields = ("id", "audience", "date", "booking_time")
+    list_display = ("id", "audience", "date", "booking_time", )
 
 
 @admin.register(Institute)
