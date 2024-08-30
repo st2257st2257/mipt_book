@@ -1,0 +1,31 @@
+# Используем официальный образ Node.js
+FROM node:18-alpine
+
+# Устанавливаем необходимые пакеты
+# RUN apk add --no-cache bash
+
+# Создаем рабочую директорию
+WORKDIR /app
+
+# Копируем все файлы проекта в контейнер
+COPY package*.json ./
+
+# Устанавливаем зависимости
+RUN npm install
+
+COPY . .
+
+# Экспонируем порт 80 для доступа к веб-серверу
+# EXPOSE 8082
+
+# Запускаем команду для запуска веб-сервера
+CMD ["npm", "run", "dev"]
+
+#EXPOSE 8082
+# Запускаем приложение с помощью npm start
+# CMD ["npm", "start"]
+# CMD ["HTTPS=true", "npm", "start"]
+#CMD ["sh", "-c", "HTTPS=true npm start"]
+#CMD ["sh", "-c", "HTTPS=true SSL_CRT_FILE=mipt.crt SSL_KEY_FILE=mipt.key npm start"]
+#CMD ["sh", "-c", "npm run dev"]
+#CMD ["npm", "run", "dev"]
