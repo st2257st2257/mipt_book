@@ -39,7 +39,7 @@ def get_user_by_username(username):
         return None
 
 
-def _get_timetable():
+def get_timetable():
     res = []
     audiences = Audience.objects.all()
     for item in audiences:
@@ -57,8 +57,7 @@ def get_book_audience_response(
         number: str,
         user: str,
         number_bb: int,
-        pair_number: int
-):
+        pair_number: int):
     new_book = Book(
         audience=get_audience_by_number(number),
         user=get_user_by_username(user),
@@ -71,6 +70,8 @@ def get_book_audience_response(
     audience = Audience.objects.get(number=number)
     if audience.day_history.pair[pair_number][1] == "Свободно":
         audience.day_history.pair[pair_number][1] = "Занято"
+        audience.day_history.pair[pair_number][2] = user
+        audience.day_history.pair[pair_number][3] = str(number_bb)
         audience.day_history.save()
         audience.save()
         return Response(
@@ -92,13 +93,3 @@ def get_book_audience_response(
                 "pair_number": pair_number
             },
             status=status.HTTP_204_NO_CONTENT)
-
-
-def get_token(username: str, password: str):
-    response = requests.post(
-        'https://mipt.site:8088/token/',
-        verify=False,
-        json={'username':'st2257', 'password': 'miptpass'})
-    response.encoding = 'utf-8'
-
-    return response.json()

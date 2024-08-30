@@ -17,12 +17,9 @@ from .serializers import \
     BookHistorySerializer
 import requests
 from .services import \
-    _get_timetable, \
+    get_timetable, \
     check_token, \
-    get_audience_by_number, \
-    get_user_by_username, \
-    get_book_audience_response, \
-    get_token
+    get_book_audience_response
 
 import datetime
 from django.http import JsonResponse
@@ -116,7 +113,6 @@ class BookViewSet(viewsets.ModelViewSet):
         return self.filter_queryset(queryset)
 
 
-# @api_view(['POST'])
 @csrf_exempt
 @api_view(('POST', 'GET'))
 def book_audience(request):
@@ -134,10 +130,7 @@ def book_audience(request):
                     status=status.HTTP_401_UNAUTHORIZED)
         else:
             return Response(
-                {
-                    "Error": "BAD_REQUEST_TYPE",
-                    # "response": check_token("d336bf2df96cea11e5352ba7b3e821a20328344b")
-                 },
+                {"Error": "BAD_REQUEST_TYPE"},
                 status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
     if request.method == 'GET':
         return render(request, 'book/test.html')
@@ -145,13 +138,13 @@ def book_audience(request):
 
 @csrf_exempt
 @api_view(('POST', 'GET'))
-def get_timetable(request):
+def index_timetable(request):
     if request.method == 'GET':
         if request.GET.get('type') == "get_timetable":
             return Response(
                 {
                     "result": True,
-                    "audience": _get_timetable(),
+                    "audience": get_timetable(),
                     "user": 1
                 },
                 status=status.HTTP_201_CREATED)
