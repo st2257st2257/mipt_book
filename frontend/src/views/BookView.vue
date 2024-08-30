@@ -1,8 +1,25 @@
 <script setup lang="ts">
+import {ref} from 'vue'
+
 import Header from "@/components/TheHeader.vue";
 import BookAudience from "@/components/book/BookAudience.vue";
 import BookTime from "@/components/book/BookTime.vue";
 import BookAmount from "@/components/book/BookAmount.vue";
+import type {IAudience} from "@/classes/Interfaces";
+
+let form_user = ref<String>("st2257");
+let form_audience_name = ref<String>("");
+let form_number_bb = ref<Number>(0);
+let form_pair_number = ref<Number>(1);
+let form_token = ref<String>("");
+
+function selectAudience(audience: IAudience) {
+  form_audience_name.value = audience.number;
+}
+function selectAmount(amount: Number){
+  form_pair_number.value = amount;
+}
+
 </script>
 
 <template>
@@ -11,9 +28,9 @@ import BookAmount from "@/components/book/BookAmount.vue";
 
     <form action="https://mipt.site:8000/book/" method="post">
 
-      <BookAudience />
+      <BookAudience @select-audience="selectAudience"/>
       <BookTime />
-      <BookAmount />
+      <BookAmount @select-amount="selectAmount"/>
 
       <div class="container-head" style="height: 60px;">
         <div class="left-element">
@@ -30,12 +47,12 @@ import BookAmount from "@/components/book/BookAmount.vue";
 
       <input type="submit" class="button1" value="Забронировать"><br><br>
 
-      User : <input type="text" name="user" value="st2257"><br><br>
-      Number bb : <input type="text" name="number_bb" ><br><br>
-      Pair Number : <input type="text" name="pair_number" ><br><br>
-      Type: <input type="text" name="type" value="book_audience"><br><br>
-      Token : <input type="text" name="token" ><br><br>
-      Audience : <input type="text"  name="audience" id="audience_id" value="Случайная"><br><br>
+      <input type="hidden" name="type" value="book_audience">
+      <input type="hidden" name="token" v-model="form_token">
+      <input type="hidden" name="audience" v-model="form_audience_name">
+      <input type="hidden" name="user" v-model="form_user">
+      <input type="hidden" name="number_bb" v-model="form_number_bb">
+      <input type="hidden" name="pair_number" v-model="form_pair_number">
     </form>
   </div>
 </template>

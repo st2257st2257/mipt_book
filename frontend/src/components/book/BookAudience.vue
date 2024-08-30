@@ -2,6 +2,10 @@
 import {ref, onMounted} from 'vue';
 import type {IBuilding, IAudience} from "@/classes/Interfaces";
 
+const emit = defineEmits<{
+  (e: 'select-audience', arg: IAudience) : void
+}>();
+
 // Получение денных от API BACKEND
 function httpGet(theUrl : URL) {
   var xmlHttp = new XMLHttpRequest();
@@ -24,8 +28,10 @@ onMounted(() =>{
 });
 
 function selectAudience(audience: IAudience | null){
-  if (audience) audience_number_selected.value = audience.number;
+  if (!audience) return;
+  audience_number_selected.value = audience.number;
   is_random_selected.value = false;
+  emit('select-audience', audience);
 }
 
 function selectBuilding(building: IBuilding){

@@ -1,0 +1,32 @@
+/*Стили для мобильных устройств (экраны меньше 768px) */
+@media (max-width: 768px) {
+    .centered-div {
+        width: 80%; /*Растягиваем на всю ширину экрана */
+    }
+}
+
+/*Стили для планшетов и компьютеров (экраны от 768px) */
+@media (min-width: 768px) {
+    .centered-div {
+        width: 30%; /*Ограничиваем ширину до 80% */
+    }
+}
+
+.button-auth {
+    width: 80%;
+    background-color: #007AFF; /*Зеленый цвет */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    font-size: 18px;
+    border-radius: 10px; /*Радиус скругления углов */
+    cursor: pointer;
+    margin: 8px;
+
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+}
