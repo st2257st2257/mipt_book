@@ -146,21 +146,6 @@ services:
     ports:
       - "8081:3000"  # Проброс портов: хост:контейнер
 
-  # Запускаем фронтенд телеграм приложения
-  #web_app_frontend:
-  #  build:
-  #    context: ../frontend  # Путь к директории с React-приложением
-  #    dockerfile: Dockerfile  # Имя Dockerfile (если отличается от стандартного)
-  #    args:
-  #      VITE_BACKEND_URL: https://mipt.site:8000
-  #  ports:
-  #    - "80:8080"  # Проброс портов: хост:контейнер
-  #  image: "mipt_book/frontend:v1"
-  #  networks:
-  #    - mipt_book
-  #  volumes:
-  #    - ../frontend:/usr/src/app
-
   front:
     build:
       context: ../frontend
@@ -172,21 +157,20 @@ services:
     image: "mipt_book/front:v1"
     container_name: mipt_book_front_v1
     ports:
-      - "80:8080"
       - "443:443"
     volumes:
       - ./frontend.conf.d:/etc/nginx/http.d
 
   # документация к проекту
-  #swagger-ui:
-  #  image: swaggerapi/swagger-ui
-  #  container_name: swagger-ui
-  #  ports:
-  #    - "8001:8080"
-  #  volumes:
-  #    - ../swagger:/usr/share/nginx/html/swagger
-  #  environment:
-  #    API_URL: ../swagger/api.yaml
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    container_name: swagger-ui
+    ports:
+      - "8001:8080"
+    volumes:
+      - ../swagger:/usr/share/nginx/html/swagger
+    environment:
+      API_URL: ../swagger/api.yaml
 
   # nginx
   #nginx:
