@@ -2,10 +2,27 @@ from .models import Audience, UsersWallet, Book
 from rest_framework.response import Response
 import datetime
 from rest_framework import status
+import requests
 
 
 def check_token(token: str):
-    return True
+    response = requests.get(
+        'https://mipt.site:8088/get-info/',
+        verify=False,
+        headers={"Accept": "application/json",
+                 "Authorization": f"Token {token}"})
+    response.encoding = 'utf-8'
+
+    if response.json().get("detail") == "Invalid token.":
+        return {
+            "result": False,
+            "value": "Wrong token"
+        }
+    else:
+        return {
+            "result": True,
+            "value": response.json()
+        }
 
 
 def get_audience_by_number(number):
@@ -75,3 +92,13 @@ def get_book_audience_response(
                 "pair_number": pair_number
             },
             status=status.HTTP_204_NO_CONTENT)
+
+
+def get_token(username: str, password: str):
+    response = requests.post(
+        'https://mipt.site:8088/token/',
+        verify=False,
+        json={'username':'st2257', 'password': 'miptpass'})
+    response.encoding = 'utf-8'
+
+    return response.json()

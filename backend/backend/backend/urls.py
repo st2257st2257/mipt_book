@@ -34,3 +34,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('test/', include('test.urls', namespace='test')),
 ]
+"""{
+  "username": "st2257",
+  "password": "miptpass"
+}"""

@@ -15,13 +15,14 @@ from .serializers import \
     UsersWalletSerializer, \
     BookSerializer, \
     BookHistorySerializer
-
+import requests
 from .services import \
     _get_timetable, \
     check_token, \
     get_audience_by_number, \
     get_user_by_username, \
-    get_book_audience_response
+    get_book_audience_response, \
+    get_token
 
 import datetime
 from django.http import JsonResponse
@@ -121,20 +122,22 @@ class BookViewSet(viewsets.ModelViewSet):
 def book_audience(request):
     if request.method == 'POST':
         if request.POST.get('type') == "book_audience":
-            if check_token(request.POST['token']):
+            if check_token(request.POST['token'])["result"]:
                 return get_book_audience_response(
                     number=request.POST.get('audience'),
                     user=request.POST.get('user'),
                     number_bb=int(request.POST.get('number_bb')),
-                    pair_number=int(request.POST.get('pair_number'))
-                )
+                    pair_number=int(request.POST.get('pair_number')))
             else:
                 return Response(
                     {"Error": "BAD_TOKEN"},
                     status=status.HTTP_401_UNAUTHORIZED)
         else:
             return Response(
-                {"Error": "BAD_REQUEST_TYPE"},
+                {
+                    "Error": "BAD_REQUEST_TYPE",
+                    # "response": check_token("d336bf2df96cea11e5352ba7b3e821a20328344b")
+                 },
                 status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
     if request.method == 'GET':
         return render(request, 'book/test.html')
