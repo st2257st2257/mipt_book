@@ -4,6 +4,8 @@ import AuthView from "@/views/AuthView.vue";
 import AuthLoginView from "@/views/AuthLoginView.vue";
 import AuthRegisterView from "@/views/AuthRegisterView.vue";
 import AuthRecoverView from "@/views/AuthRecoverView.vue";
+import BookHistoryView from "@/views/BookHistoryView.vue";
+import ProfileView from "@/views/ProfileView.vue";
 
 const routesAuth = [
     {path: '/auth/', component: AuthView},
@@ -14,10 +16,15 @@ const routesAuth = [
 
 const routesBooking = [
     {path: '/', component: BookView},
+    {path: '/book-history/', component: BookHistoryView}
+]
+
+const routesProfile = [
+    {path: '/profile/', component: ProfileView}
 ]
 
 const routes = [
-    ...routesAuth, ...routesBooking
+    ...routesAuth, ...routesBooking, ...routesProfile
 ]
 
 

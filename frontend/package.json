@@ -11,6 +11,7 @@
     "type-check": "vue-tsc --build --force"
   },
   "dependencies": {
+    "ajv": "^8.17.1",
     "vue": "^3.4.29",
     "vue-router": "^4.4.3"
   },

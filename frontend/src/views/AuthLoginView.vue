@@ -5,14 +5,48 @@ import {ref} from "vue";
 let username = ref<String>("");
 let password = ref<String>("");
 
+let error_message = ref<String>("");
+
+async function sendForm(){
+  try {
+    const response = await fetch("https://mipt.site:8088/token/",{
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        'username': username.value,
+        'password': password.value
+      })
+    });
+
+    if (!response.ok) {
+      console.error('Сеть ответила с ошибкой: ' + response.status);
+    }
+
+    const data = await response.json();
+    console.log('Ответ от сервера:', data);
+
+    if("token" in data){
+      localStorage.setItem("auth-token", data.token);
+      error_message.value = "Успешная авторизация!";
+      return;
+    }
+
+
+
+  } catch (error) {
+    console.error('Ошибка при отправке данных:', error);
+  }
+}
+
 </script>
 
 <template>
-  <form action="https://mipt.site:8088/token/" method="post">
+  <form @submit.prevent="sendForm">
     <h4>Введите логин</h4>
     <input type="text" name="username" v-model="username">
     <h4>Введите пароль</h4>
     <input type="password" name="password" v-model="password">
+    <span>{{error_message}}</span>
     <input type="submit" value="Авторизоваться" class="button-auth">
   </form>
 </template>

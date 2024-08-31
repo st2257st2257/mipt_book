@@ -5,7 +5,9 @@
 <template>
 <footer>
   <RouterLink to="/">Home</RouterLink> |
-  <RouterLink to="/auth/">Auth</RouterLink>
+  <RouterLink to="/auth/">Auth</RouterLink> |
+  <RouterLink to="/profile/">Profile</RouterLink> |
+  <RouterLink to="/book-history/">BookHistory</RouterLink>
 </footer>
 </template>
 
