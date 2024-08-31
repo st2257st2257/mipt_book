@@ -59,8 +59,6 @@ function selectRandom(){
 <template>
   <h3>Номер аудитории</h3>
   <div class="container">
-    <div class="selector" id="selector_building_container">
-    </div>
     <template v-for="building in building_arr" :key="building.name">
       <div class="item button" :class="{selected: building.name== building_name_selected}" @click="selectBuilding(building)"> {{building.name}} </div>
     </template>

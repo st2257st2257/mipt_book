@@ -40,10 +40,13 @@ function selectTime(time: Date){
 <template>
   <h3>Время бронирования</h3>
   <div class="time-selector" id="timeSelector">
-    <div v-for="time in times" class="time-option"
-         :class="{old: isOld(time), selected: time.getTime() == selected_time.getTime()}"
-         @click="selectTime(time)"
-    >{{formatTime(time)}}</div>
+    <template v-for="time in times">
+      <div  class="time-option"
+           :class="{selected: time.getTime() == selected_time.getTime()}"
+           @click="selectTime(time)"
+            v-if="!isOld(time)"
+      >{{formatTime(time)}}</div>
+    </template>
   </div>
 </template>
 
