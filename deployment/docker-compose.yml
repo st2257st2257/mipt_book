@@ -146,6 +146,21 @@ services:
     ports:
       - "8081:3000"  # Проброс портов: хост:контейнер
 
+  front:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_BACKEND_URL: http://mipt.site:8000
+    networks:
+      - mipt_book
+    image: "mipt_book/front:v1"
+    container_name: mipt_book_front_v1
+    ports:
+      - "443:443"
+    volumes:
+      - ./frontend.conf.d:/etc/nginx/http.d
+
   # документация к проекту
   swagger-ui:
     image: swaggerapi/swagger-ui

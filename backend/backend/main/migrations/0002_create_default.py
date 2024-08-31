@@ -39,7 +39,7 @@ def create_from_excel_institutes_buildings_audience_statuses(apps, schema_editor
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('main', '0002_alter_audience_description'),
+        ('main', '0001_initial'),
     ]
 
     operations = [

@@ -15,6 +15,11 @@ from .serializers import \
     UsersWalletSerializer, \
     BookSerializer, \
     BookHistorySerializer
+import requests
+from .services import \
+    get_timetable, \
+    check_token, \
+    get_book_audience_response
 
 import datetime
 from django.http import JsonResponse
@@ -108,44 +113,17 @@ class BookViewSet(viewsets.ModelViewSet):
         return self.filter_queryset(queryset)
 
 
-def check_token(token: str):
-    return True
-
-
-def get_audience_by_number(number):
-    if len(Audience.objects.filter(number=number)) == 1:
-        return Audience.objects.get(number=number)
-    else:
-        return None
-
-def get_user_by_username(username):
-    if len(UsersWallet.objects.filter(username=username)) == 1:
-        return UsersWallet.objects.get(username=username)
-    else:
-        return None
-
-
-# @api_view(['POST'])
 @csrf_exempt
 @api_view(('POST', 'GET'))
 def book_audience(request):
     if request.method == 'POST':
         if request.POST.get('type') == "book_audience":
-            if check_token(request.POST['token']):
-                new_book = Book(
-                    audience=get_audience_by_number(request.POST.get('audience')),
-                    user=get_user_by_username(request.POST.get('user')),
-                    number_bb=request.POST.get('number_bb'),
-                    pair_number=request.POST.get('pair_number'),
-                    date=datetime.date(2024, 8, 20), #request.POST.get('date'),
-                    booking_time=datetime.time(10, 33, 45),#request.POST.get('booking_time'),
-                    visibility=1)
-                new_book.save()
-                return Response(
-                    {
-                        "result": True,"audience": new_book.audience.number,
-                        "user": new_book.user.username},
-                    status=status.HTTP_201_CREATED)
+            if check_token(request.POST['token'])["result"]:
+                return get_book_audience_response(
+                    number=request.POST.get('audience'),
+                    user=request.POST.get('user'),
+                    number_bb=int(request.POST.get('number_bb')),
+                    pair_number=int(request.POST.get('pair_number')))
             else:
                 return Response(
                     {"Error": "BAD_TOKEN"},
@@ -154,3 +132,26 @@ def book_audience(request):
             return Response(
                 {"Error": "BAD_REQUEST_TYPE"},
                 status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+    if request.method == 'GET':
+        return render(request, 'book/test.html')
+
+
+@csrf_exempt
+@api_view(('POST', 'GET'))
+def index_timetable(request):
+    if request.method == 'GET':
+        if request.GET.get('type') == "get_timetable":
+            return Response(
+                {
+                    "result": True,
+                    "audience": get_timetable(),
+                    "user": 1
+                },
+                status=status.HTTP_201_CREATED)
+        else:
+            return render(request,
+                  'timetable/index.html')
+    if request.method == 'POST':
+        return Response(
+                {"Error": "BAD_REQUEST_TYPE"}
+        )

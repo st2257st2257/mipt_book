@@ -2,6 +2,7 @@
 
 from django.db import migrations, models
 import pandas as pd
+import datetime
 
 
 def create_from_excel_audiences_users_wallets(apps, schema_editor):
@@ -9,11 +10,13 @@ def create_from_excel_audiences_users_wallets(apps, schema_editor):
     """Заполняется: Аудитории, Кошельки"""
     audiences = pd.read_excel("start_data.xlsx", sheet_name="Аудитории")
     users_wallets = pd.read_excel("start_data.xlsx", sheet_name="Кошельки")
+    time_array = ["17:00", "18:00", "19:30", "21:00", "22:30", "00:00", "01:30", "03:00"]
 
     # Создаем аудитории для бронирования
     Building = apps.get_model('main', 'Building')
     AudienceStatus = apps.get_model('main', 'AudienceStatus')
     Audience = apps.get_model('main', 'Audience')
+    DayHistory = apps.get_model('main', 'DayHistory')
     for audience in audiences.values:
         build = Building.objects.get(name=audience[1], institute__name=audience[0])
         audience_status = AudienceStatus.objects.get(name=audience[4])
@@ -22,7 +25,17 @@ def create_from_excel_audiences_users_wallets(apps, schema_editor):
             description=audience[3],
             building=build,
             audience_status=audience_status,
-            number_of_users=audience[5])
+            number_of_users=audience[5],
+            day_history=DayHistory.objects.create(
+                pair=[
+                    [
+                        time_array[i],   # время бронирования
+                        "Свободно",      # статус аудитории
+                        "blank_user",    # кто бронирует аудиторию
+                        "0",             # число баллов бронирования
+                        str(audience[5]) # число человек, которое вмещает аудитория
+                    ] for i in range(8)],
+                date="2023-03-08"))
 
     # Кошельки для оплаты бронирования
     UsersWallet = apps.get_model('main', 'UsersWallet')
@@ -35,7 +48,7 @@ def create_from_excel_audiences_users_wallets(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('main', '0003_create_default_3'),
+        ('main', '0002_create_default'),
     ]
 
     operations = [
