@@ -58,26 +58,6 @@ function selectAmount(amount: Number){
 </template>
 
 <style scoped>
-.centered-div {
-  /*text-align: center; Центрируем текст внутри div */
-  padding: 20px; /*Добавляем отступы для лучшей читаемости */
-  background-color: white; /*Цвет фона для наглядности */
-}
-
-/*Стили для мобильных устройств (экраны меньше 768px) */
-@media (max-width: 768px) {
-  .centered-div {
-    width: 80%; /*Растягиваем на всю ширину экрана */
-  }
-}
-
-/*Стили для планшетов и компьютеров (экраны от 768px) */
-@media (min-width: 768px) {
-  .centered-div {
-    width: 30%; /*Ограничиваем ширину до 80% */
-    margin: 0 auto; /*Центрируем блок по горизонтали */
-  }
-}
 .container-head {
   position: relative; /* Позиционирование относительно контейнера */
   height: 100px; /* Высота контейнера (для демонстрации) */

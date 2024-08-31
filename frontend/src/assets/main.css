@@ -2,6 +2,27 @@ body {
     font-family: 'Roboto', sans-serif;
 }
 
+.centered-div {
+    /*text-align: center; Центрируем текст внутри div */
+    padding: 20px; /*Добавляем отступы для лучшей читаемости */
+    margin: 0 auto; /*Центрируем блок по горизонтали */
+    background-color: white; /*Цвет фона для наглядности */
+}
+
+/*Стили для мобильных устройств (экраны меньше 768px) */
+@media (max-width: 768px) {
+    .centered-div {
+        width: 80%; /*Растягиваем на всю ширину экрана */
+    }
+}
+
+/*Стили для планшетов и компьютеров (экраны от 768px) */
+@media (min-width: 768px) {
+    .centered-div {
+        width: 40%; /*Ограничиваем ширину до 80% */
+    }
+}
+
 div.container {
     width: 100%; /* 340pxШирина контейнера */
     overflow-x: auto; /*Включаем горизонтальную прокрутку */
@@ -125,4 +146,8 @@ input:checked + .slider:before {
     -webkit-user-select: none; /* Safari */
     -ms-user-select: none; /* IE 10 and IE 11 */
     user-select: none; /* Standard syntax */
+}
+
+h3 {
+    margin: 6px 0;
 }
