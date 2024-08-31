@@ -29,8 +29,6 @@ coverage
 
 *.tsbuildinfo
 /package-lock.json
-/package-lock.json
-
 # certificate
 mipt.crt
 mipt.key
