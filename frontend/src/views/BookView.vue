@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref} from 'vue'
+import {onMounted, ref} from 'vue'
 
 import Header from "@/components/TheHeader.vue";
 import BookAudience from "@/components/book/BookAudience.vue";
@@ -18,6 +18,37 @@ function selectAudience(audience: IAudience) {
 }
 function selectAmount(amount: Number){
   form_pair_number.value = amount;
+}
+
+let token = ref<string|null>(null);
+onMounted(()=>{
+  token.value = localStorage.getItem("auth-token");
+});
+
+async function sendForm(){
+  try {
+    const response = await fetch("/backend-api/book/",{
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        'type': "book_audience",
+        'token': token.value,
+        'audience': form_audience_name.value,
+        'number_bb': form_number_bb.value,
+        'pair_number': form_pair_number.value
+      })
+    });
+
+    if (!response.ok) {
+      console.error('Сеть ответила с ошибкой: ' + response.status);
+    }
+
+    const data = await response.json();
+    console.log('Ответ от сервера:', data);
+
+  } catch (error) {
+    console.error('Ошибка при отправке данных:', error);
+  }
 }
 
 </script>

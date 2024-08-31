@@ -14,7 +14,7 @@ function httpGet(theUrl : URL) {
   return xmlHttp.responseText;
 }
 
-async function getInfo(url: URL){
+async function getInfo(url: string){
   try {
     const response = await fetch(url,{
       method: 'GET',
@@ -43,12 +43,12 @@ let building_name_selected = ref<String>("");
 let audience_number_selected = ref<String>("");
 
 onMounted(async () =>{
-  let web_address = 'https://mipt.site:8000';
+  let web_address = '/backend-api';
   let building_path = '/base-info/building/?institute=%D0%9C%D0%A4%D0%A2%D0%98';
   let audience_path = '/base-info/audience/?institute=%D0%9C%D0%A4%D0%A2%D0%98';
 
-  building_arr.value = await getInfo(new URL(building_path, web_address));
-  audience_arr.value = await getInfo(new URL(audience_path, web_address));
+  building_arr.value = await getInfo(web_address+building_path);
+  audience_arr.value = await getInfo(web_address+audience_path);
 });
 
 function selectAudience(audience: IAudience | null){

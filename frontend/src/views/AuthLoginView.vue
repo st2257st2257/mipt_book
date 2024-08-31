@@ -9,7 +9,7 @@ let error_message = ref<String>("");
 
 async function sendForm(){
   try {
-    const response = await fetch("https://mipt.site:8088/token/",{
+    const response = await fetch("/user-api/token/",{
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
