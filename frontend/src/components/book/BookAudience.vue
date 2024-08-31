@@ -6,13 +6,21 @@ const emit = defineEmits<{
   (e: 'select-audience', arg: IAudience) : void
 }>();
 
-// Получение денных от API BACKEND
-function httpGet(theUrl : URL) {
-  var xmlHttp = new XMLHttpRequest();
-  xmlHttp.open( "GET", theUrl, false );
-  xmlHttp.send( null );
-  return xmlHttp.responseText;
-}
+let is_random_selected = ref<Boolean>(false);
+let building_arr = ref<Array<IBuilding>>([]);
+let audience_arr = ref<Array<IAudience>>([]);
+
+let building_name_selected = ref<String>("");
+let audience_number_selected = ref<String>("");
+
+onMounted(async () =>{
+  let web_address = '/backend-api';
+  let building_path = '/base-info/building/?institute=%D0%9C%D0%A4%D0%A2%D0%98';
+  let audience_path = '/base-info/audience/?institute=%D0%9C%D0%A4%D0%A2%D0%98';
+
+  building_arr.value = await getInfo(web_address+building_path);
+  audience_arr.value = await getInfo(web_address+audience_path);
+});
 
 async function getInfo(url: string){
   try {
@@ -33,23 +41,6 @@ async function getInfo(url: string){
     console.error('Ошибка при отправке данных:', error);
   }
 }
-
-
-let is_random_selected = ref<Boolean>(false);
-let building_arr = ref<Array<IBuilding>>([]);
-let audience_arr = ref<Array<IAudience>>([]);
-
-let building_name_selected = ref<String>("");
-let audience_number_selected = ref<String>("");
-
-onMounted(async () =>{
-  let web_address = '/backend-api';
-  let building_path = '/base-info/building/?institute=%D0%9C%D0%A4%D0%A2%D0%98';
-  let audience_path = '/base-info/audience/?institute=%D0%9C%D0%A4%D0%A2%D0%98';
-
-  building_arr.value = await getInfo(web_address+building_path);
-  audience_arr.value = await getInfo(web_address+audience_path);
-});
 
 function selectAudience(audience: IAudience | null){
   if (!audience) return;
