@@ -14,6 +14,27 @@ function httpGet(theUrl : URL) {
   return xmlHttp.responseText;
 }
 
+async function getInfo(url: URL){
+  try {
+    const response = await fetch(url,{
+      method: 'GET',
+      headers: {'Content-Type': 'application/json'},
+    });
+
+    if (!response.ok) {
+      console.error('Сеть ответила с ошибкой: ' + response.status);
+    }
+
+    const data = await response.json();
+    console.log('Ответ от сервера:', data);
+    return data;
+
+  } catch (error) {
+    console.error('Ошибка при отправке данных:', error);
+  }
+}
+
+
 let is_random_selected = ref<Boolean>(false);
 let building_arr = ref<Array<IBuilding>>([]);
 let audience_arr = ref<Array<IAudience>>([]);
@@ -21,10 +42,13 @@ let audience_arr = ref<Array<IAudience>>([]);
 let building_name_selected = ref<String>("");
 let audience_number_selected = ref<String>("");
 
-onMounted(() =>{
+onMounted(async () =>{
   let web_address = 'https://mipt.site:8000';
-  building_arr.value = JSON.parse(httpGet(new URL('/base-info/building/?institute=%D0%9C%D0%A4%D0%A2%D0%98', web_address)));
-  audience_arr.value = JSON.parse(httpGet(new URL('/base-info/audience/?institute=%D0%9C%D0%A4%D0%A2%D0%98', web_address)));
+  let building_path = '/base-info/building/?institute=%D0%9C%D0%A4%D0%A2%D0%98';
+  let audience_path = '/base-info/audience/?institute=%D0%9C%D0%A4%D0%A2%D0%98';
+
+  building_arr.value = await getInfo(new URL(building_path, web_address));
+  audience_arr.value = await getInfo(new URL(audience_path, web_address));
 });
 
 function selectAudience(audience: IAudience | null){
