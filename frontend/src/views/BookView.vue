@@ -57,7 +57,7 @@ async function sendForm(){
   <div class="centered-div">
     <Header />
 
-    <form action="https://mipt.site:8000/book/" method="post">
+    <form @submit.prevent="sendForm">
 
       <BookAudience @select-audience="selectAudience"/>
       <BookTime />
@@ -75,15 +75,7 @@ async function sendForm(){
 <!--        </div>-->
 <!--      </div>-->
 
-
       <input type="submit" class="button1" value="Забронировать"><br><br>
-
-      <input type="hidden" name="type" value="book_audience">
-      <input type="hidden" name="token" v-model="form_token">
-      <input type="hidden" name="audience" v-model="form_audience_name">
-      <input type="hidden" name="user" v-model="form_user">
-      <input type="hidden" name="number_bb" v-model="form_number_bb">
-      <input type="hidden" name="pair_number" v-model="form_pair_number">
     </form>
   </div>
 </template>

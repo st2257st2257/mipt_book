@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "@tsconfig/node20": "^20.1.4",
-    "@types/node": "^20.14.5",
+    "@types/node": "^20.16.2",
     "@vitejs/plugin-vue": "^5.0.5",
     "@vue/babel-plugin-jsx": "^1.2.2",
     "@vue/tsconfig": "^0.5.1",

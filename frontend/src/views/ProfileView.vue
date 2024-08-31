@@ -48,6 +48,11 @@ async function loadInfo(){
 
     if (!response.ok) {
       console.error('Сеть ответила с ошибкой: ' + response.status);
+
+      if(response.status == 401){
+        token.value = null;
+        localStorage.removeItem("auth-token");
+      }
     }
 
     const data = await response.json() as {
