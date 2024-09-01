@@ -24,7 +24,7 @@ async function sendForm(){
   }
 
   try {
-    const response = await fetch("https://mipt.site:8088/register/",{
+    const response = await fetch("/user-api/register/",{
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({

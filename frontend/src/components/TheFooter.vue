@@ -14,26 +14,25 @@ onMounted(()=>{
 <footer>
   <RouterLink to="/" custom v-slot="{navigate}">
     <div role="link" @click="navigate">
-      <img src="@/assets/book.svg" class="icon-pic"><br>
+      <img src="@/assets/book.svg" class="icon-pic" alt=""><br>
       Home
     </div>
   </RouterLink>
-<!--  <RouterLink to="/auth/" custom v-slot="{navigate}">-->
-<!--    <div role="link" @click="navigate">-->
-<!--      <img src="@/assets/book.svg">-->
-<!--      Auth-->
-<!--    </div>-->
-<!--  </RouterLink>-->
-  <RouterLink to="/profile/" custom v-slot="{navigate}">
+  <RouterLink v-if="token" to="/profile/" custom v-slot="{navigate}">
     <div role="link" @click="navigate">
-      <img src="@/assets/profile.svg" class="icon-pic"><br>
-      <span v-if="token">Profile</span>
-      <span v-else>Auth</span>
+      <img src="@/assets/profile.svg" class="icon-pic" alt=""><br>
+      <span>Profile</span>
+    </div>
+  </RouterLink>
+  <RouterLink v-else to="/auth/" custom v-slot="{navigate}">
+    <div role="link" @click="navigate">
+      <img src="@/assets/profile.svg" class="icon-pic" alt=""><br>
+      Auth
     </div>
   </RouterLink>
   <RouterLink to="/book-history/" custom v-slot="{navigate}">
     <div role="link" @click="navigate">
-      <img src="@/assets/book.svg" class="icon-pic"><br>
+      <img src="@/assets/book.svg" class="icon-pic" alt=""><br>
       BookHistory
     </div>
   </RouterLink>

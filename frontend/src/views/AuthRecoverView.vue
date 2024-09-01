@@ -23,7 +23,7 @@ const AuthErrorMsg = {
 </script>
 
 <template>
-  <form action="https://mipt.site:8088/register/" method="post">
+  <form action="/user-api/register/" method="post">
     <h4>Введите почту</h4>
     <input type="email" name="email" v-model="email">
     <input type="submit" value="Отправить" class="button-auth">

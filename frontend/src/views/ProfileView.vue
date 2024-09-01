@@ -38,7 +38,7 @@ onMounted(()=>{
 
 async function loadInfo(){
   try {
-    const response = await fetch("https://mipt.site:8088/get-info/",{
+    const response = await fetch("/user-api/get-info/",{
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -48,6 +48,11 @@ async function loadInfo(){
 
     if (!response.ok) {
       console.error('Сеть ответила с ошибкой: ' + response.status);
+
+      if(response.status == 401){
+        token.value = null;
+        localStorage.removeItem("auth-token");
+      }
     }
 
     const data = await response.json() as {
@@ -72,7 +77,7 @@ async function loadInfo(){
 
 async function loadPreferences(){
   try {
-    const response = await fetch("https://mipt.site:8088/base-info/preferences/",{
+    const response = await fetch("/user-api/base-info/preferences/",{
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
