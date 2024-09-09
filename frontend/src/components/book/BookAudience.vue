@@ -18,8 +18,10 @@ onMounted(async () =>{
   let building_path = '/base-info/building/?institute=%D0%9C%D0%A4%D0%A2%D0%98';
   let audience_path = '/base-info/audience/?institute=%D0%9C%D0%A4%D0%A2%D0%98';
 
-  building_arr.value = await getInfo(web_address+building_path);
-  audience_arr.value = await getInfo(web_address+audience_path);
+  //building_arr.value = await getInfo(web_address+building_path);
+  //audience_arr.value = await getInfo(web_address+audience_path);
+  building_arr.value = await getInfo('https://127.0.0.1:8000'+building_path);
+  audience_arr.value = await getInfo('https://127.0.0.1:8000'+audience_path);
 });
 
 async function getInfo(url: string){
