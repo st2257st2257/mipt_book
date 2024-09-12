@@ -1,5 +1,6 @@
 from .models import User, Access, Role, InstituteGroup, Preferences
 from rest_framework import serializers
+from rest_framework.authtoken.models import Token
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -17,6 +18,15 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
             book_rate=validated_data.get('book_rate', 7)
         )
 
+        return user
+
+    def update(self, user, validated_data):
+        # user = Token.objects.get(key=validated_data.get("token")).user
+        user.first_name = validated_data.get("first_name", user.first_name)
+        user.last_name  = validated_data.get("last_name", user.last_name)
+        user.third_name = validated_data.get("third_name", user.third_name)
+        user.email = validated_data.get("email", user.email)
+        user.save()
         return user
 
     class Meta:

@@ -89,13 +89,34 @@ def edit_user_name(request):
         try:
             user = Token.objects.get(key=token).user
             if user is not None:
-                if request.POST.get('type') == "edit_user_name":
-                    return Response("good")
+                if request.POST.get('type') == "edit_user_name" or \
+                    request.POST.get('type') == "edit_user_email":
+                    serializer = UserSerializer(user, data=request.data, partial=True)
+                    if serializer.is_valid():
+                        serializer.save()
+                        return Response({"Result": "True"}, status=status.HTTP_202_ACCEPTED)
+                    else:
+                        return Response(serializer.data, status=status.HTTP_406_NOT_ACCEPTABLE)
+                elif request.POST.get('type') == "edit_user_group":
+                    group_name  = request.POST.get("group", "Б02-001")
+                    group = InstituteGroup.objects.filter(name=group_name)
+                    if len(group) == 1:
+                        user.institute_group = group[0]
+                        user.save()
+                        return Response({"Result": "True"}, status=status.HTTP_202_ACCEPTED)
+                    else:
+                        return Response(
+                            {
+                                "Error": "GROUP_NOT_ACCEPTABLE",
+                                "Description": "Wrong group name"
+                            },
+                            status=status.HTTP_406_NOT_ACCEPTABLE)
                 else:
                     return Response(
                         {
                             "Error": "BAD_REQUEST_TYPE",
-                            "Description": "Wrong request type. Acceptable: edit_user_name"},
+                            "Description": "Wrong request type. Acceptable: "
+                                           "edit_user_name, edit_user_email, edit_user_group"},
                         status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
             else:
                 return Response(
@@ -105,9 +126,3 @@ def edit_user_name(request):
             return Response(
                 {"Error": "BAD_REQUEST_TYPE", "Description": f"Wrong token: {e}"},
                  status=status.HTTP_400_BAD_REQUEST)
-
-            # user_first_name  = request.POST.get("first_name", "")
-            # user_second_name = request.POST.get("second_name", "")
-            # user_third_name  = request.POST.get("third_name", "")
-
-
