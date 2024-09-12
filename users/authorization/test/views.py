@@ -15,3 +15,8 @@ def index_test_auth(request):
 @csrf_exempt
 def index_test_register(request):
     return render(request, 'registration/index.html')
+
+
+@csrf_exempt
+def index_test_edit_username(request):
+    return render(request, 'edit/index.html')

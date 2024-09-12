@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<p></p>
+  <form action="https://127.0.0.1:8088/edit_user_name/" method="post">
+        {% csrf_token %}
+        Token: <input type="text" name="token" value="your_token"><br><br>
+        Type: <input type="text" name="type" value="edit_user_name"><br><br>
+        First name: <input type="text" name="first_name" value="Иван"><br><br>
+        Last name: <input type="text" name="last_name" value="Иванов"><br><br>
+        Third name: <input type="text" name="third_name" value="Иванович"><br><br>
+      <input type="submit" value="Изменить ФИО">
+  </form>
+<p></p>
+  <form action="https://127.0.0.1:8088/edit_user_name/" method="post">
+        {% csrf_token %}
+        Token: <input type="text" name="token" value="your_token"><br><br>
+        Type: <input type="text" name="type" value="edit_user_email"><br><br>
+        Email: <input type="text" name="email" value="ivanov@gmail.com"><br><br>
+      <input type="submit" value="Изменить почту">
+  </form>
+<p></p>
+  <form action="https://127.0.0.1:8088/edit_user_name/" method="post">
+        {% csrf_token %}
+        Token: <input type="text" name="token" value="your_token"><br><br>
+        Type: <input type="text" name="type" value="edit_user_group"><br><br>
+        Group: <input type="text" name="group" value="Б02-003"><br><br>
+      <input type="submit" value="Изменить группу">
+  </form>
+
+
+</body>
+</html>
