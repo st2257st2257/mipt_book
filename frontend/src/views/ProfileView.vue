@@ -23,9 +23,9 @@ let book_rating: Ref<number> = ref(1);
 let preferences: Ref<Preference[]> = ref([]);
 
 let preferencesIcons = {
-  "Тишина": "",
+  "Тишина": "@/assets/cloud.svg",
   "Свежий воздух": "@/assets/cloud.svg",
-  "Тихая музыка": ""
+  "Тихая музыка": "@/assets/cloud.svg"
 };
 
 onMounted(()=>{
@@ -38,7 +38,7 @@ onMounted(()=>{
 
 async function loadInfo(){
   try {
-    const response = await fetch("/user-api/get-info/",{
+    const response = await fetch("https://127.0.0.1:8088" + "/get-info/",{
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -77,7 +77,7 @@ async function loadInfo(){
 
 async function loadPreferences(){
   try {
-    const response = await fetch("/user-api/base-info/preferences/",{
+    const response = await fetch("https://127.0.0.1:8088" + "/base-info/preferences/",{
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -150,7 +150,7 @@ async function loadPreferences(){
           <template v-for="preference in preferences">
             <div>
               {{preference.name}}
-<!--              <img class="icon-pic" :src="preferencesIcons[preference.name]" alt="">-->
+              <img class="icon-pic" :src="{{preferencesIcons[preference.name]}}" alt="">
             </div>
           </template>
       </div>
@@ -161,7 +161,7 @@ async function loadPreferences(){
 <style scoped>
 
 .icon-pic {
-  width: 16px;
+  width: 24px;
   float: right;
 }
 

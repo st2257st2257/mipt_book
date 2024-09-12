@@ -63,17 +63,17 @@ async function sendForm(){
       <BookTime />
       <BookAmount @select-amount="selectAmount"/>
 
-<!--      <div class="container-head" style="height: 60px;">-->
-<!--        <div class="left-element">-->
-<!--          <h3>Автоматические ББ</h3>-->
-<!--        </div>-->
-<!--        <div class="right-element">-->
-<!--          <label class="toggle-switch">-->
-<!--            <input type="checkbox">-->
-<!--            <span class="slider"></span>-->
-<!--          </label>-->
-<!--        </div>-->
-<!--      </div>-->
+      <div class="container-head" style="height: 60px;">
+        <div class="left-element">
+          <h3>Автоматические ББ</h3>
+        </div>
+        <div class="right-element">
+          <label class="toggle-switch">
+            <input type="checkbox">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
 
       <input type="submit" class="button1" value="Забронировать"><br><br>
     </form>

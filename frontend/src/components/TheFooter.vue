@@ -15,25 +15,31 @@ onMounted(()=>{
   <RouterLink to="/" custom v-slot="{navigate}">
     <div role="link" @click="navigate">
       <img src="@/assets/book.svg" class="icon-pic" alt=""><br>
-      Home
+      Бронирование
     </div>
   </RouterLink>
   <RouterLink v-if="token" to="/profile/" custom v-slot="{navigate}">
     <div role="link" @click="navigate">
       <img src="@/assets/profile.svg" class="icon-pic" alt=""><br>
-      <span>Profile</span>
+      <span>Профиль</span>
     </div>
   </RouterLink>
   <RouterLink v-else to="/auth/" custom v-slot="{navigate}">
     <div role="link" @click="navigate">
       <img src="@/assets/profile.svg" class="icon-pic" alt=""><br>
-      Auth
+      Авторизация
     </div>
   </RouterLink>
   <RouterLink to="/book-history/" custom v-slot="{navigate}">
     <div role="link" @click="navigate">
       <img src="@/assets/book.svg" class="icon-pic" alt=""><br>
-      BookHistory
+      История
+    </div>
+  </RouterLink>
+  <RouterLink to="/display/" custom v-slot="{navigate}">
+    <div role="link" @click="navigate">
+      <img src="@/assets/cloud.svg" class="icon-pic" alt=""><br>
+      Аудитории
     </div>
   </RouterLink>
 </footer>
