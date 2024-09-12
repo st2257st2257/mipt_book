@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+  <form action="https://127.0.0.1:8088/edit_user_name/" method="post">
+        {% csrf_token %}
+        Token: <input type="text" name="token" value="your_token"><br><br>
+        Type: <input type="text" name="type" value="edit_user_name"><br><br>
+        First name: <input type="text" name="first_name" value="Иван"><br><br>
+        Second name: <input type="text" name="second_name" value="Иванов"><br><br>
+        Third name: <input type="text" name="third_name" value="Иванович"><br><br>
+      <input type="submit" value="Submit">
+  </form>
+
+</body>
+</html>
