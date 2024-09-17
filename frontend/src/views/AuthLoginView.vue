@@ -49,14 +49,20 @@ async function sendForm(){
 </script>
 
 <template>
-  <form @submit.prevent="sendForm">
-    <h4>Введите логин</h4>
-    <input type="text" name="username" v-model="username">
-    <h4>Введите пароль</h4>
-    <input type="password" name="password" v-model="password">
-    <span style="margin: 8px">{{error_message}}</span>
-    <input type="submit" value="Авторизоваться" class="button-auth">
-  </form>
+	<div class="center-div-login">
+		<!-- <h2>Авторизация</h2>-->
+  		<form @submit.prevent="sendForm">
+			<h2>Авторизация</h2>
+    			<h4>Введите логин</h4>
+    			<input class="center-button auth-input" type="text" name="username" v-model="username">
+    
+			<h4>Введите пароль</h4>
+    			<input class="center-button auth-input" type="password" name="password" v-model="password">
+    
+			<span style="margin: 8px">{{error_message}}</span>
+    			<input type="submit" value="Авторизоваться" class="button-auth center-button">
+  		</form>
+	</div>
 </template>
 
 <style scoped>
@@ -66,4 +72,47 @@ form {
   justify-content: center;
   align-items: center;
 }
+
+.center-div-login{
+	padding-top: 30vh;
+}
+
+/*Стили для мобильных устройств (экраны меньше 768px) */
+@media (max-width: 768px) {
+    .center-button {
+        width: 80%; /*Растягиваем на всю ширину экрана */
+    }
+}
+
+/*Стили для планшетов и компьютеров (экраны от 768px) */
+@media (min-width: 768px) {
+    .center-button {
+        width: 30%; /*Ограничиваем ширину до 80% */
+    }
+}
+
+/*Базовые стили */
+.auth-input {
+  /* width: 100%; */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box; /*Чтобы паддинг и бордер не увеличивали ширину */
+  font-size: 16px;
+  margin-bottom: 10px; /*Отступ снизу */
+}
+
+/*Стили при фокусе */
+.auth-input:focus {
+  outline: none; /*Убираем стандартный контур */
+  border-color: #007bff; /*Синий цвет границы при фокусе */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.2); /*Небольшой эффект тени */
+}
+
+/*Стили при ошибке */
+.auth-input.error {
+  border-color: #dc3545; /*Красный цвет границы при ошибке */
+  box-shadow: 0 0 5px rgba(220, 53, 69, 0.2); /*Красная тень при ошибке */
+}
+
 </style>

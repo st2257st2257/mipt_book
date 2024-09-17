@@ -38,6 +38,28 @@ onMounted(()=>{
   loadPreferences();
 });
 
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+async function logout() {
+  try {
+    if (1 == 1) {
+      // Удалите токен из LocalStorage
+      localStorage.removeItem('auth-token');
+      // Перенаправьте пользователя на страницу входа
+      // this.$router.push('auth');
+      // this.router.push({ path: 'auth' });
+      // router.push('auth');
+      router.go(0);
+    } else {
+      // Обработайте ошибку
+    }
+  } catch (error) {
+    // Обработайте ошибку
+  }
+}
+
 async function loadInfo(){
   try {
     const response = await fetch("https://mipt.site:8088" + "/get-info/",{
@@ -158,6 +180,7 @@ async function loadPreferences(){
             </div>
           </template>
       </div>
+      <div style="padding-top: 10px;"><button class="logout-button" @click="logout">Выйти</button></div>
     </template>
   </div>
 </template>
@@ -227,4 +250,30 @@ async function loadPreferences(){
 .full_name_div {
 	padding-top: 2px;
 }
+
+/*Базовые стили */
+.logout-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #dc3545; /*Красный цвет */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+/*Стили при наведении курсора */
+.logout-button:hover {
+  background-color: #c82333; /*Более темный красный цвет */
+}
+
+/*Стили при нажатии */
+.logout-button:active {
+  background-color: #b0212b; /*Еще более темный красный цвет */
+  transform: translateY(2px); /*Небольшой эффект нажатия */
+}
+
 </style>

@@ -20,6 +20,7 @@ import '@/assets/auth.css'
   padding: 20px; /*Добавляем отступы для лучшей читаемости */
   background-color: white; /*Цвет фона для наглядности */
   margin: 0 auto; /*Центрируем блок по горизонтали */
+  padding-top: 30vh;
 
   display: flex;
   flex-direction: column;

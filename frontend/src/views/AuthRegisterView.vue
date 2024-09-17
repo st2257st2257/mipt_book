@@ -49,18 +49,26 @@ async function sendForm(){
 </script>
 
 <template>
-<form @submit.prevent="sendForm">
-  <h4>Введите логин</h4>
-  <input type="text" name="username" v-model="username">
-  <h4>Введите почту</h4>
-  <input type="email" name="email" v-model="email">
-  <h4>Введите пароль</h4>
-  <input type="password" name="password" v-model="password">
-  <h4>Повторите пароль</h4>
-  <input type="password" v-model="password_repeat">
-  <span style="color: red">{{error_message}}</span>
-  <input type="submit" value="Зарегистрироваться" class="button-auth">
-</form>
+	<div class="center-div-reg">
+		<!-- <h2>Регистрация в сервисе бронирования</h2>-->
+		<form @submit.prevent="sendForm">
+			<h2>Регистрация</h2>
+  			<h4>Введите логин</h4>
+  			<input type="text" name="username" v-model="username">
+  
+			<h4>Введите почту</h4>
+  			<input type="email" name="email" v-model="email">
+ 
+			<h4>Введите пароль</h4>
+  			<input type="password" name="password" v-model="password">
+  
+			<h4>Повторите пароль</h4>
+  			<input type="password" v-model="password_repeat">
+  
+			<span style="color: red">{{error_message}}</span>
+  			<input type="submit" value="Зарегистрироваться" class="button-auth center-button">
+		</form>
+	</div>
 </template>
 
 <style scoped>
@@ -70,4 +78,23 @@ form {
   justify-content: center;
   align-items: center;
 }
+
+.center-div-reg{
+	padding-top: 20vh;
+}
+
+/*Стили для мобильных устройств (экраны меньше 768px) */
+@media (max-width: 768px) {
+    .center-button {
+        width: 80%; /*Растягиваем на всю ширину экрана */
+    }
+}
+
+/*Стили для планшетов и компьютеров (экраны от 768px) */
+@media (min-width: 768px) {
+    .center-button {
+        width: 30%; /*Ограничиваем ширину до 80% */
+    }
+}
+
 </style>
