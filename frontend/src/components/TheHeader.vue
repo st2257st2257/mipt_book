@@ -3,10 +3,10 @@
 </script>
 
 <template>
-<!--  <div class="container-head">-->
-<!--    <div class="left-element button-lk">ББ: 26 единиц</div>-->
-<!--    <div class="right-element button-lk">Личный кабинет</div>-->
-<!--  </div>-->
+  <div class="container-head">
+    <div class="left-element button-lk">ББ: 26 единиц</div>
+    <div class="right-element button-lk">Личный кабинет</div>
+  </div>
 </template>
 
 <style scoped>

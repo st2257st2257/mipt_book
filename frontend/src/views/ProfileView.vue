@@ -112,12 +112,14 @@ async function loadPreferences(){
     <template v-else>
       <Header />
 
-      <div class="class1">
+      <div class="class1" style="font-size: 24px;">
         <div class="left-element" style="height: 100%">
           <div style="width: 100%;">
-            <span>{{user_name.first_name}}</span><br>
-            <span>{{user_name.last_name}}</span><br>
-            <span>{{user_name.third_name}}</span>
+            <span>{{user_name.first_name}}</span><br class="half-line-break">
+            <div class="full_name_div"></div>
+	    <span>{{user_name.third_name}}</span><br class="half-line-break">
+            <div class="full_name_div"></div>
+	    <span>{{user_name.last_name}}</span>
             <img class="icon-pic" src="@/assets/edit.svg" alt="Edit">
             <br>
           </div>
@@ -133,7 +135,7 @@ async function loadPreferences(){
       </div>
 
       <div>
-        <h3>Рейтинг бронирования: <img class="icon-pic" src="@/assets/info.svg"></h3>
+        <p style="font-size: 24px;">Рейтинг бронирования: <img class="icon-pic" src="@/assets/info.svg"></p>
         <div style="display: flex; justify-content: space-around">
           <template v-for="index in 7">
             <div class="star" :class="{checked : index <= book_rating}"></div>
@@ -142,15 +144,15 @@ async function loadPreferences(){
       </div>
 
       <div>
-        <h3>Баллы бронирования</h3>
-        <span> {{book_rating}} из 28 </span><br>
-        <span style="color: grey; font-size: 0.8em"> следующие +4 балла через 15 часов</span>
+        <p style="font-size: 24px;">Баллы бронирования</p>
+        <span style="font-size: 18px;"> {{book_rating}} из 28 баллов</span><br>
+        <span style="color: grey; font-size: 12px;"> следующие +4 балла через 15 часов</span>
       </div>
 
       <div>
-        <h3>Предпочтения:  <img class="icon-pic" src="@/assets/edit.svg" alt="Edit"></h3>
+        <p style="font-size: 24px;">Предпочтения:  <img class="icon-pic" src="@/assets/edit.svg" alt="Edit"></p>
           <template v-for="preference in preferences">
-            <div>
+            <div style="font-size: 18px;">
               {{preference.name}}
 	      <img class="icon-pic" :src="preferencesIcons[preference.name]" alt="">
             </div>
@@ -163,7 +165,8 @@ async function loadPreferences(){
 <style scoped>
 
 .icon-pic {
-  width: 24px;
+  padding-left: 10px;
+  width: 18px;
   float: right;
 }
 
@@ -215,5 +218,13 @@ async function loadPreferences(){
 
 .right-element {
   right: 0; /* Привязываем к правому краю */
+}
+
+.half-line-break {
+  height: 0.5em;
+}
+
+.full_name_div {
+	padding-top: 2px;
 }
 </style>
