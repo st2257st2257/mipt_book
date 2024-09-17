@@ -20,17 +20,17 @@ FROM node_inst AS build
 WORKDIR /build
 
 
-#COPY mipt.crt /etc/nginx/mipt.crt
-#COPY mipt.key /etc/nginx/mipt.key
+# COPY mipt.crt /etc/nginx/mipt.crt
+# COPY mipt.key /etc/nginx/mipt.key
 
-#COPY mipt.crt /etc/
-#COPY mipt.key /etc/
+# COPY mipt.crt /etc/
+# COPY mipt.key /etc/
 
-#COPY mipt.crt /etc/nginx/
-#COPY mipt.key /etc/nginx/
+# COPY mipt.crt /etc/nginx/
+# COPY mipt.key /etc/nginx/
 
-#COPY mipt.crt /etc
-#COPY mipt.key /etc
+# COPY mipt.crt /etc
+# COPY mipt.key /etc
 
 # COPY mipt.crt /etc/nginx
 # COPY mipt.key /etc/nginx

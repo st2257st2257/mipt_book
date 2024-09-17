@@ -22,7 +22,9 @@ let institute_group: Ref<string|null> = ref(null);
 let book_rating: Ref<number> = ref(1);
 let preferences: Ref<Preference[]> = ref([]);
 
-let preferencesIcons = {
+type KeyValuePair = [string, string];
+
+let preferencesIcons: Record<string, string> = {
   "Тишина": "@/assets/cloud.svg",
   "Свежий воздух": "@/assets/cloud.svg",
   "Тихая музыка": "@/assets/cloud.svg"
@@ -38,7 +40,7 @@ onMounted(()=>{
 
 async function loadInfo(){
   try {
-    const response = await fetch("https://127.0.0.1:8088" + "/get-info/",{
+    const response = await fetch("https://mipt.site:8088" + "/get-info/",{
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -77,7 +79,7 @@ async function loadInfo(){
 
 async function loadPreferences(){
   try {
-    const response = await fetch("https://127.0.0.1:8088" + "/base-info/preferences/",{
+    const response = await fetch("https://mipt.site:8088" + "/base-info/preferences/",{
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -150,7 +152,7 @@ async function loadPreferences(){
           <template v-for="preference in preferences">
             <div>
               {{preference.name}}
-              <img class="icon-pic" :src="{{preferencesIcons[preference.name]}}" alt="">
+	      <img class="icon-pic" :src="preferencesIcons[preference.name]" alt="">
             </div>
           </template>
       </div>

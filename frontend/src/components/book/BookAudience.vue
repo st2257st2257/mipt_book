@@ -20,8 +20,8 @@ onMounted(async () =>{
 
   //building_arr.value = await getInfo(web_address+building_path);
   //audience_arr.value = await getInfo(web_address+audience_path);
-  building_arr.value = await getInfo('https://127.0.0.1:8000'+building_path);
-  audience_arr.value = await getInfo('https://127.0.0.1:8000'+audience_path);
+  building_arr.value = await getInfo('https://mipt.site:8000'+building_path);
+  audience_arr.value = await getInfo('https://mipt.site:8000'+audience_path);
 });
 
 async function getInfo(url: string){

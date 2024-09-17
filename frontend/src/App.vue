@@ -4,8 +4,10 @@ import TheFooter from "@/components/TheFooter.vue";
 </script>
 
 <template>
-  <RouterView />
-  <TheFooter />
+	<div id="app" :style="{ backgroundColor: 'white' }">
+  		<RouterView />
+  		<TheFooter />
+	</div>
 </template>
 
 <style scoped>
