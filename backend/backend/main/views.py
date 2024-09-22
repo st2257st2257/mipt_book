@@ -19,7 +19,8 @@ import requests
 from .services import \
     get_timetable, \
     check_token, \
-    get_book_audience_response
+    get_book_audience_response, \
+    create_user_wallet
 
 import datetime
 from django.http import JsonResponse
@@ -62,6 +63,16 @@ class BuildingViewSet(viewsets.ModelViewSet):
 class AudienceStatusViewSet(viewsets.ModelViewSet):
     queryset = AudienceStatus.objects.all()
     serializer_class = AudienceStatusSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return self.filter_queryset(queryset)
+
+
+class UsersWalletViewSet(viewsets.ModelViewSet):
+    queryset = UsersWallet.objects.all()
+    serializer_class = UsersWalletSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
@@ -134,6 +145,44 @@ def book_audience(request):
                 status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
     if request.method == 'GET':
         return render(request, 'book/test.html')
+
+
+@csrf_exempt
+@api_view(('POST', 'GET'))
+def index_user_wallet(request):
+    if request.method == 'POST':
+        if request.POST.get('type') == "create_user_wallet":
+            if check_token(request.POST['token'])["result"]:
+                username = request.POST.get('username', None)
+                if username is not None:
+                    user_wallet = create_user_wallet(username)
+                    if user_wallet:
+                        return Response(
+                            {
+                                "result": True,
+                                "create_user_wallet_id": user_wallet.id,
+                                "username": user_wallet.username,
+                                "number_bb": user_wallet.number_bb
+                            },
+                            status=status.HTTP_201_CREATED)
+                    else:
+                        return Response(
+                            {"Error": "FORBIDDEN_USERNAME"},
+                            status=status.HTTP_403_FORBIDDEN)
+                else:
+                    return Response(
+                            {"Error": "NON_AUTHORITATIVE_INFORMATION"},
+                            status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+            else:
+                return Response(
+                    {"Error": "BAD_TOKEN"},
+                    status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            return Response(
+                {"Error": "BAD_REQUEST_TYPE"},
+                status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+    if request.method == 'GET':
+        return render(request, 'wallet/index.html')
 
 
 @csrf_exempt

@@ -26,11 +26,13 @@ router.register(r'building', views.BuildingViewSet)
 router.register(r'audience_status', views.AudienceStatusViewSet)
 router.register(r'audience', views.AudienceViewSet)
 router.register(r'book', views.BookViewSet)
+router.register(r'users_wallet', views.UsersWalletViewSet)
 
 urlpatterns = [
     path('base-info/', include(router.urls)),
     path('book/', views.book_audience),
     path('timetable/', views.index_timetable),
+    path('wallet/', views.index_user_wallet),
     path('admin/', admin.site.urls),
     path('test/', include('test.urls', namespace='test')),
 ]

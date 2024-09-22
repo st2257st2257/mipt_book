@@ -6,8 +6,10 @@ import requests
 
 
 def check_token(token: str):
+    web_address = "https://127.0.0.1"
+    # web_address = "https://mipt.site"
     response = requests.get(
-        'https://mipt.site:8088/get-info/',
+        web_address + ':8088/get-info/',
         verify=False,
         headers={"Accept": "application/json",
                  "Authorization": f"Token {token}"})
@@ -37,6 +39,18 @@ def get_user_by_username(username):
         return UsersWallet.objects.get(username=username)
     else:
         return None
+
+
+def create_user_wallet(username):
+    if len(UsersWallet.objects.filter(username=username)) != 0:
+        return False
+    users_wallet = UsersWallet(
+        username=username,
+        token=None,
+        number_bb=28
+    )
+    users_wallet.save()
+    return users_wallet
 
 
 def get_timetable():

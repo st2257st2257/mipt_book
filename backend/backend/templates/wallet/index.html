@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<p></p>
+  <form action="https://127.0.0.1:8000/wallet/" method="post">
+        {% csrf_token %}
+        Token: <input type="text" name="token" value="your_token"><br><br>
+        Type: <input type="text" name="type" value="create_user_wallet"><br><br>
+        Username: <input type="text" name="username" value="ivan2000"><br><br>
+      <input type="submit" value="Создать платёжный аккаунт">
+  </form>
+<p></p>
+
+
+</body>
+</html>
