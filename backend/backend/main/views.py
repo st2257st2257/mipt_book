@@ -132,7 +132,9 @@ class BookViewSet(viewsets.ModelViewSet):
 def book_audience(request):
     if request.method == 'POST':
         if request.POST.get('type') == "book_audience":
-            if check_token(request.POST['token'])["result"]:
+            token = request.POST['token']
+            check_token_result = asyncio.run(check_token(token))
+            if check_token_result["result"]:
                 return get_book_audience_response(
                     number=request.POST.get('audience'),
                     user=request.POST.get('user'),
@@ -155,11 +157,13 @@ def book_audience(request):
 def index_user_wallet(request):
     if request.method == 'POST':
         if request.POST.get('type') == "create_user_wallet":
-            check_token_result = asyncio.run(check_token(request.POST['token']))
+            token = request.POST['token']
+            check_token_result = asyncio.run(check_token(token))
             if check_token_result["result"]:
                 username = request.POST.get('username', None)
-                if username is not None:
-                    user_wallet = create_user_wallet(username)
+                if username is not None \
+                        and username == check_token_result["value"]["username"]:
+                    user_wallet = create_user_wallet(username, token=token)
                     if user_wallet:
                         return Response(
                             {
@@ -179,7 +183,7 @@ def index_user_wallet(request):
                             status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
             else:
                 return Response(
-                    {"Error": "BAD_TOKEN"},
+                    {"Error": "BAD_TOKEN", "value": check_token_result},
                     status=status.HTTP_401_UNAUTHORIZED)
         else:
             return Response(
