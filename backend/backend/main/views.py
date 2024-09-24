@@ -1,3 +1,5 @@
+import asyncio
+
 from django.shortcuts import render
 from .models import \
     Institute, \
@@ -23,6 +25,7 @@ from .services import \
     create_user_wallet
 
 import datetime
+
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import permissions, viewsets
@@ -152,7 +155,8 @@ def book_audience(request):
 def index_user_wallet(request):
     if request.method == 'POST':
         if request.POST.get('type') == "create_user_wallet":
-            if check_token(request.POST['token'])["result"]:
+            check_token_result = asyncio.run(check_token(request.POST['token']))
+            if check_token_result["result"]:
                 username = request.POST.get('username', None)
                 if username is not None:
                     user_wallet = create_user_wallet(username)

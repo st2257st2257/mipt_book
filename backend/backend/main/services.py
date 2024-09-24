@@ -1,3 +1,5 @@
+from requests.adapters import HTTPAdapter, Retry
+import asyncio
 from .models import Audience, UsersWallet, Book
 from rest_framework.response import Response
 import datetime
@@ -5,15 +7,43 @@ from rest_framework import status
 import requests
 
 
-def check_token(token: str):
-    web_address = "https://127.0.0.1"
+async def make_auth_request(token):
+    web_address = "https://localhost"
+    # web_address = "https://127.0.0.1"
     # web_address = "https://mipt.site"
-    response = requests.get(
+
+    retries = Retry(
+        total=5,
+        backoff_factor=0.1,
+        status_forcelist=[ 500, 502, 503, 504 ])
+
+    adapter = HTTPAdapter(max_retries=retries)
+    session = requests.Session()
+    session.mount('http://', adapter)
+    session.mount('https://', adapter)
+
+    response = session.get(
         web_address + ':8088/get-info/',
         verify=False,
         headers={"Accept": "application/json",
                  "Authorization": f"Token {token}"})
     response.encoding = 'utf-8'
+    return response
+
+
+async def check_token(token: str):
+    #web_address = "https://127.0.0.1"
+    # web_address = "https://mipt.site"
+    #response = requests.get(
+    #    web_address + ':8088/get-info/',
+    #    verify=False,
+    #    headers={"Accept": "application/json",
+    #             "Authorization": f"Token {token}"})
+    #response.encoding = 'utf-8'
+
+    response = asyncio.create_task(make_auth_request(token))
+
+    await asyncio.gather(response)
 
     if response.json().get("detail") == "Invalid token.":
         return {
