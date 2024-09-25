@@ -32,15 +32,6 @@ async def make_auth_request(token):
 
 
 async def check_token(token: str):
-    #web_address = "https://127.0.0.1"
-    # web_address = "https://mipt.site"
-    #response = requests.get(
-    #    web_address + ':8088/get-info/',
-    #    verify=False,
-    #    headers={"Accept": "application/json",
-    #             "Authorization": f"Token {token}"})
-    #response.encoding = 'utf-8'
-
     response = asyncio.create_task(make_auth_request(token))
 
     res = await asyncio.gather(response)
@@ -48,7 +39,7 @@ async def check_token(token: str):
     if res[0].get("detail", "") == "Invalid token header. Token string should not contain spaces.":
         return {
             "result": False,
-            "value": res[0]#"Wrong token"
+            "value": res[0]
         }
     else:
         return {
