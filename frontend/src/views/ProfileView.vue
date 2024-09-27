@@ -3,6 +3,10 @@
 import Header from "@/components/TheHeader.vue";
 import {ref, type Ref, onMounted, reactive, type Reactive} from 'vue';
 
+interface BBNumber {
+  username: string,
+  number_bb: number
+}
 interface UserName {
   first_name: string,
   last_name: string,
@@ -13,6 +17,9 @@ interface Preference {
   description: string
 }
 
+let username = ref<string|null>(null);
+let number_bb = ref<string|null>(null);
+
 let token = ref<string|null>(null);
 
 const user_name: Reactive<UserName> = reactive({
@@ -21,6 +28,7 @@ const user_name: Reactive<UserName> = reactive({
 let institute_group: Ref<string|null> = ref(null);
 let book_rating: Ref<number> = ref(1);
 let preferences: Ref<Preference[]> = ref([]);
+
 
 type KeyValuePair = [string, string];
 
@@ -32,10 +40,12 @@ let preferencesIcons: Record<string, string> = {
 
 onMounted(()=>{
   token.value = localStorage.getItem("auth-token");
-
+  username.value = localStorage.getItem("username");
   if(token.value == null) return;
   loadInfo();
   loadPreferences();
+  loadBBNumber();
+
 });
 
 import { useRouter } from 'vue-router';
@@ -94,6 +104,44 @@ async function loadInfo(){
     user_name.third_name = data.name.third_name;
     institute_group.value = data.institute_group;
     book_rating.value = data.book_rate;
+  } catch (error) {
+    console.error('Ошибка при отправке данных:', error);
+  }
+}
+
+async function loadBBNumber(){
+  try {
+    const response = await fetch("https://mipt.site:8000/base-info/users_wallet/?username=st2257",{
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    });
+
+    if (!response.ok) {
+      console.error('Сеть ответила с ошибкой: ' + response.status);
+
+      if(response.status == 401){
+        token.value = null;
+        localStorage.removeItem("auth-token");
+      }
+    }
+
+    const data_number = await response.json() as BBNumber[];
+
+    username.value = data_number[0].username;
+    number_bb.value = String(data_number[0].number_bb);
+
+    console.log('Ответ от сервера header data_number:', data_number[0]);
+    console.log('Ответ от сервера header username:', username);
+    console.log('Ответ от сервера header number_bb:', number_bb);
+    console.log('Ответ от сервера header username.value:', username.value);
+    console.log('Ответ от сервера header number_bb.value:', number_bb.value);
+    // user_name.first_name = data.name.first_name;
+    // user_name.last_name = data.name.last_name;
+    // user_name.third_name = data.name.third_name;
+    // institute_group.value = data.institute_group;
+    // book_rating.value = data.book_rate;
   } catch (error) {
     console.error('Ошибка при отправке данных:', error);
   }
@@ -167,7 +215,7 @@ async function loadPreferences(){
 
       <div>
         <p style="font-size: 24px;">Баллы бронирования</p>
-        <span style="font-size: 18px;"> {{book_rating}} из 28 баллов</span><br>
+        <span style="font-size: 18px;"> {{number_bb}} из 28 баллов</span><br>
         <span style="color: grey; font-size: 12px;"> следующие +4 балла через 15 часов</span>
       </div>
 
