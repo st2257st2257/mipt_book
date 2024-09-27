@@ -1,11 +1,54 @@
+from requests.adapters import HTTPAdapter, Retry
+import asyncio
 from .models import Audience, UsersWallet, Book
 from rest_framework.response import Response
 import datetime
 from rest_framework import status
 import requests
+import json
 
 
-def check_token(token: str):
+async def make_auth_request(token):
+    # web_address = "https://localhost"
+    # web_address = "https://127.0.0.1"
+    web_address = "https://mipt.site"
+
+    retries = Retry(
+        total=5,
+        backoff_factor=0.1,
+        status_forcelist=[ 500, 502, 503, 504 ])
+
+    adapter = HTTPAdapter(max_retries=retries)
+    session = requests.Session()
+    session.mount('https://', adapter)
+
+    response = session.get(
+        web_address + ':8088/get-info/',
+        verify=False,
+        headers={"Accept": "application/json",
+                 "Authorization": f"Token {token}"})
+    response.encoding = 'utf-8'
+    return response.json()
+
+
+async def check_token(token: str):
+    response = asyncio.create_task(make_auth_request(token))
+
+    res = await asyncio.gather(response)
+
+    if res[0].get("detail", "") == "Invalid token header. Token string should not contain spaces.":
+        return {
+            "result": False,
+            "value": res[0]
+        }
+    else:
+        return {
+            "result": True,
+            "value": res[0]
+        }
+
+
+def check_token_old(token: str):
     response = requests.get(
         'https://mipt.site:8088/get-info/',
         verify=False,
@@ -37,6 +80,18 @@ def get_user_by_username(username):
         return UsersWallet.objects.get(username=username)
     else:
         return None
+
+
+def create_user_wallet(username, token=""):
+    if len(UsersWallet.objects.filter(username=username)) != 0:
+        return False
+    users_wallet = UsersWallet(
+        username=username,
+        token=token,
+        number_bb=28
+    )
+    users_wallet.save()
+    return users_wallet
 
 
 def get_timetable():

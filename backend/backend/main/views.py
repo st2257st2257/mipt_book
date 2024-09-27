@@ -1,3 +1,5 @@
+import asyncio
+
 from django.shortcuts import render
 from .models import \
     Institute, \
@@ -19,9 +21,11 @@ import requests
 from .services import \
     get_timetable, \
     check_token, \
-    get_book_audience_response
+    get_book_audience_response, \
+    create_user_wallet
 
 import datetime
+
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import permissions, viewsets
@@ -62,6 +66,16 @@ class BuildingViewSet(viewsets.ModelViewSet):
 class AudienceStatusViewSet(viewsets.ModelViewSet):
     queryset = AudienceStatus.objects.all()
     serializer_class = AudienceStatusSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return self.filter_queryset(queryset)
+
+
+class UsersWalletViewSet(viewsets.ModelViewSet):
+    queryset = UsersWallet.objects.all()
+    serializer_class = UsersWalletSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
@@ -118,7 +132,9 @@ class BookViewSet(viewsets.ModelViewSet):
 def book_audience(request):
     if request.method == 'POST':
         if request.POST.get('type') == "book_audience":
-            if check_token(request.POST['token'])["result"]:
+            token = request.POST['token']
+            check_token_result = asyncio.run(check_token(token))
+            if check_token_result["result"]:
                 return get_book_audience_response(
                     number=request.POST.get('audience'),
                     user=request.POST.get('user'),
@@ -134,6 +150,61 @@ def book_audience(request):
                 status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
     if request.method == 'GET':
         return render(request, 'book/test.html')
+
+
+@csrf_exempt
+@api_view(('POST', 'GET'))
+def index_user_wallet(request):
+    # DATA FORMAT (POST):
+    # {
+    #   "token":    "this_is_your_token",
+    #   "type":     "create_user_wallet",
+    #   "username": "test_user"
+    # }
+    if request.method == 'POST':
+        if request.POST.get('type') == "create_user_wallet":
+            token = request.POST['token']
+            try:
+                check_token_result = asyncio.run(check_token(token))
+                if check_token_result["result"]:
+                    username = request.POST.get('username', None)
+                    if username is not None \
+                            and username == check_token_result["value"]["username"]:
+                        user_wallet = create_user_wallet(username, token=token)
+                        if user_wallet:
+                            return Response(
+                                {
+                                    "result": True,
+                                    "create_user_wallet_id": user_wallet.id,
+                                    "username": user_wallet.username,
+                                    "number_bb": user_wallet.number_bb
+                                },
+                                status=status.HTTP_201_CREATED)
+                        else:
+                            return Response(
+                                {"Error": "FORBIDDEN_USERNAME"},
+                                status=status.HTTP_403_FORBIDDEN)
+                    else:
+                        return Response(
+                                {"Error": "NON_AUTHORITATIVE_INFORMATION"},
+                                status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+                else:
+                    return Response(
+                        {"Error": "BAD_TOKEN", "value": check_token_result},
+                        status=status.HTTP_401_UNAUTHORIZED)
+            except ConnectionError as e:
+                return Response(
+                    {"Error": "ConnectionError", "value": str(e)},
+                    status=status.HTTP_503_SERVICE_UNAVAILABLE)
+            except Exception as e:
+                return Response({"Error": "Error", "value": str(e)},
+                                status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        else:
+            return Response(
+                {"Error": "BAD_REQUEST_TYPE"},
+                status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+    if request.method == 'GET':
+        return render(request, 'wallet/index.html')
 
 
 @csrf_exempt

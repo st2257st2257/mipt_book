@@ -44,7 +44,7 @@ class AudienceSerializer(serializers.HyperlinkedModelSerializer):
 class UsersWalletSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = UsersWallet
-        fields = ['', '']
+        fields = ['username', 'number_bb']
 
 
 class BookSerializer(serializers.HyperlinkedModelSerializer):
