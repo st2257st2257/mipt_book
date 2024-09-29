@@ -168,7 +168,7 @@ defineExpose({ filteredItems });
   @media (max-width: 768px) {
     .room-list-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 200px));
+      grid-template-columns: repeat(auto-fit, minmax(125px, 175px));
       grid-column-gap: 20px;
     }
   }
@@ -176,7 +176,7 @@ defineExpose({ filteredItems });
   @media (min-width: 768px) {
     .room-list-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 200px));
+      grid-template-columns: repeat(auto-fit, minmax(125px, 175px));
       grid-column-gap: 20px;
     }
   }
