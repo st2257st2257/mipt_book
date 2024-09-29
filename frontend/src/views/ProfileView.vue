@@ -45,7 +45,6 @@ onMounted(()=>{
   loadInfo();
   loadPreferences();
   loadBBNumber();
-
 });
 
 import { useRouter } from 'vue-router';
@@ -111,7 +110,7 @@ async function loadInfo(){
 
 async function loadBBNumber(){
   try {
-    const response = await fetch("https://mipt.site:8000/base-info/users_wallet/?username=st2257",{
+    const response = await fetch("https://mipt.site:8000/base-info/users_wallet/?username=" + username,{
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -130,6 +129,7 @@ async function loadBBNumber(){
     const data_number = await response.json() as BBNumber[];
 
     username.value = data_number[0].username;
+    localStorage.setItem("username", data_number[0].username);
     number_bb.value = String(data_number[0].number_bb);
 
     console.log('Ответ от сервера header data_number:', data_number[0]);
@@ -298,6 +298,7 @@ async function loadPreferences(){
 .full_name_div {
 	padding-top: 2px;
 }
+
 
 /*Базовые стили */
 .logout-button {

@@ -25,7 +25,7 @@ onMounted(()=>{
 
 async function loadBBNumber(){
   try {
-    const response = await fetch("https://mipt.site:8000/base-info/users_wallet/?username=st2257",{
+    const response = await fetch("https://mipt.site:8000/base-info/users_wallet/?username=" + username,{
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'

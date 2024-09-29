@@ -48,7 +48,6 @@ class UsersWalletSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class BookSerializer(serializers.HyperlinkedModelSerializer):
-
     """def create(self, validated_data):
         user = Book.objects.create_user(
             audience=validated_data.get('audience', 'blank_email_audience'),
@@ -81,4 +80,4 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
 class BookHistorySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = BookHistory
-        fields = ['', '']
+        fields = ['audience', 'user', 'number_bb', 'pair_number', 'date', 'booking_time', 'visibility']
