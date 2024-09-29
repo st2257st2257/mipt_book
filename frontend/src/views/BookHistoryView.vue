@@ -69,7 +69,7 @@ async function loadBookHistory(){
     // number_bb.value = String(data_number[0].number_bb);
 
     console.log('Ответ от сервера header data_number:', data_number);
-    console.log('Ответ от сервера header book_history:', book_history);
+    console.log('Ответ от сервера header book_history.value[0]:', book_history.value[0]);
     // console.log('Ответ от сервера header number_bb:', number_bb);
     // console.log('Ответ от сервера header username.value:', username.value);
     // console.log('Ответ от сервера header number_bb.value:', number_bb.value);
@@ -89,23 +89,29 @@ async function loadBookHistory(){
   <div class="centered-div">
     <Header />
 
-    <h3>История бронирования</h3>
-    <div class="table">
-      <div class="table-item, table-header">
-        <span>Дата</span>
-        <span>Пары</span>
-        <span>Баллы</span>
-        <span>№</span>
-      </div>
-      <div class="table-item" v-for="book in bookings">
-        <span>{{book.date}}</span>
-        <span>{{book.user}}</span>
-        <span>{{book.number_bb}}</span>
-        <span>{{book.audience.number}}</span>
-      </div>
-    </div>
-
   </div>
+
+    <h2>История бронирования</h2>
+    <table class="booking-table">
+      <thead>
+        <tr>
+          <th>Дата</th>
+          <th>Время</th>
+          <th>Комната</th>
+          <th>Номер пары</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="book in book_history">
+          <td>{{book.date}}</td>
+          <td>{{book.booking_time}}</td>
+          <td>{{book.audience}}</td>
+          <td>{{book.pair_number}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+
 </template>
 
 <style scoped>
@@ -117,5 +123,36 @@ async function loadBookHistory(){
 .table-header {
 
 }
+
+    .booking-history {
+      width: 80%;
+      margin: 20px auto;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 20px;
+    }
+
+    .booking-history h2 {
+      margin-top: 0;
+    }
+
+    .booking-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    .booking-table th,
+    .booking-table td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+
+    .booking-table th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+
 
 </style>
