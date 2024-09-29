@@ -104,7 +104,7 @@ class BookHistory(models.Model):
     visibility = models.IntegerField(default=0)
 
     def __str__(self):
-        return f'Book|A:{self.audience}|U:{self.user.username}|P:{self.pair_number}|N:{self.number_bb}'
+        return f'Book|A:{self.audience}|U:{self.user}|P:{self.pair_number}|N:{self.number_bb}'
 
 
 class BookPair(models.Model):

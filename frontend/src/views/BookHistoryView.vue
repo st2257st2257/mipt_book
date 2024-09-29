@@ -5,8 +5,19 @@ import Header from "@/components/TheHeader.vue";
 import BookAmount from "@/components/book/BookAmount.vue";
 import BookAudience from "@/components/book/BookAudience.vue";
 
-import {ref, type Ref} from "vue";
+import {ref, type Ref, onMounted, reactive, type Reactive, defineExpose} from 'vue';
 import type {IAudience} from "@/classes/Interfaces";
+
+interface BookItem {
+  audience: string,
+  user: string,
+  number_bb: number,
+  pair_number: number,
+  date: string,
+  booking_time: string
+}
+
+let book_history: Ref<BookItem[]> = ref([]);
 
 let bookings: Ref<
       Array<{
@@ -20,6 +31,57 @@ let bookings: Ref<
         }
       }>
     > = ref([]);
+
+let username = ref<string|null>(null);
+let token = ref<string|null>(null);
+
+onMounted(()=>{
+  token.value = localStorage.getItem("auth-token");
+  username.value = localStorage.getItem("username");
+  if(token.value == null) return;
+  loadBookHistory();
+});
+
+async function loadBookHistory(){
+  try {
+    const response = await fetch("https://localhost:8000/base-info/history/?user=st2257",{
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    });
+
+    if (!response.ok) {
+      console.error('Сеть ответила с ошибкой: ' + response.status);
+
+      if(response.status == 401){
+        // token.value = null;
+        localStorage.removeItem("auth-token");
+      }
+    }
+
+    const data_number = await response.json() as BookItem[];
+    book_history.value = data_number;
+    // audiences_gk.value = data_number.filter(item => item.building.name == 'ГК');
+    // audiences_lk.value = data_number.filter(item => item.building.name == 'ЛК');
+
+    // username.value = data_number[0].username;
+    // number_bb.value = String(data_number[0].number_bb);
+
+    console.log('Ответ от сервера header data_number:', data_number);
+    console.log('Ответ от сервера header book_history:', book_history);
+    // console.log('Ответ от сервера header number_bb:', number_bb);
+    // console.log('Ответ от сервера header username.value:', username.value);
+    // console.log('Ответ от сервера header number_bb.value:', number_bb.value);
+    // user_name.first_name = data.name.first_name;
+    // user_name.last_name = data.name.last_name;
+    // user_name.third_name = data.name.third_name;
+    // institute_group.value = data.institute_group;
+    // book_rating.value = data.book_rate;
+  } catch (error) {
+    console.error('Ошибка при отправке данных:', error);
+  }
+}
 
 </script>
 

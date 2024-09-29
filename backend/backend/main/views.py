@@ -127,6 +127,31 @@ class BookViewSet(viewsets.ModelViewSet):
         return self.filter_queryset(queryset)
 
 
+class BookHistoryViewSet(viewsets.ModelViewSet):
+    queryset = BookHistory.objects.all()
+    serializer_class = BookHistorySerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        audience_number = self.request.query_params.get('audience_number')
+        user = self.request.query_params.get('user')
+        pair_number = self.request.query_params.get('pair_number')
+        date = self.request.query_params.get('date')
+        booking_time = self.request.query_params.get('booking_time')
+        if audience_number is not None:
+            queryset = queryset.filter(audience=audience_number)
+        if user is not None:
+            queryset = queryset.filter(user=user)
+        if pair_number is not None:
+            queryset = queryset.filter(pair_number=pair_number)
+        if date is not None:
+            queryset = queryset.filter(date=date)
+        if booking_time is not None:
+            queryset = queryset.filter(booking_time=booking_time)
+        return self.filter_queryset(queryset)
+
+
 @csrf_exempt
 @api_view(('POST', 'GET'))
 def book_audience(request):

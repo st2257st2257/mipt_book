@@ -19,6 +19,7 @@ from main import views
 from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework import routers
 
+# router.register(r'history', views.BookHistoryViewSet)
 
 router = routers.DefaultRouter()
 router.register(r'institute', views.InstituteViewSet)
@@ -27,6 +28,7 @@ router.register(r'audience_status', views.AudienceStatusViewSet)
 router.register(r'audience', views.AudienceViewSet)
 router.register(r'book', views.BookViewSet)
 router.register(r'users_wallet', views.UsersWalletViewSet)
+router.register(r'history', views.BookHistoryViewSet)
 
 urlpatterns = [
     path('base-info/', include(router.urls)),
