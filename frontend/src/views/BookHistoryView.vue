@@ -44,7 +44,7 @@ onMounted(()=>{
 
 async function loadBookHistory(){
   try {
-    const response = await fetch("https://localhost:8000/base-info/history/?user=st2257",{
+    const response = await fetch("https://mipt.site:8000/base-info/history/?user=st2257",{
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
