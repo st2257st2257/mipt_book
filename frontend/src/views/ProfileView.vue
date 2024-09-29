@@ -299,6 +299,7 @@ async function loadPreferences(){
 	padding-top: 2px;
 }
 
+
 /*Базовые стили */
 .logout-button {
   display: inline-block;
