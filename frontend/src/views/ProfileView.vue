@@ -17,6 +17,9 @@ interface Preference {
   description: string
 }
 
+const web_site = "mipt.site";
+// const web_site = "localhost";
+
 let username = ref<string|null>(null);
 let number_bb = ref<string|null>(null);
 
@@ -71,7 +74,7 @@ async function logout() {
 
 async function loadInfo(){
   try {
-    const response = await fetch("https://mipt.site:8088" + "/get-info/",{
+    const response = await fetch("https://" + web_site + ":8088" + "/get-info/",{
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -110,7 +113,7 @@ async function loadInfo(){
 
 async function loadBBNumber(){
   try {
-    const response = await fetch("https://mipt.site:8000/base-info/users_wallet/?username=" + username,{
+    const response = await fetch("https://" + web_site + ":8000/base-info/users_wallet/?username=" + username,{
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -149,7 +152,7 @@ async function loadBBNumber(){
 
 async function loadPreferences(){
   try {
-    const response = await fetch("https://mipt.site:8088" + "/base-info/preferences/",{
+    const response = await fetch("https://" + web_site + ":8088" + "/base-info/preferences/",{
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

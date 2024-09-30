@@ -17,6 +17,9 @@ interface BookItem {
   booking_time: string
 }
 
+const web_site = "mipt.site";
+// const web_site = "localhost";
+
 let book_history: Ref<BookItem[]> = ref([]);
 
 let bookings: Ref<
@@ -44,7 +47,7 @@ onMounted(()=>{
 
 async function loadBookHistory(){
   try {
-    const response = await fetch("https://mipt.site:8000/base-info/history/?user=st2257",{
+    const response = await fetch("https://" + web_site + ":8000/base-info/history/?user=st2257",{
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'

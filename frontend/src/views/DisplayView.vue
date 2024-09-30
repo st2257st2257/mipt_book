@@ -31,6 +31,8 @@ interface Building {
 
 
 // https://mipt.site:8000/base-info/audience/?institute=%D0%9C%D0%A4%D0%A2%D0%98
+const web_site = "mipt.site";
+// const web_site = "localhost";
 
 let audiences: Ref<Audience[]> = ref([]);
 let audiences_gk: Ref<Audience[]> = ref([]);
@@ -43,7 +45,7 @@ onMounted(()=>{
 
 async function loadAudience(){
   try {
-    const response = await fetch("https://mipt.site:8000/base-info/audience/?institute=%D0%9C%D0%A4%D0%A2%D0%98",{
+    const response = await fetch("https://" + web_site + ":8000/base-info/audience/?institute=%D0%9C%D0%A4%D0%A2%D0%98",{
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -109,7 +111,7 @@ defineExpose({ filteredItems });
   <div class="room-list room-list-grid" style="padding-bottom: 70px;">
     <template v-for="audience in audiences_gk">
         <div :class="['room-item', `background_${audience.audience_status.name}`, `number_of_users${audience.number_of_users}`]"
-        style="max-width: 200px; max-height: 100px;">
+        style="max-width: 200px; max-height: 100px; min-height: 100px; min-width: 150px;">
             <i class="icon fas fa-door-open status-available"></i>
             <p>Аудитория {{audience.number}} {{audience.building.name}}</p>
             <p>{{audience.audience_status.name}}</p>
@@ -131,7 +133,7 @@ defineExpose({ filteredItems });
   <div class="room-list room-list-grid" style="padding-bottom: 70px;">
     <template v-for="audience in audiences_lk">
         <div :class="['room-item', `background_${audience.audience_status.name}`, `number_of_users${audience.number_of_users}`]"
-        style="max-width: 200px; max-height: 100px;">
+        style="max-width: 200px; max-height: 100px; min-height: 100px; min-width: 150px;">
             <i class="icon fas fa-door-open status-available"></i>
             <p>Аудитория {{audience.number}} {{audience.building.name}}</p>
             <p>{{audience.audience_status.name}}</p>
@@ -168,7 +170,7 @@ defineExpose({ filteredItems });
   @media (max-width: 768px) {
     .room-list-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(125px, 175px));
+      grid-template-columns: repeat(auto-fit, minmax(150px, 200px));
       grid-column-gap: 20px;
     }
   }
@@ -176,7 +178,7 @@ defineExpose({ filteredItems });
   @media (min-width: 768px) {
     .room-list-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(125px, 175px));
+      grid-template-columns: repeat(auto-fit, minmax(150px, 200px));
       grid-column-gap: 20px;
     }
   }
