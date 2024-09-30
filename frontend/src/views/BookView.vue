@@ -21,13 +21,19 @@ function selectAmount(amount: Number){
 }
 
 let token = ref<string|null>(null);
+let username = ref<string|null>(null);
+
+// const web_site = "mipt.site";
+const web_site = "localhost";
+
 onMounted(()=>{
   token.value = localStorage.getItem("auth-token");
+  username.value = localStorage.getItem("username");
 });
 
 async function sendForm(){
   try {
-    const response = await fetch("/backend-api/book/",{
+    const response = await fetch("https://" + web_site + ":8000/book/",{
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({

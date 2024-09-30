@@ -1,6 +1,6 @@
 from requests.adapters import HTTPAdapter, Retry
 import asyncio
-from .models import Audience, UsersWallet, Book
+from .models import Audience, UsersWallet, Book, AudienceStatus
 from rest_framework.response import Response
 import datetime
 from rest_framework import status
@@ -127,6 +127,7 @@ def get_book_audience_response(
         audience.day_history.pair[pair_number][1] = "Занято"
         audience.day_history.pair[pair_number][2] = user
         audience.day_history.pair[pair_number][3] = str(number_bb)
+        audience.audience_status = AudienceStatus.objects.get(name="Занято")
         audience.day_history.save()
         audience.save()
         return Response(
