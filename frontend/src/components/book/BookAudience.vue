@@ -6,6 +6,9 @@ const emit = defineEmits<{
   (e: 'select-audience', arg: IAudience) : void
 }>();
 
+const web_site = "mipt.site";
+// const web_site = "localhost";
+
 let is_random_selected = ref<Boolean>(false);
 let building_arr = ref<Array<IBuilding>>([]);
 let audience_arr = ref<Array<IAudience>>([]);
@@ -20,8 +23,8 @@ onMounted(async () =>{
 
   //building_arr.value = await getInfo(web_address+building_path);
   //audience_arr.value = await getInfo(web_address+audience_path);
-  building_arr.value = await getInfo('https://mipt.site:8000'+building_path);
-  audience_arr.value = await getInfo('https://mipt.site:8000'+audience_path);
+  building_arr.value = await getInfo('https://' + web_site + ':8000'+building_path);
+  audience_arr.value = await getInfo('https://' + web_site + ':8000'+audience_path);
 });
 
 async function getInfo(url: string){
