@@ -6,9 +6,9 @@ const emit = defineEmits<{
   (e: 'select-audience', arg: IAudience) : void
 }>();
 
-// const web_site = "mipt.site";
+const web_site = "mipt.site";
 // const web_site = "localhost";
-const web_site = "127.0.0.1";
+// const web_site = "127.0.0.1";
 
 let is_random_selected = ref<Boolean>(false);
 let building_arr = ref<Array<IBuilding>>([]);
@@ -20,7 +20,7 @@ let audience_number_selected = ref<String>("");
 onMounted(async () =>{
   let web_address = '/backend-api';
   let building_path = '/base-info/building/?institute=%D0%9C%D0%A4%D0%A2%D0%98';
-  let audience_path = '/base-info/audience/?institute=%D0%9C%D0%A4%D0%A2%D0%98';
+  let audience_path = '/base-info/audience/?institute=%D0%9C%D0%A4%D0%A2%D0%98&status=%D0%A1%D0%B2%D0%BE%D0%B1%D0%BE%D0%B4%D0%BD%D0%BE';
 
   //building_arr.value = await getInfo(web_address+building_path);
   //audience_arr.value = await getInfo(web_address+audience_path);
