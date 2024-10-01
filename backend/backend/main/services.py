@@ -149,3 +149,7 @@ def get_book_audience_response(
                 "pair_number": pair_number
             },
             status=status.HTTP_204_NO_CONTENT)
+
+
+def book_to_history(book_item):
+    pass

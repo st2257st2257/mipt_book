@@ -17,9 +17,30 @@ interface BookItem {
   booking_time: string
 }
 
-const web_site = "mipt.site";
+interface User {
+    username: string;
+}
+
+interface AudienceItem {
+    number: string;
+    description: string;
+    audience_status: string;
+}
+
+interface ActualBookItem {
+  audience: AudienceItem,
+  user: User,
+  number_bb: number,
+  pair_number: number,
+  date: string,
+  booking_time: string
+}
+
+let actual_book_items: Ref<ActualBookItem[]> = ref([]);
+
+// const web_site = "mipt.site";
 // const web_site = "localhost";
-// const web_site = "127.0.0.1";
+const web_site = "127.0.0.1";
 
 let book_history: Ref<BookItem[]> = ref([]);
 
@@ -44,12 +65,13 @@ onMounted(()=>{
   username.value = localStorage.getItem("username");
   if(token.value == null) return;
   loadBookHistory();
+  loadActualBookHistory();
 });
 
 
 async function loadActualBookHistory(){
   try {
-    const response = await fetch("https://" + web_site + ":8000/base-info/history/?user=" + username.value,{
+    const response = await fetch("https://" + web_site + ":8000/base-info/book/?user=" + username.value,{
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -66,24 +88,16 @@ async function loadActualBookHistory(){
       }
     }
 
-    const data_number = await response.json() as BookItem[];
-    book_history.value = data_number;
+    const data_number = await response.json() as ActualBookItem[];
+    actual_book_items.value = data_number;
     // audiences_gk.value = data_number.filter(item => item.building.name == 'ГК');
     // audiences_lk.value = data_number.filter(item => item.building.name == 'ЛК');
 
     // username.value = data_number[0].username;
     // number_bb.value = String(data_number[0].number_bb);
 
-    console.log('Ответ от сервера header data_number:', data_number);
+    console.log('Ответ от сервера header actual_book_items:', actual_book_items);
     console.log('Ответ от сервера header book_history.value[0]:', book_history.value[0]);
-    // console.log('Ответ от сервера header number_bb:', number_bb);
-    // console.log('Ответ от сервера header username.value:', username.value);
-    // console.log('Ответ от сервера header number_bb.value:', number_bb.value);
-    // user_name.first_name = data.name.first_name;
-    // user_name.last_name = data.name.last_name;
-    // user_name.third_name = data.name.third_name;
-    // institute_group.value = data.institute_group;
-    // book_rating.value = data.book_rate;
   } catch (error) {
     console.error('Ошибка при отправке данных:', error);
   }
@@ -119,14 +133,6 @@ async function loadBookHistory(){
 
     console.log('Ответ от сервера header data_number:', data_number);
     console.log('Ответ от сервера header book_history.value[0]:', book_history.value[0]);
-    // console.log('Ответ от сервера header number_bb:', number_bb);
-    // console.log('Ответ от сервера header username.value:', username.value);
-    // console.log('Ответ от сервера header number_bb.value:', number_bb.value);
-    // user_name.first_name = data.name.first_name;
-    // user_name.last_name = data.name.last_name;
-    // user_name.third_name = data.name.third_name;
-    // institute_group.value = data.institute_group;
-    // book_rating.value = data.book_rate;
   } catch (error) {
     console.error('Ошибка при отправке данных:', error);
   }
@@ -139,6 +145,26 @@ async function loadBookHistory(){
     <Header />
 
   </div>
+
+    <h2>Актуальные бронирования:</h2>
+    <table class="booking-table">
+      <thead>
+        <tr>
+          <th>Дата</th>
+          <th>Время</th>
+          <th>Комната</th>
+          <th>Номер пары</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="actual_item in actual_book_items">
+          <td>{{actual_item.date}}</td>
+          <td>{{actual_item.booking_time}}</td>
+          <td>{{actual_item.audience.number}}</td>
+          <td>{{actual_item.pair_number}}</td>
+        </tr>
+      </tbody>
+     </table>
 
     <h2>История бронирования</h2>
     <table class="booking-table">

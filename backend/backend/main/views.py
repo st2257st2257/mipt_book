@@ -22,7 +22,8 @@ from .services import \
     get_timetable, \
     check_token, \
     get_book_audience_response, \
-    create_user_wallet
+    create_user_wallet, \
+    book_to_history
 
 import datetime
 
@@ -261,3 +262,44 @@ def index_timetable(request):
         return Response(
                 {"Error": "BAD_REQUEST_TYPE"}
         )
+
+
+@csrf_exempt
+@api_view(('POST', 'GET'))
+def index_stop_booking(request):
+    # DATA FORMAT (POST):
+    # {
+    #   "token":    "this_is_your_token",
+    #   "type":     "stop_booking",
+    #   "audience": "audience_number"
+    # }
+    if request.method == 'POST':
+        if request.POST.get('type') == "stop_booking":
+            token = request.POST.get('token', '')
+            audience_number = request.POST.get('audience', '')
+            try:
+                check_token_result = asyncio.run(check_token(token))
+                if check_token_result["result"]:
+                    # TODO: сделать отдельную функцию для превращения бронирования в историю
+                    if len(Book.objects.filter(audience__number=audience_number)) == 1:
+                        book_item = Book.objects.get(audience__number=audience_number)
+                        book_item.to_history()
+                    else:
+                       return Response(
+                           {"Error": "BookingError", "value": "max length is 1, you got "},
+                           status=status.HTTP_501_NOT_IMPLEMENTED)
+                else:
+                    pass
+            except ConnectionError as e:
+                return Response(
+                    {"Error": "ConnectionError", "value": str(e)},
+                    status=status.HTTP_503_SERVICE_UNAVAILABLE)
+            except Exception as e:
+                return Response({"Error": "Error", "value": str(e)},
+                                status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        else:
+            return Response(
+                {"Error": "BAD_REQUEST_TYPE"},
+                status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+    if request.method == 'GET':
+        return render(request, 'book/stop_booking.html')
