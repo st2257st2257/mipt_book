@@ -7,7 +7,6 @@ import BookTime from "@/components/book/BookTime.vue";
 import BookAmount from "@/components/book/BookAmount.vue";
 import type {IAudience} from "@/classes/Interfaces";
 
-let form_user = ref<String>("st2257");
 let form_audience_name = ref<String>("");
 let form_number_bb = ref<Number>(0);
 let form_pair_number = ref<Number>(1);
@@ -23,9 +22,9 @@ function selectAmount(amount: Number){
 let token = ref<string|null>(null);
 let username = ref<string|null>(null);
 
-const web_site = "mipt.site";
+// const web_site = "mipt.site";
 // const web_site = "localhost";
-// const web_site = "127.0.0.1";
+const web_site = "127.0.0.1";
 
 onMounted(()=>{
   token.value = localStorage.getItem("auth-token");
@@ -39,7 +38,7 @@ async function sendForm(){
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: JSON.stringify({
         "type": "book_audience",
-        'token': "73d854268d8c273874ec592f7b2e03f6276093df", //token.value,
+        'token': token.value, // "73d854268d8c273874ec592f7b2e03f6276093df"
         'audience': form_audience_name.value,
         'number_bb': form_number_bb.value,
         'pair_number': form_pair_number.value,
@@ -62,48 +61,6 @@ async function sendForm(){
   }
 }
 
-async function sendForm_new() {
-  try {
-    const data = {
-      "type": "book_audience",
-      "token": "73d854268d8c273874ec592f7b2e03f6276093df",
-      "audience": "510",
-      "number_bb": 0,
-      "pair_number": "3",
-      "user": "st2257"
-    };
-
-    const params = new URLSearchParams();
-
-    // Добавляем CSRF-токен
-    // params.append('csrfmiddlewaretoken', 'JYllHBzH0ofWvcYOIMGGFj5lDPS7Oi6nLq3SO1jchoRPs04lwfCMhUvrijTXtU1q');
-
-    // Добавляем остальные данные из объекта data
-    //for (const key in data) {
-    //  params.append(String(key), data[key].toString());
-    //}
-    params.append('type', 'book_audience');
-    params.append('token', '73d854268d8c273874ec592f7b2e03f6276093df');
-    params.append('audience', '512');
-    params.append('number_bb', '0');
-    params.append('pair_number', '3');
-    params.append('user', 'st2257');
-
-
-
-    const response = await fetch("https://" + web_site + ":8000/book/", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: params.toString()
-    });
-
-    // ... остальной код ...
-  } catch (error) {
-    // ...
-  }
-}
 
 </script>
 

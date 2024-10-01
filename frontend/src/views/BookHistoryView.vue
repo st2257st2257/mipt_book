@@ -17,9 +17,9 @@ interface BookItem {
   booking_time: string
 }
 
-const web_site = "mipt.site";
+// const web_site = "mipt.site";
 // const web_site = "localhost";
-// const web_site = "127.0.0.1";
+const web_site = "127.0.0.1";
 
 let book_history: Ref<BookItem[]> = ref([]);
 
@@ -46,9 +46,10 @@ onMounted(()=>{
   loadBookHistory();
 });
 
-async function loadBookHistory(){
+
+async function loadActualBookHistory(){
   try {
-    const response = await fetch("https://" + web_site + ":8000/base-info/history/?user=st2257",{
+    const response = await fetch("https://" + web_site + ":8000/base-info/history/?user=" + username.value,{
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -61,6 +62,50 @@ async function loadBookHistory(){
       if(response.status == 401){
         // token.value = null;
         localStorage.removeItem("auth-token");
+        localStorage.removeItem("username");
+      }
+    }
+
+    const data_number = await response.json() as BookItem[];
+    book_history.value = data_number;
+    // audiences_gk.value = data_number.filter(item => item.building.name == 'ГК');
+    // audiences_lk.value = data_number.filter(item => item.building.name == 'ЛК');
+
+    // username.value = data_number[0].username;
+    // number_bb.value = String(data_number[0].number_bb);
+
+    console.log('Ответ от сервера header data_number:', data_number);
+    console.log('Ответ от сервера header book_history.value[0]:', book_history.value[0]);
+    // console.log('Ответ от сервера header number_bb:', number_bb);
+    // console.log('Ответ от сервера header username.value:', username.value);
+    // console.log('Ответ от сервера header number_bb.value:', number_bb.value);
+    // user_name.first_name = data.name.first_name;
+    // user_name.last_name = data.name.last_name;
+    // user_name.third_name = data.name.third_name;
+    // institute_group.value = data.institute_group;
+    // book_rating.value = data.book_rate;
+  } catch (error) {
+    console.error('Ошибка при отправке данных:', error);
+  }
+}
+
+
+async function loadBookHistory(){
+  try {
+    const response = await fetch("https://" + web_site + ":8000/base-info/history/?user=" + username.value,{
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    });
+
+    if (!response.ok) {
+      console.error('Сеть ответила с ошибкой: ' + response.status);
+
+      if(response.status == 401){
+        // token.value = null;
+        localStorage.removeItem("auth-token");
+        localStorage.removeItem("username");
       }
     }
 

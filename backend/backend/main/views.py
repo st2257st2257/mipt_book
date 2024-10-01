@@ -81,6 +81,9 @@ class UsersWalletViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        username = self.request.query_params.get('username')
+        if username is not None:
+            queryset = queryset.filter(username=username)
         return self.filter_queryset(queryset)
 
 

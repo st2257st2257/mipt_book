@@ -59,6 +59,7 @@ async function logout() {
     if (1 == 1) {
       // Удалите токен из LocalStorage
       localStorage.removeItem('auth-token');
+      localStorage.removeItem('username');
       // Перенаправьте пользователя на страницу входа
       // this.$router.push('auth');
       // this.router.push({ path: 'auth' });
@@ -88,6 +89,7 @@ async function loadInfo(){
       if(response.status == 401){
         token.value = null;
         localStorage.removeItem("auth-token");
+        localStorage.removeItem("username");
       }
     }
 
@@ -100,6 +102,10 @@ async function loadInfo(){
       user_role: string
     };
 
+    localStorage.setItem("username", data.username);
+    username.value = data.username;
+
+    console.log('Ответ от сервера +++++++++:', username.value);
     console.log('Ответ от сервера:', data);
     user_name.first_name = data.name.first_name;
     user_name.last_name = data.name.last_name;
@@ -113,7 +119,7 @@ async function loadInfo(){
 
 async function loadBBNumber(){
   try {
-    const response = await fetch("https://" + web_site + ":8000/base-info/users_wallet/?username=" + username,{
+    const response = await fetch("https://" + web_site + ":8000/base-info/users_wallet/?username=" + username.value,{
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -126,13 +132,15 @@ async function loadBBNumber(){
       if(response.status == 401){
         token.value = null;
         localStorage.removeItem("auth-token");
+        localStorage.removeItem("username");
       }
     }
 
     const data_number = await response.json() as BBNumber[];
 
-    username.value = data_number[0].username;
-    localStorage.setItem("username", data_number[0].username);
+    // username.value = data_number[0].username;
+    // localStorage.setItem("username", data_number[0].username);
+    console.log('Ответ от сервера data_number[0].username:', data_number[0].username);
     number_bb.value = String(data_number[0].number_bb);
 
     console.log('Ответ от сервера header data_number:', data_number[0]);
@@ -140,6 +148,7 @@ async function loadBBNumber(){
     console.log('Ответ от сервера header number_bb:', number_bb);
     console.log('Ответ от сервера header username.value:', username.value);
     console.log('Ответ от сервера header number_bb.value:', number_bb.value);
+    console.log('Ответ от сервера header admin_st2257:', 'admin_st2257');
     // user_name.first_name = data.name.first_name;
     // user_name.last_name = data.name.last_name;
     // user_name.third_name = data.name.third_name;
