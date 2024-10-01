@@ -170,7 +170,7 @@ class DayHistory(models.Model):
     visibility = models.IntegerField(default=0)
 
     def __str__(self):
-        return f'Book|A:{self.audience.number}|U:{self.user.username}'
+        return f'Book|A:{self.audience}|D:{self.date}'
 
 
 @admin.register(DayHistory)
@@ -201,6 +201,29 @@ class AudienceStatusAdmin(admin.ModelAdmin):
 class AudienceAdmin(admin.ModelAdmin):
     search_fields = ("id", "number", "building", "description")
     list_display = ("id", "number", "building", "number_of_users", "audience_status",)
+
+    actions = ["make_free", "make_booked", "make_excluded", "make_all_free"]
+
+    @admin.action(description="Сделать свободными")
+    def make_free(self, request, queryset):
+        free_status = AudienceStatus.objects.get(name="Свободно")
+        queryset.update(audience_status=free_status)
+
+    @admin.action(description="Сделать занятыми")
+    def make_booked(self, request, queryset):
+        booked_status = AudienceStatus.objects.get(name="Занято")
+        queryset.update(audience_status=booked_status)
+
+    @admin.action(description="Исключить из бронирования")
+    def make_excluded(self, request, queryset):
+        excluded_status = AudienceStatus.objects.get(name="Отсутствует для бронирования")
+        queryset.update(audience_status=excluded_status)
+
+    @admin.action(description="Освободить все")
+    def make_all_free(self, request, queryset):
+        excluded_status = AudienceStatus.objects.get(name="Свободно")
+        queryset.filter(audience_status__name="Занято").update(audience_status=excluded_status)
+        queryset.filter(audience_status__name="Скоро освободиться").update(audience_status=excluded_status)
 
 
 @admin.register(UsersWallet)

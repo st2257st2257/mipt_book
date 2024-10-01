@@ -19,6 +19,7 @@ interface BookItem {
 
 const web_site = "mipt.site";
 // const web_site = "localhost";
+// const web_site = "127.0.0.1";
 
 let book_history: Ref<BookItem[]> = ref([]);
 

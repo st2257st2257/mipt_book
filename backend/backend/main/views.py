@@ -35,6 +35,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework import generics
+import json
 
 
 class InstituteViewSet(viewsets.ModelViewSet):
@@ -156,22 +157,28 @@ class BookHistoryViewSet(viewsets.ModelViewSet):
 @api_view(('POST', 'GET'))
 def book_audience(request):
     if request.method == 'POST':
-        if request.POST.get('type') == "book_audience":
-            token = request.POST['token']
+        data_request = json.loads(list(request.POST.dict())[0])
+        if data_request.get('type') == "book_audience":
+            token = request.POST.get('token')
             check_token_result = asyncio.run(check_token(token))
             if check_token_result["result"]:
                 return get_book_audience_response(
-                    number=request.POST.get('audience'),
-                    user=request.POST.get('user'),
-                    number_bb=int(request.POST.get('number_bb')),
-                    pair_number=int(request.POST.get('pair_number')))
+                    number=data_request.get('audience'),
+                    user=data_request.get('user'),
+                    number_bb=int(data_request.get('number_bb', 0)),
+                    pair_number=int(data_request.get('pair_number', 0)))
             else:
                 return Response(
                     {"Error": "BAD_TOKEN"},
                     status=status.HTTP_401_UNAUTHORIZED)
         else:
             return Response(
-                {"Error": "BAD_REQUEST_TYPE"},
+                {
+                    "Error": "BAD_REQUEST_TYPE",
+                    "YOUR_REQUEST_TYPE": request.POST.get('type'),
+                    "data": json.loads(list(request.POST.dict())[0]),
+                    "data_dict": list(request.POST.dict())[0],
+                },
                 status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
     if request.method == 'GET':
         return render(request, 'book/test.html')

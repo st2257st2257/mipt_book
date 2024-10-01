@@ -33,6 +33,7 @@ interface Building {
 // https://mipt.site:8000/base-info/audience/?institute=%D0%9C%D0%A4%D0%A2%D0%98
 const web_site = "mipt.site";
 // const web_site = "localhost";
+// const web_site = "127.0.0.1";
 
 let audiences: Ref<Audience[]> = ref([]);
 let audiences_gk: Ref<Audience[]> = ref([]);
