@@ -170,7 +170,7 @@ class DayHistory(models.Model):
     visibility = models.IntegerField(default=0)
 
     def __str__(self):
-        return f'Book|A:{self.audience.number}|U:{self.user.username}'
+        return f'Book|A:{self.audience}|D:{self.date}'
 
 
 @admin.register(DayHistory)

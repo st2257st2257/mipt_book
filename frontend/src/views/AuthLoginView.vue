@@ -5,6 +5,10 @@ import {useRouter} from "vue-router";
 
 const router = useRouter();
 
+// const web_site = "mipt.site";
+// const web_site = "localhost";
+const web_site = "127.0.0.1";
+
 const username = ref<String>("");
 const password = ref<String>("");
 
@@ -12,7 +16,7 @@ let error_message = ref<String>("");
 
 async function sendForm(){
   try {
-    const response = await fetch("https://mipt.site:8088" + "/token/",{
+    const response = await fetch("https://" + web_site + ":8088" + "/token/",{
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({

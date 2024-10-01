@@ -24,7 +24,8 @@ let token = ref<string|null>(null);
 let username = ref<string|null>(null);
 
 // const web_site = "mipt.site";
-const web_site = "localhost";
+// const web_site = "localhost";
+const web_site = "127.0.0.1";
 
 onMounted(()=>{
   token.value = localStorage.getItem("auth-token");
@@ -35,25 +36,72 @@ async function sendForm(){
   try {
     const response = await fetch("https://" + web_site + ":8000/book/",{
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: JSON.stringify({
-        'type': "book_audience",
-        'token': token.value,
+        "type": "book_audience",
+        'token': "73d854268d8c273874ec592f7b2e03f6276093df", //token.value,
         'audience': form_audience_name.value,
         'number_bb': form_number_bb.value,
-        'pair_number': form_pair_number.value
+        'pair_number': form_pair_number.value,
+        'user': username.value
       })
     });
 
     if (!response.ok) {
       console.error('Сеть ответила с ошибкой: ' + response.status);
     }
-
-    const data = await response.json();
-    console.log('Ответ от сервера:', data);
+    if (response.ok) {
+        const data = await response.json();
+        console.log('Ответ от сервера:', data);
+    } else {
+        console.error('Ошибка запроса:', response.status);
+    }
 
   } catch (error) {
     console.error('Ошибка при отправке данных:', error);
+  }
+}
+
+async function sendForm_new() {
+  try {
+    const data = {
+      "type": "book_audience",
+      "token": "73d854268d8c273874ec592f7b2e03f6276093df",
+      "audience": "510",
+      "number_bb": 0,
+      "pair_number": "3",
+      "user": "st2257"
+    };
+
+    const params = new URLSearchParams();
+
+    // Добавляем CSRF-токен
+    // params.append('csrfmiddlewaretoken', 'JYllHBzH0ofWvcYOIMGGFj5lDPS7Oi6nLq3SO1jchoRPs04lwfCMhUvrijTXtU1q');
+
+    // Добавляем остальные данные из объекта data
+    //for (const key in data) {
+    //  params.append(String(key), data[key].toString());
+    //}
+    params.append('type', 'book_audience');
+    params.append('token', '73d854268d8c273874ec592f7b2e03f6276093df');
+    params.append('audience', '512');
+    params.append('number_bb', '0');
+    params.append('pair_number', '3');
+    params.append('user', 'st2257');
+
+
+
+    const response = await fetch("https://" + web_site + ":8000/book/", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: params.toString()
+    });
+
+    // ... остальной код ...
+  } catch (error) {
+    // ...
   }
 }
 
