@@ -6,9 +6,9 @@ const emit = defineEmits<{
   (e: 'select-audience', arg: IAudience) : void
 }>();
 
-const web_site = "mipt.site";
+// const web_site = "mipt.site";
 // const web_site = "localhost";
-// const web_site = "127.0.0.1";
+const web_site = "127.0.0.1";
 
 let is_random_selected = ref<Boolean>(false);
 let building_arr = ref<Array<IBuilding>>([]);

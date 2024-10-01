@@ -12,6 +12,10 @@ interface BBNumber {
   number_bb: number
 }
 
+const web_site = "mipt.site";
+// const web_site = "localhost";
+// const web_site = "127.0.0.1";
+
 let token = ref<string|null>(null);
 
 let username = ref<string|null>(null);
@@ -25,7 +29,7 @@ onMounted(()=>{
 
 async function loadBBNumber(){
   try {
-    const response = await fetch("https://mipt.site:8000/base-info/users_wallet/?username=" + username,{
+    const response = await fetch("https://" + web_site + ":8000/base-info/users_wallet/?username=" + username.value,{
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -43,7 +47,7 @@ async function loadBBNumber(){
 
     const data_number = await response.json() as BBNumber[];
 
-    username.value = data_number[0].username;
+    // username.value = data_number[0].username;
     number_bb.value = String(data_number[0].number_bb);
 
     console.log('Ответ от сервера header data_number:', data_number[0]);
