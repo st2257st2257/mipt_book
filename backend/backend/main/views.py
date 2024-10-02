@@ -22,8 +22,7 @@ from .services import \
     get_timetable, \
     check_token, \
     get_book_audience_response, \
-    create_user_wallet, \
-    book_to_history
+    create_user_wallet
 
 import datetime
 
@@ -274,19 +273,32 @@ def index_stop_booking(request):
     #   "audience": "audience_number"
     # }
     if request.method == 'POST':
-        if request.POST.get('type') == "stop_booking":
-            token = request.POST.get('token', '')
-            audience_number = request.POST.get('audience', '')
+        data_request = json.loads(list(request.POST.dict())[0])
+        if data_request.get('type') == "stop_booking":
+            token = data_request.get('token', '')
+            audience_number = data_request.get('audience', '')
             try:
                 check_token_result = asyncio.run(check_token(token))
                 if check_token_result["result"]:
                     # TODO: сделать отдельную функцию для превращения бронирования в историю
-                    if len(Book.objects.filter(audience__number=audience_number)) == 1:
+                    booking_number = len(Book.objects.filter(audience__number=audience_number))
+                    if booking_number == 1:
                         book_item = Book.objects.get(audience__number=audience_number)
                         book_item.to_history()
+                        return Response(
+                            {
+                                "result": True,
+                                "audience": audience_number,
+                                "token": token
+                            },
+                            status=status.HTTP_201_CREATED)
                     else:
                        return Response(
-                           {"Error": "BookingError", "value": "max length is 1, you got "},
+                           {
+                               "Error": "BookingError",
+                               "value": f"length must be is 1, you got {booking_number}",
+                               "audience": f"{audience_number}"
+                           },
                            status=status.HTTP_501_NOT_IMPLEMENTED)
                 else:
                     pass

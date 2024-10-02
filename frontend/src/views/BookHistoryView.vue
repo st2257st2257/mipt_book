@@ -7,6 +7,7 @@ import BookAudience from "@/components/book/BookAudience.vue";
 
 import {ref, type Ref, onMounted, reactive, type Reactive, defineExpose} from 'vue';
 import type {IAudience} from "@/classes/Interfaces";
+import { useRouter } from 'vue-router';
 
 interface BookItem {
   audience: string,
@@ -103,6 +104,33 @@ async function loadActualBookHistory(){
   }
 }
 
+async function cancelBooking(audience_number: string){
+  try {
+    const response = await fetch("https://" + web_site + ":8000/stop_booking/",{
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: JSON.stringify({
+        "type": "stop_booking",
+        'token': token.value,
+        'audience': audience_number // form_audience_name.value
+      })
+    });
+
+    if (!response.ok) {
+      console.error('Сеть ответила с ошибкой: ' + response.status);
+    }
+    if (response.ok) {
+        const data = await response.json();
+        console.log('Ответ от сервера:', data);
+    } else {
+        console.error('Ошибка запроса:', response.status);
+    }
+
+  } catch (error) {
+    console.error('Ошибка при отправке данных:', error);
+  }
+}
+
 
 async function loadBookHistory(){
   try {
@@ -154,20 +182,22 @@ async function loadBookHistory(){
           <th>Время</th>
           <th>Комната</th>
           <th>Номер пары</th>
+          <th>Действие</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="actual_item in actual_book_items">
           <td>{{actual_item.date}}</td>
-          <td>{{actual_item.booking_time}}</td>
+          <td>{{actual_item.booking_time.slice(0, 8)}}</td>
           <td>{{actual_item.audience.number}}</td>
           <td>{{actual_item.pair_number}}</td>
+          <td><button class="cancel-button" @click="cancelBooking(actual_item.audience.number)">Завершить</button></td>
         </tr>
       </tbody>
      </table>
 
     <h2>История бронирования</h2>
-    <table class="booking-table">
+    <table class="booking-table" style="padding-bottom: 70px;">
       <thead>
         <tr>
           <th>Дата</th>
@@ -179,7 +209,7 @@ async function loadBookHistory(){
       <tbody>
         <tr v-for="book in book_history">
           <td>{{book.date}}</td>
-          <td>{{book.booking_time}}</td>
+          <td>{{book.booking_time.slice(0, 8)}}</td>
           <td>{{book.audience}}</td>
           <td>{{book.pair_number}}</td>
         </tr>
@@ -228,6 +258,26 @@ async function loadBookHistory(){
       background-color: #f2f2f2;
       font-weight: bold;
     }
+.cancel-button {
+  display: inline-block;
+  padding: 8px 12px;
+  background-color: #dc3545; /*Красный цвет */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
 
+.cancel-button:hover {
+  background-color: #c82333; /*Более темный красный цвет */
+}
+
+.cancel-button:active {
+  background-color: #b0212b; /*Еще более темный красный цвет */
+  transform: translateY(2px); /*Эффект нажатия */
+}
 
 </style>

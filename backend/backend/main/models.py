@@ -243,21 +243,13 @@ class BookAdmin(admin.ModelAdmin):
         """ Завершение бронирования и перевод бронирования в историю """
         # TODO: добавить условие на снятие бронирования по нужному фильтру
         for booking in queryset:
-            # history_booking = BookHistory(
-            #     audience=booking.audience.number,  # CharField
-            #     user=booking.user.username,        # CharField
-            #     number_bb=booking.number_bb,       # FloatField
-            #     pair_number=booking.pair_number,   # IntegerField
-            #     date=booking.date,                 # DateField
-            #     booking_time=booking.booking_time, # TimeField
-            #     visibility=booking.visibility,     # IntegerField
-            # )
-            # history_booking.save()
-            booking.to_history()
+            # Меняем статус аудитории
             audience = Audience.objects.get(number=booking.audience.number)
             free_status = AudienceStatus.objects.get(name="Свободно")
             audience.audience_status = free_status
             audience.save()
+            # Переводим бронирование в историю
+            booking.to_history()
         queryset.delete()
 
     @admin.action(description="Остановить бронирование")
