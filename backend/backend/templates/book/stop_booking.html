@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>TEST STOP BOOKING</h1>
+
+  <form action="https://127.0.0.1:8000/stop_booking/" method="post">
+      {% csrf_token %}
+      <h3>Завершения бронирования аудитории</h3>
+      Number: <input type="test" name="audience" value="512"><br><br>
+      Type: <input type="text" name="type" value="stop_booking"><br><br>
+      Token : <input type="text" name="token" value="c67eff75e899cdc3934df0efd50f35ee7ff726b4"><br><br>
+      <input type="submit" class="button1" value="Остановить бронирование"><br><br>
+  </form>
+
+</body>
+</html>

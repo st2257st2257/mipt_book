@@ -93,6 +93,19 @@ class Book(models.Model):
     def __str__(self):
         return f'Book: {self.user.username}|{self.number_bb}'
 
+    def to_history(self):
+        history_booking = BookHistory(
+            audience=self.audience.number,  # CharField
+            user=self.user.username,        # CharField
+            number_bb=self.number_bb,       # FloatField
+            pair_number=self.pair_number,   # IntegerField
+            date=self.date,                 # DateField
+            booking_time=self.booking_time, # TimeField
+            visibility=self.visibility,     # IntegerField
+        )
+        history_booking.save()
+        Book.objects.filter(id=self.id).delete()
+
 
 class BookHistory(models.Model):
     audience = models.CharField(max_length=255, blank=True)
@@ -139,20 +152,6 @@ class DayHistory(models.Model):
         related_name="audience_day_history",
         blank=True,
         null=True)
-    #tags = fields.ArrayField(
-    #    BookPair(
-    #        number_bb=0,
-    #        pair_number=0
-    #    ),
-    #    blank=True,
-    #    null=True)
-    #pair = models.ArrayField(
-    #    BookPair(
-    #        number_bb=0,
-    #        pair_number=0
-    #    ),
-    #    size=8,
-    #)
     pair = fields.ArrayField(
         fields.ArrayField(
             models.CharField(max_length=255, blank=True),
@@ -236,6 +235,36 @@ class UsersWalletAdmin(admin.ModelAdmin):
 class BookAdmin(admin.ModelAdmin):
     search_fields = ("id", "audience", "user", "number_bb", "pair_number", "date", "booking_time")
     list_display = ("id", "audience", "user", "number_bb", "pair_number", "date", "booking_time", )
+
+    actions = ["finish_booking", "stop_booking", "cancel_booking"]
+
+    @admin.action(description="Завершить бронирование")
+    def finish_booking(self, request, queryset):
+        """ Завершение бронирования и перевод бронирования в историю """
+        # TODO: добавить условие на снятие бронирования по нужному фильтру
+        for booking in queryset:
+            # Меняем статус аудитории
+            audience = Audience.objects.get(number=booking.audience.number)
+            free_status = AudienceStatus.objects.get(name="Свободно")
+            audience.audience_status = free_status
+            audience.save()
+            # Переводим бронирование в историю
+            booking.to_history()
+        queryset.delete()
+
+    @admin.action(description="Остановить бронирование")
+    def stop_booking(self, request, queryset):
+        """ Остановка бронирования. По определенной причине """
+        # excluded_status = AudienceStatus.objects.get(name="Отсутствует для бронирования")
+        # queryset.update(audience_status=excluded_status)
+        pass
+
+    @admin.action(description="Отменить бронирование")
+    def cancel_booking(self, request, queryset):
+        """ Отмена бронирования и перевод аудитории в статус свободной для бронирования """
+        # excluded_status = AudienceStatus.objects.get(name="Отсутствует для бронирования")
+        # queryset.update(audience_status=excluded_status)
+        pass
 
 
 @admin.register(BookHistory)

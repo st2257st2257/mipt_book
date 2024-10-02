@@ -7,6 +7,7 @@ import BookAudience from "@/components/book/BookAudience.vue";
 
 import {ref, type Ref, onMounted, reactive, type Reactive, defineExpose} from 'vue';
 import type {IAudience} from "@/classes/Interfaces";
+import { useRouter } from 'vue-router';
 
 interface BookItem {
   audience: string,
@@ -16,6 +17,27 @@ interface BookItem {
   date: string,
   booking_time: string
 }
+
+interface User {
+    username: string;
+}
+
+interface AudienceItem {
+    number: string;
+    description: string;
+    audience_status: string;
+}
+
+interface ActualBookItem {
+  audience: AudienceItem,
+  user: User,
+  number_bb: number,
+  pair_number: number,
+  date: string,
+  booking_time: string
+}
+
+let actual_book_items: Ref<ActualBookItem[]> = ref([]);
 
 const web_site = "mipt.site";
 // const web_site = "localhost";
@@ -44,12 +66,13 @@ onMounted(()=>{
   username.value = localStorage.getItem("username");
   if(token.value == null) return;
   loadBookHistory();
+  loadActualBookHistory();
 });
 
 
 async function loadActualBookHistory(){
   try {
-    const response = await fetch("https://" + web_site + ":8000/base-info/history/?user=" + username.value,{
+    const response = await fetch("https://" + web_site + ":8000/base-info/book/?user=" + username.value,{
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -66,24 +89,43 @@ async function loadActualBookHistory(){
       }
     }
 
-    const data_number = await response.json() as BookItem[];
-    book_history.value = data_number;
+    const data_number = await response.json() as ActualBookItem[];
+    actual_book_items.value = data_number;
     // audiences_gk.value = data_number.filter(item => item.building.name == 'ГК');
     // audiences_lk.value = data_number.filter(item => item.building.name == 'ЛК');
 
     // username.value = data_number[0].username;
     // number_bb.value = String(data_number[0].number_bb);
 
-    console.log('Ответ от сервера header data_number:', data_number);
+    console.log('Ответ от сервера header actual_book_items:', actual_book_items);
     console.log('Ответ от сервера header book_history.value[0]:', book_history.value[0]);
-    // console.log('Ответ от сервера header number_bb:', number_bb);
-    // console.log('Ответ от сервера header username.value:', username.value);
-    // console.log('Ответ от сервера header number_bb.value:', number_bb.value);
-    // user_name.first_name = data.name.first_name;
-    // user_name.last_name = data.name.last_name;
-    // user_name.third_name = data.name.third_name;
-    // institute_group.value = data.institute_group;
-    // book_rating.value = data.book_rate;
+  } catch (error) {
+    console.error('Ошибка при отправке данных:', error);
+  }
+}
+
+async function cancelBooking(audience_number: string){
+  try {
+    const response = await fetch("https://" + web_site + ":8000/stop_booking/",{
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: JSON.stringify({
+        "type": "stop_booking",
+        'token': token.value,
+        'audience': audience_number // form_audience_name.value
+      })
+    });
+
+    if (!response.ok) {
+      console.error('Сеть ответила с ошибкой: ' + response.status);
+    }
+    if (response.ok) {
+        const data = await response.json();
+        console.log('Ответ от сервера:', data);
+    } else {
+        console.error('Ошибка запроса:', response.status);
+    }
+
   } catch (error) {
     console.error('Ошибка при отправке данных:', error);
   }
@@ -119,18 +161,48 @@ async function loadBookHistory(){
 
     console.log('Ответ от сервера header data_number:', data_number);
     console.log('Ответ от сервера header book_history.value[0]:', book_history.value[0]);
-    // console.log('Ответ от сервера header number_bb:', number_bb);
-    // console.log('Ответ от сервера header username.value:', username.value);
-    // console.log('Ответ от сервера header number_bb.value:', number_bb.value);
-    // user_name.first_name = data.name.first_name;
-    // user_name.last_name = data.name.last_name;
-    // user_name.third_name = data.name.third_name;
-    // institute_group.value = data.institute_group;
-    // book_rating.value = data.book_rate;
   } catch (error) {
     console.error('Ошибка при отправке данных:', error);
   }
 }
+
+  function showNotification_id(audience_number: string) {
+      if (document.getElementById(String(audience_number))) {
+        document.getElementById(String(audience_number))?.classList.add("show");
+        document.getElementById(String(audience_number))?.classList.add("good_action");
+
+        let array_id = ["date_", "time_", "number_", "pair_", "button_"];
+        for (let i = 0; i < 5; i++) {
+            if (document.getElementById(array_id[i] + String(audience_number))) {
+                document.getElementById(array_id[i] + String(audience_number))?.classList.add("item_hidden");
+            }
+            else {
+                console.error('Элемент с id "' + array_id[i] + audience_number + '" не найден');
+            }
+        }
+      } else {
+        console.error('Элемент с id "' + audience_number + '" не найден');
+      }
+
+      setTimeout(hideNotification, 2000, String(audience_number));
+    }
+
+    function showNotification(notificationId: string) {
+      if (document.getElementById(notificationId)) {
+        document.getElementById(notificationId)?.classList.add("show");
+      } else {
+        console.error('Элемент с id "' + notificationId + '" не найден');
+      }
+
+    }
+
+    function hideNotification(notificationId: string) {
+      if (document.getElementById(notificationId)) {
+        document.getElementById(notificationId)?.classList.remove("show");
+      } else {
+        console.error('Элемент с id "' + notificationId + '" не найден');
+      }
+    }
 
 </script>
 
@@ -139,9 +211,31 @@ async function loadBookHistory(){
     <Header />
 
   </div>
+    <h2>Актуальные бронирования:</h2>
+    <table class="booking-table">
+      <thead>
+        <tr>
+          <th>Дата</th>
+          <th>Время</th>
+          <th>Комната</th>
+          <th>Номер пары</th>
+          <th>Действие</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr v-for="actual_item in actual_book_items" :id="`tr_${actual_item.audience.number}`">
+          <td :id="`date_${actual_item.audience.number}`">{{actual_item.date}}</td>
+          <td :id="`time_${actual_item.audience.number}`">{{actual_item.booking_time.slice(0, 8)}}</td>
+          <td :id="`number_${actual_item.audience.number}`">{{actual_item.audience.number}}</td>
+          <td :id="`pair_${actual_item.audience.number}`">{{actual_item.pair_number}}</td>
+          <td :id="`button_${actual_item.audience.number}`"><button class="cancel-button" @click="cancelBooking(actual_item.audience.number);showNotification_id(actual_item.audience.number);">Завершить</button></td>
+        </tr>
+      </tbody>
+     </table>
 
     <h2>История бронирования</h2>
-    <table class="booking-table">
+    <table class="booking-table" style="padding-bottom: 70px;">
       <thead>
         <tr>
           <th>Дата</th>
@@ -153,14 +247,21 @@ async function loadBookHistory(){
       <tbody>
         <tr v-for="book in book_history">
           <td>{{book.date}}</td>
-          <td>{{book.booking_time}}</td>
+          <td>{{book.booking_time.slice(0, 8)}}</td>
           <td>{{book.audience}}</td>
           <td>{{book.pair_number}}</td>
         </tr>
       </tbody>
     </table>
 
-
+  <div class="notification-container">
+      <div v-for="actual_item in actual_book_items">
+        <div class="notification" :id="actual_item.audience.number">
+          <p>Бронирование аудитории {{actual_item.audience.number}} завершено</p>
+          <span class="notification-close" @click="hideNotification(actual_item.audience.number)">×</span>
+        </div>
+      </div>
+  </div>
 </template>
 
 <style scoped>
@@ -202,6 +303,71 @@ async function loadBookHistory(){
       background-color: #f2f2f2;
       font-weight: bold;
     }
+.cancel-button {
+  display: inline-block;
+  padding: 8px 12px;
+  background-color: #dc3545; /*Красный цвет */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
 
+.cancel-button:hover {
+  background-color: #c82333; /*Более темный красный цвет */
+}
+
+.cancel-button:active {
+  background-color: #b0212b; /*Еще более темный красный цвет */
+  transform: translateY(2px); /*Эффект нажатия */
+}
+
+    .notification-container {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      z-index: 1000;
+    }
+
+    .good_action {
+        background-color: #cfc;
+    }
+
+    .warning_action {
+        background-color: #ffc;
+    }
+
+    .bad_action {
+        background-color: #fcc;
+    }
+
+    .notification {
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      padding: 15px;
+      margin-bottom: 10px; /*Отступ между уведомлениями */
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+      display: none;
+    }
+
+    .notification.show {
+      opacity: 1;
+      display: block;
+    }
+
+    .notification-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+    }
+
+    .item_hidden{
+        visibility: hidden;
+    }
 
 </style>

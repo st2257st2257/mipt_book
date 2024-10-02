@@ -33,6 +33,7 @@ router.register(r'history', views.BookHistoryViewSet)
 urlpatterns = [
     path('base-info/', include(router.urls)),
     path('book/', views.book_audience),
+    path('stop_booking/', views.index_stop_booking),
     path('timetable/', views.index_timetable),
     path('wallet/', views.index_user_wallet),
     path('admin/', admin.site.urls),

@@ -261,3 +261,59 @@ def index_timetable(request):
         return Response(
                 {"Error": "BAD_REQUEST_TYPE"}
         )
+
+
+@csrf_exempt
+@api_view(('POST', 'GET'))
+def index_stop_booking(request):
+    # DATA FORMAT (POST):
+    # {
+    #   "token":    "this_is_your_token",
+    #   "type":     "stop_booking",
+    #   "audience": "audience_number"
+    # }
+    if request.method == 'POST':
+        data_request = json.loads(list(request.POST.dict())[0])
+        if data_request.get('type') == "stop_booking":
+            token = data_request.get('token', '')
+            audience_number = data_request.get('audience', '')
+            try:
+                check_token_result = asyncio.run(check_token(token))
+                if check_token_result["result"]:
+                    # TODO: сделать отдельную функцию для превращения бронирования в историю
+                    books = Book.objects.filter(audience__number=audience_number)
+                    booking_number = len(books)
+                    if booking_number == 1:
+                        book_item = Book.objects.get(audience__number=audience_number)
+                        book_item.to_history()
+                        return Response(
+                            {
+                                "result": True,
+                                "audience": audience_number,
+                                "token": token
+                            },
+                            status=status.HTTP_201_CREATED)
+                    else:
+                       books.delete()
+                       return Response(
+                           {
+                               "Error": "BookingError",
+                               "value": f"length must be is 1, you got {booking_number}",
+                               "audience": f"{audience_number}"
+                           },
+                           status=status.HTTP_501_NOT_IMPLEMENTED)
+                else:
+                    pass
+            except ConnectionError as e:
+                return Response(
+                    {"Error": "ConnectionError", "value": str(e)},
+                    status=status.HTTP_503_SERVICE_UNAVAILABLE)
+            except Exception as e:
+                return Response({"Error": "Error", "value": str(e)},
+                                status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        else:
+            return Response(
+                {"Error": "BAD_REQUEST_TYPE"},
+                status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+    if request.method == 'GET':
+        return render(request, 'book/stop_booking.html')
