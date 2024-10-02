@@ -39,9 +39,9 @@ interface ActualBookItem {
 
 let actual_book_items: Ref<ActualBookItem[]> = ref([]);
 
-// const web_site = "mipt.site";
+const web_site = "mipt.site";
 // const web_site = "localhost";
-const web_site = "127.0.0.1";
+// const web_site = "127.0.0.1";
 
 let book_history: Ref<BookItem[]> = ref([]);
 
@@ -166,6 +166,44 @@ async function loadBookHistory(){
   }
 }
 
+  function showNotification_id(audience_number: string) {
+      if (document.getElementById(String(audience_number))) {
+        document.getElementById(String(audience_number))?.classList.add("show");
+        document.getElementById(String(audience_number))?.classList.add("good_action");
+
+        let array_id = ["date_", "time_", "number_", "pair_", "button_"];
+        for (let i = 0; i < 5; i++) {
+            if (document.getElementById(array_id[i] + String(audience_number))) {
+                document.getElementById(array_id[i] + String(audience_number))?.classList.add("item_hidden");
+            }
+            else {
+                console.error('Элемент с id "' + array_id[i] + audience_number + '" не найден');
+            }
+        }
+      } else {
+        console.error('Элемент с id "' + audience_number + '" не найден');
+      }
+
+      setTimeout(hideNotification, 2000, String(audience_number));
+    }
+
+    function showNotification(notificationId: string) {
+      if (document.getElementById(notificationId)) {
+        document.getElementById(notificationId)?.classList.add("show");
+      } else {
+        console.error('Элемент с id "' + notificationId + '" не найден');
+      }
+
+    }
+
+    function hideNotification(notificationId: string) {
+      if (document.getElementById(notificationId)) {
+        document.getElementById(notificationId)?.classList.remove("show");
+      } else {
+        console.error('Элемент с id "' + notificationId + '" не найден');
+      }
+    }
+
 </script>
 
 <template>
@@ -173,7 +211,6 @@ async function loadBookHistory(){
     <Header />
 
   </div>
-
     <h2>Актуальные бронирования:</h2>
     <table class="booking-table">
       <thead>
@@ -186,12 +223,13 @@ async function loadBookHistory(){
         </tr>
       </thead>
       <tbody>
-        <tr v-for="actual_item in actual_book_items">
-          <td>{{actual_item.date}}</td>
-          <td>{{actual_item.booking_time.slice(0, 8)}}</td>
-          <td>{{actual_item.audience.number}}</td>
-          <td>{{actual_item.pair_number}}</td>
-          <td><button class="cancel-button" @click="cancelBooking(actual_item.audience.number)">Завершить</button></td>
+
+        <tr v-for="actual_item in actual_book_items" :id="`tr_${actual_item.audience.number}`">
+          <td :id="`date_${actual_item.audience.number}`">{{actual_item.date}}</td>
+          <td :id="`time_${actual_item.audience.number}`">{{actual_item.booking_time.slice(0, 8)}}</td>
+          <td :id="`number_${actual_item.audience.number}`">{{actual_item.audience.number}}</td>
+          <td :id="`pair_${actual_item.audience.number}`">{{actual_item.pair_number}}</td>
+          <td :id="`button_${actual_item.audience.number}`"><button class="cancel-button" @click="cancelBooking(actual_item.audience.number);showNotification_id(actual_item.audience.number);">Завершить</button></td>
         </tr>
       </tbody>
      </table>
@@ -216,7 +254,14 @@ async function loadBookHistory(){
       </tbody>
     </table>
 
-
+  <div class="notification-container">
+      <div v-for="actual_item in actual_book_items">
+        <div class="notification" :id="actual_item.audience.number">
+          <p>Бронирование аудитории {{actual_item.audience.number}} завершено</p>
+          <span class="notification-close" @click="hideNotification(actual_item.audience.number)">×</span>
+        </div>
+      </div>
+  </div>
 </template>
 
 <style scoped>
@@ -279,5 +324,50 @@ async function loadBookHistory(){
   background-color: #b0212b; /*Еще более темный красный цвет */
   transform: translateY(2px); /*Эффект нажатия */
 }
+
+    .notification-container {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      z-index: 1000;
+    }
+
+    .good_action {
+        background-color: #cfc;
+    }
+
+    .warning_action {
+        background-color: #ffc;
+    }
+
+    .bad_action {
+        background-color: #fcc;
+    }
+
+    .notification {
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      padding: 15px;
+      margin-bottom: 10px; /*Отступ между уведомлениями */
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+      display: none;
+    }
+
+    .notification.show {
+      opacity: 1;
+      display: block;
+    }
+
+    .notification-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+    }
+
+    .item_hidden{
+        visibility: hidden;
+    }
 
 </style>

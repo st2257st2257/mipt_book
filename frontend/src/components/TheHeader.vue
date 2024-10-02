@@ -12,9 +12,9 @@ interface BBNumber {
   number_bb: number
 }
 
-// const web_site = "mipt.site";
+const web_site = "mipt.site";
 // const web_site = "localhost";
-const web_site = "127.0.0.1";
+// const web_site = "127.0.0.1";
 
 let token = ref<string|null>(null);
 
