@@ -22,9 +22,9 @@ function selectAmount(amount: Number){
 let token = ref<string|null>(null);
 let username = ref<string|null>(null);
 
-const web_site = "mipt.site";
+// const web_site = "mipt.site";
 // const web_site = "localhost";
-// const web_site = "127.0.0.1";
+const web_site = "127.0.0.1";
 
 onMounted(()=>{
   token.value = localStorage.getItem("auth-token");
@@ -38,7 +38,7 @@ async function sendForm(){
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: JSON.stringify({
         "type": "book_audience",
-        'token': token.value, // "73d854268d8c273874ec592f7b2e03f6276093df"
+        'token': token.value,
         'audience': form_audience_name.value,
         'number_bb': form_number_bb.value,
         'pair_number': form_pair_number.value,

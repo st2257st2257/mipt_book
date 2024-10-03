@@ -29,9 +29,9 @@ interface Building {
   description: string
 }
 
-const web_site = "mipt.site";
+// const web_site = "mipt.site";
 // const web_site = "localhost";
-// const web_site = "127.0.0.1";
+const web_site = "127.0.0.1";
 
 let audiences: Ref<Audience[]> = ref([]);
 let audiences_gk: Ref<Audience[]> = ref([]);

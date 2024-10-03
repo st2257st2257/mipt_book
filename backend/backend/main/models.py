@@ -60,6 +60,24 @@ class Audience(models.Model):
     def __str__(self):
         return f'Audience: {self.number}|{self.building.name}'
 
+    def make_free(self, pair_number):
+        self.day_history.pair[pair_number][1] = "Свободно"
+        self.audience_status = AudienceStatus.objects.get(name="Свободно")
+        self.day_history.save()
+        self.save()
+
+    def make_all_free(self):
+        for i in range(len(self.day_history.pair)):
+            self.day_history.pair[i][1] = "Свободно"
+        self.audience_status = AudienceStatus.objects.get(name="Свободно")
+        self.day_history.save()
+        self.save()
+
+    def make_booked(self):
+        # TODO: очистить дневную историю
+        self.audience_status = AudienceStatus.objects.get("Занято")
+        self.save()
+
 
 class UsersWallet(models.Model):
     username = models.CharField(max_length=255, blank=True)
@@ -94,6 +112,9 @@ class Book(models.Model):
         return f'Book: {self.user.username}|{self.number_bb}'
 
     def to_history(self):
+        audience = Audience.objects.get(number=self.audience.number)
+        audience.make_free(pair_number=self.pair_number)
+
         history_booking = BookHistory(
             audience=self.audience.number,  # CharField
             user=self.user.username,        # CharField
@@ -105,6 +126,10 @@ class Book(models.Model):
         )
         history_booking.save()
         Book.objects.filter(id=self.id).delete()
+        pass
+
+    def clear_booked_audiences(self):
+        pass
 
 
 class BookHistory(models.Model):
