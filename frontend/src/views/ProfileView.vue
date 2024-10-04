@@ -186,7 +186,7 @@ async function sendEditNameForm(){
     // form_last_name.value = document.getElementById("last_name_input")?.value;
     // form_third_name.value = document.getElementById("third_name_input")?.value;
 
-    const response = await fetch("https://127.0.0.1:8088/edit_user_name/",{
+    const response = await fetch("https://" + web_site + ":8088/edit_user_name/",{
       method: 'POST',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: JSON.stringify({
