@@ -280,12 +280,12 @@ def index_stop_booking(request):
             try:
                 check_token_result = asyncio.run(check_token(token))
                 if check_token_result["result"]:
-                    # TODO: сделать отдельную функцию для превращения бронирования в историю
                     books = Book.objects.filter(audience__number=audience_number)
                     booking_number = len(books)
                     if booking_number == 1:
                         book_item = Book.objects.get(audience__number=audience_number)
                         book_item.to_history()
+
                         return Response(
                             {
                                 "result": True,
@@ -294,14 +294,15 @@ def index_stop_booking(request):
                             },
                             status=status.HTTP_201_CREATED)
                     else:
-                       books.delete()
-                       return Response(
-                           {
-                               "Error": "BookingError",
-                               "value": f"length must be is 1, you got {booking_number}",
-                               "audience": f"{audience_number}"
-                           },
-                           status=status.HTTP_501_NOT_IMPLEMENTED)
+                        for booking in books:
+                            booking.to_history()
+                        return Response(
+                            {
+                                "Error": "BookingError",
+                                "value": f"length must be is 1, you got {booking_number}",
+                                "audience": f"{audience_number}"
+                            },
+                            status=status.HTTP_501_NOT_IMPLEMENTED)
                 else:
                     pass
             except ConnectionError as e:

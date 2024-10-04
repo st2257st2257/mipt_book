@@ -11,6 +11,7 @@ from rest_framework import status
 from rest_framework.authtoken.models import Token
 
 from django.core.exceptions import ObjectDoesNotExist
+import json
 
 
 class IndexAuth(APIView):
@@ -85,20 +86,26 @@ def register_user(request):
 @api_view(['POST'])
 def edit_user_name(request):
     if request.method == 'POST':
-        token  = request.POST.get("token", "")
+        data_request = json.loads(list(request.POST.dict())[0])
+        token  = data_request.get("token", "")
         try:
             user = Token.objects.get(key=token).user
             if user is not None:
-                if request.POST.get('type') == "edit_user_name" or \
-                    request.POST.get('type') == "edit_user_email":
-                    serializer = UserSerializer(user, data=request.data, partial=True)
+                if data_request.get('type') == "edit_user_name" or \
+                    data_request.get('type') == "edit_user_email":
+                    serializer = UserSerializer(user, data=data_request, partial=True)
                     if serializer.is_valid():
                         serializer.save()
-                        return Response({"Result": "True"}, status=status.HTTP_202_ACCEPTED)
+                        return Response(
+                            {
+                                "Result": "True",
+                                "serializer": str(serializer)
+                            },
+                            status=status.HTTP_202_ACCEPTED)
                     else:
                         return Response(serializer.data, status=status.HTTP_406_NOT_ACCEPTABLE)
-                elif request.POST.get('type') == "edit_user_group":
-                    group_name  = request.POST.get("group", "Б02-001")
+                elif data_request.get('type') == "edit_user_group":
+                    group_name  = data_request.get("group", "Б02-001")
                     group = InstituteGroup.objects.filter(name=group_name)
                     if len(group) == 1:
                         user.institute_group = group[0]
@@ -124,5 +131,9 @@ def edit_user_name(request):
                     status=status.HTTP_400_BAD_REQUEST)
         except ObjectDoesNotExist as e:
             return Response(
-                {"Error": "BAD_REQUEST_TYPE", "Description": f"Wrong token: {e}"},
+                {
+                    "Error": "BAD_REQUEST_TYPE",
+                    "Description": f"Wrong token: {e}",
+                    "request.POST": f"{json.loads(list(request.POST.dict())[0])}"
+                },
                  status=status.HTTP_400_BAD_REQUEST)

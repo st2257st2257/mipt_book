@@ -152,7 +152,9 @@ async function loadBookHistory(){
     }
 
     const data_number = await response.json() as BookItem[];
-    book_history.value = data_number;
+    book_history.value = data_number.reverse();
+
+
     // audiences_gk.value = data_number.filter(item => item.building.name == 'ГК');
     // audiences_lk.value = data_number.filter(item => item.building.name == 'ЛК');
 

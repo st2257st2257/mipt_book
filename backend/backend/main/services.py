@@ -124,10 +124,12 @@ def get_book_audience_response(
     new_book.save()
     audience = Audience.objects.get(number=number)
     if audience.day_history.pair[pair_number][1] == "Свободно":
+        # TODO: сделать изменение статуса аудитории при бронировании
         audience.day_history.pair[pair_number][1] = "Занято"
         audience.day_history.pair[pair_number][2] = user
         audience.day_history.pair[pair_number][3] = str(number_bb)
         audience.audience_status = AudienceStatus.objects.get(name="Занято")
+        audience.audience_status.save()
         audience.day_history.save()
         audience.save()
         return Response(

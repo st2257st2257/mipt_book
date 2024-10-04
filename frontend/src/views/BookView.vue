@@ -38,7 +38,7 @@ async function sendForm(){
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: JSON.stringify({
         "type": "book_audience",
-        'token': token.value, // "73d854268d8c273874ec592f7b2e03f6276093df"
+        'token': token.value,
         'audience': form_audience_name.value,
         'number_bb': form_number_bb.value,
         'pair_number': form_pair_number.value,
