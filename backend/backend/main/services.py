@@ -129,6 +129,7 @@ def get_book_audience_response(
         audience.day_history.pair[pair_number][2] = user
         audience.day_history.pair[pair_number][3] = str(number_bb)
         audience.audience_status = AudienceStatus.objects.get(name="Занято")
+        audience.audience_status.save()
         audience.day_history.save()
         audience.save()
         return Response(

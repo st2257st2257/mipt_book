@@ -1,4 +1,5 @@
 import {createRouter, createWebHistory} from 'vue-router'
+import TestPageView from "@/views/TestPageView.vue";
 import BookView from "@/views/BookView.vue";
 import AuthView from "@/views/AuthView.vue";
 import AuthLoginView from "@/views/AuthLoginView.vue";
@@ -18,6 +19,7 @@ const routesAuth = [
 
 const routesBooking = [
     {path: '/', component: BookView},
+    {path: '/test-page/', component: TestPageView},
     {path: '/book-history/', component: BookHistoryView}
 ]
 

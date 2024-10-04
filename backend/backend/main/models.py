@@ -226,7 +226,7 @@ class AudienceAdmin(admin.ModelAdmin):
     search_fields = ("id", "number", "building", "description")
     list_display = ("id", "number", "building", "number_of_users", "audience_status",)
 
-    actions = ["make_free", "make_booked", "make_excluded", "make_all_free"]
+    actions = ["make_free", "make_booked", "make_excluded", "make_all_free", "cancel_daily_booking"]
 
     @admin.action(description="Сделать свободными")
     def make_free(self, request, queryset):
@@ -248,6 +248,17 @@ class AudienceAdmin(admin.ModelAdmin):
         excluded_status = AudienceStatus.objects.get(name="Свободно")
         queryset.filter(audience_status__name="Занято").update(audience_status=excluded_status)
         queryset.filter(audience_status__name="Скоро освободиться").update(audience_status=excluded_status)
+
+    @admin.action(description="Удалить бронирования на день")
+    def cancel_daily_booking(self, request, queryset):
+        excluded_status = AudienceStatus.objects.get(name="Свободно")
+        queryset.filter(audience_status__name="Занято").update(audience_status=excluded_status)
+        queryset.filter(audience_status__name="Скоро освободиться").update(audience_status=excluded_status)
+        for item in queryset.filter():
+            for i in range(len(item.day_history.pair)):
+                item.day_history.pair[i][1] = "Свободно"
+                item.day_history.save()
+            item.save()
 
 
 @admin.register(UsersWallet)
