@@ -136,7 +136,7 @@ def get_book_audience_response(
             {
                 "result": True,
                 "audience": new_book.audience.number,
-                "user": new_book.user.username,
+                "user": "user", #new_book.user.username,
                 "number_bb": number_bb,
                 "pair_number": pair_number
             },

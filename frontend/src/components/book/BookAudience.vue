@@ -6,6 +6,7 @@ const emit = defineEmits<{
   (e: 'select-audience', arg: IAudience) : void
 }>();
 
+// DO THIS
 const web_site = "mipt.site";
 // const web_site = "localhost";
 // const web_site = "127.0.0.1";

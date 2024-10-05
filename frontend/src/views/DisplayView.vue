@@ -29,6 +29,7 @@ interface Building {
   description: string
 }
 
+// DO THIS
 const web_site = "mipt.site";
 // const web_site = "localhost";
 // const web_site = "127.0.0.1";
@@ -110,7 +111,7 @@ defineExpose({ filteredItems });
   <div class="room-list room-list-grid" style="padding-bottom: 70px;">
     <template v-for="audience in audiences_gk">
         <div :class="['room-item', `background_${audience.audience_status.name}`, `number_of_users${audience.number_of_users}`]"
-        style="max-width: 200px; max-height: 100px; min-height: 100px; min-width: 150px;">
+        style="max-width: 150px; max-height: 100px; min-height: 100px; min-width: 150px;">
             <i class="icon fas fa-door-open status-available"></i>
             <p>Аудитория {{audience.number}} {{audience.building.name}}</p>
             <p>{{audience.audience_status.name}}</p>
@@ -132,7 +133,7 @@ defineExpose({ filteredItems });
   <div class="room-list room-list-grid" style="padding-bottom: 70px;">
     <template v-for="audience in audiences_lk">
         <div :class="['room-item', `background_${audience.audience_status.name}`, `number_of_users${audience.number_of_users}`]"
-        style="max-width: 200px; max-height: 100px; min-height: 100px; min-width: 150px;">
+        style="max-width: 150px; max-height: 100px; min-height: 100px; min-width: 150px;">
             <i class="icon fas fa-door-open status-available"></i>
             <p>Аудитория {{audience.number}} {{audience.building.name}}</p>
             <p>{{audience.audience_status.name}}</p>
@@ -169,7 +170,7 @@ defineExpose({ filteredItems });
   @media (max-width: 768px) {
     .room-list-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 200px));
+      grid-template-columns: repeat(auto-fit, minmax(100px, 150px));
       grid-column-gap: 20px;
     }
   }
@@ -177,7 +178,7 @@ defineExpose({ filteredItems });
   @media (min-width: 768px) {
     .room-list-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 200px));
+      grid-template-columns: repeat(auto-fit, minmax(100px, 150px));
       grid-column-gap: 20px;
     }
   }

@@ -22,6 +22,7 @@ function selectAmount(amount: Number){
 let token = ref<string|null>(null);
 let username = ref<string|null>(null);
 
+// DO THIS
 const web_site = "mipt.site";
 // const web_site = "localhost";
 // const web_site = "127.0.0.1";

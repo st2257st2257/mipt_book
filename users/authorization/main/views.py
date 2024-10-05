@@ -12,6 +12,8 @@ from rest_framework.authtoken.models import Token
 
 from django.core.exceptions import ObjectDoesNotExist
 import json
+from .services import \
+    create_user_wallet
 
 
 class IndexAuth(APIView):
@@ -79,7 +81,13 @@ def register_user(request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            username = serializer.data.get('username', 'test_user')
+            user = User.objects.get(username=username)
+            token = Token.objects.get_or_create(user=user)
+            user_wallet = create_user_wallet(token, user)
+            return Response(
+                {"data": serializer.data, "result": user_wallet},
+                status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -96,6 +104,7 @@ def edit_user_name(request):
                     serializer = UserSerializer(user, data=data_request, partial=True)
                     if serializer.is_valid():
                         serializer.save()
+                        user.save()
                         return Response(
                             {
                                 "Result": "True",

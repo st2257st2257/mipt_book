@@ -2,6 +2,11 @@
 import '@/assets/auth.css'
 import {ref} from "vue";
 
+// DO THIS
+const web_site = "mipt.site";
+// const web_site = "localhost";
+// const web_site = "127.0.0.1";
+
 let username = ref<String>("");
 let email = ref<String>("");
 let password = ref<String>("");
@@ -24,7 +29,7 @@ async function sendForm(){
   }
 
   try {
-    const response = await fetch("/user-api/register/",{
+    const response = await fetch("https://" + web_site + ":8088/register/",{
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({

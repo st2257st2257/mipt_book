@@ -17,8 +17,10 @@ interface Preference {
   description: string
 }
 
+// DO THIS
 const web_site = "mipt.site";
 // const web_site = "localhost";
+// const web_site = "127.0.0.1";
 
 let username = ref<string|null>(null);
 let number_bb = ref<string|null>(null);
@@ -191,12 +193,15 @@ async function sendEditNameForm(){
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: JSON.stringify({
         "type": "edit_user_name",
-        "token": "c67eff75e899cdc3934df0efd50f35ee7ff726b4",//token.value,
+        "token": token.value,
         "first_name": form_first_name.value,
         "last_name": form_last_name.value,
         "third_name": form_third_name.value
       })
     });
+    user_name.first_name = form_first_name.value ?? "Имя";
+    user_name.last_name = form_last_name.value ?? "Фамилия";
+    user_name.third_name = form_third_name.value ?? "Отчество";
 
     if (!response.ok) {
       console.error('Сеть ответила с ошибкой: ' + response.status);
