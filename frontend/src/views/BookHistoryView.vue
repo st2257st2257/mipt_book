@@ -39,6 +39,7 @@ interface ActualBookItem {
 
 let actual_book_items: Ref<ActualBookItem[]> = ref([]);
 
+// DO THIS
 const web_site = "mipt.site";
 // const web_site = "localhost";
 // const web_site = "127.0.0.1";
