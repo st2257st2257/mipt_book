@@ -84,7 +84,7 @@ def register_user(request):
             username = serializer.data.get('username', 'test_user')
             user = User.objects.get(username=username)
             token = Token.objects.get_or_create(user=user)
-            user_wallet = create_user_wallet(token, user)
+            user_wallet = create_user_wallet(token, user.username)
             return Response(
                 {"data": serializer.data, "result": user_wallet},
                 status=status.HTTP_201_CREATED)

@@ -19,8 +19,8 @@ async def create_user_wallet_make(token, username):
         web_address + ":8000/wallet/",
         data={
             "type":"create_user_wallet",
-            "token":token, #"be81040e506a30f10288149d8ffaf21905ac73e0",
-            "username":username #"user18"
+            "token":token,
+            "username":username
         },
         verify=False,
         headers={"Accept": "application/json"})

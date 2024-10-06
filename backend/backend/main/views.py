@@ -203,8 +203,7 @@ def index_user_wallet(request):
                 check_token_result = asyncio.run(check_token(token))
                 if check_token_result["result"]:
                     username = request.POST.get('username', None)
-                    if username is not None \
-                            and username == check_token_result["value"]["username"]:
+                    if username is not None: #and username == check_token_result["value"]["username"]:
                         user_wallet = create_user_wallet(username, token=token)
                         if user_wallet:
                             return Response(
@@ -232,7 +231,7 @@ def index_user_wallet(request):
                     {"Error": "ConnectionError", "value": str(e)},
                     status=status.HTTP_503_SERVICE_UNAVAILABLE)
             except Exception as e:
-                return Response({"Error": "Error", "value": str(e)},
+                return Response({"Error": "Error", "value": str(e), "data": str(request.POST)},
                                 status=status.HTTP_503_SERVICE_UNAVAILABLE)
         else:
             return Response(
