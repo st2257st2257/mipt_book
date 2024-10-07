@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, onMounted} from 'vue';
+import {ref, onMounted, provide, inject} from 'vue';
 import type {IBuilding, IAudience} from "@/classes/Interfaces";
 
 const emit = defineEmits<{
@@ -7,9 +7,10 @@ const emit = defineEmits<{
 }>();
 
 // DO THIS
-const web_site = "mipt.site";
+// const web_site = "mipt.site";
 // const web_site = "localhost";
 // const web_site = "127.0.0.1";
+const web_site = inject('web_site');
 
 let is_random_selected = ref<Boolean>(false);
 let building_arr = ref<Array<IBuilding>>([]);

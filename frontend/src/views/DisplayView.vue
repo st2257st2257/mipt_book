@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import Header from "@/components/TheHeader.vue";
-import {ref, type Ref, onMounted, reactive, type Reactive, defineExpose} from 'vue';
+import {ref, type Ref, onMounted, reactive, type Reactive, defineExpose, provide, inject} from 'vue';
 
 
 interface Audience_status {
@@ -30,9 +30,10 @@ interface Building {
 }
 
 // DO THIS
-const web_site = "mipt.site";
+// const web_site = "mipt.site";
 // const web_site = "localhost";
 // const web_site = "127.0.0.1";
+const web_site = inject('web_site');
 
 let audiences: Ref<Audience[]> = ref([]);
 let audiences_gk: Ref<Audience[]> = ref([]);

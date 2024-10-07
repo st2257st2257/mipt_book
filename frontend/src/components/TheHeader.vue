@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {ref, type Ref, onMounted, reactive, type Reactive, provide} from 'vue';
+import {ref, type Ref, onMounted, reactive, type Reactive, provide, inject} from 'vue';
 
 interface UserName {
   first_name: string,
@@ -13,9 +13,10 @@ interface BBNumber {
 }
 
 // DO THIS
-const web_site = "mipt.site";
+// const web_site = "mipt.site";
 // const web_site = "localhost";
 // const web_site = "127.0.0.1";
+const web_site = inject('web_site');
 
 let token = ref<string|null>(null);
 

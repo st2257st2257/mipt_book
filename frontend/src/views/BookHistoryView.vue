@@ -5,7 +5,7 @@ import Header from "@/components/TheHeader.vue";
 import BookAmount from "@/components/book/BookAmount.vue";
 import BookAudience from "@/components/book/BookAudience.vue";
 
-import {ref, type Ref, onMounted, reactive, type Reactive, defineExpose} from 'vue';
+import {ref, type Ref, onMounted, reactive, type Reactive, defineExpose, provide, inject} from 'vue';
 import type {IAudience} from "@/classes/Interfaces";
 import { useRouter } from 'vue-router';
 
@@ -40,9 +40,10 @@ interface ActualBookItem {
 let actual_book_items: Ref<ActualBookItem[]> = ref([]);
 
 // DO THIS
-const web_site = "mipt.site";
+// const web_site = "mipt.site";
 // const web_site = "localhost";
 // const web_site = "127.0.0.1";
+const web_site = inject('web_site');
 
 let book_history: Ref<BookItem[]> = ref([]);
 
