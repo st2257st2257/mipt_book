@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import '@/assets/auth.css'
-import {ref} from "vue";
+import {ref, provide, inject} from "vue";
 import {useRouter} from "vue-router";
 
 const router = useRouter();
 
 // DO THIS
-const web_site = "mipt.site";
+// const web_site = "mipt.site";
 // const web_site = "localhost";
 // const web_site = "127.0.0.1";
+const web_site = inject('web_site');
 
 const username = ref<String>("");
 const password = ref<String>("");

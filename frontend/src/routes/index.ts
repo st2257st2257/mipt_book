@@ -9,6 +9,7 @@ import BookHistoryView from "@/views/BookHistoryView.vue";
 import ProfileView from "@/views/ProfileView.vue";
 import DisplayView from "@/views/DisplayView.vue";
 
+
 const routesAuth = [
     {path: '/auth/', component: AuthView},
     {path: '/display/', component: DisplayView},
@@ -31,10 +32,20 @@ const routes = [
     ...routesAuth, ...routesBooking, ...routesProfile
 ]
 
-
 const router = createRouter({
     history: createWebHistory(),
     routes: routes,
 })
 
+// export default router;
+
 export default router;
+
+
+// export default {
+//   data() {
+//     return {
+//       sharedVariable: 'значение переменной'
+//     }
+//   }
+// };

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, ref} from 'vue'
+import {onMounted, ref, provide, inject} from 'vue'
 
 import Header from "@/components/TheHeader.vue";
 import BookAudience from "@/components/book/BookAudience.vue";
@@ -23,9 +23,10 @@ let token = ref<string|null>(null);
 let username = ref<string|null>(null);
 
 // DO THIS
-const web_site = "mipt.site";
+// const web_site = "mipt.site";
 // const web_site = "localhost";
 // const web_site = "127.0.0.1";
+const web_site = inject('web_site');
 
 onMounted(()=>{
   token.value = localStorage.getItem("auth-token");
