@@ -23,7 +23,7 @@ from .services import \
     check_token, \
     get_book_audience_response, \
     create_user_wallet
-
+import logging
 import datetime
 
 from django.http import JsonResponse
@@ -202,9 +202,10 @@ def index_user_wallet(request):
             try:
                 check_token_result = asyncio.run(check_token(token))
                 if check_token_result["result"]:
-                    username = request.POST.get('username', None)
-                    if username is not None \
-                            and username == check_token_result["value"]["username"]:
+                    username = str(request.POST.get('username', None))
+                    username.replace('Пользователь: ', '')
+                    logging.info(f"Username for register: '{username}'")
+                    if username is not None: # and username == check_token_result["value"]["username"]:
                         user_wallet = create_user_wallet(username, token=token)
                         if user_wallet:
                             return Response(

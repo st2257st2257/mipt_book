@@ -70,7 +70,7 @@ class User(AbstractUser):
         null=True)
 
     def __str__(self):
-        return f'Пользователь: {self.username}'
+        return f'{self.username}'
 
 
 @admin.register(Role)

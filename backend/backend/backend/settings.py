@@ -38,7 +38,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ORIGIN_WHITELIST = [
     'https://127.0.0.1',
-    'https://127.0.0.1:8000',
+    'https://127.0.0.1:800',
     'https://127.0.0.1:8088',
     'https://mipt.site',
     'https://89.169.173.80'
@@ -185,32 +185,32 @@ LOGGING = {
         'debug_file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': 'logs/debug_file.log',
+            'filename': 'debug_file.log',
         },
         'info_file': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': 'logs/info_file.log',
+            'filename': 'info_file.log',
         },
         'warning_file': {
             'level': 'WARNING',
             'class': 'logging.FileHandler',
-            'filename': 'logs/warning_file.log',
+            'filename': 'warning_file.log',
         },
         'error_file': {
             'level': 'ERROR',
             'class': 'logging.FileHandler',
-            'filename': 'logs/error_file.log',
+            'filename': 'error_file.log',
         },
         'critical_file': {
             'level': 'CRITICAL',
             'class': 'logging.FileHandler',
-            'filename': 'logs/critical_file.log',
+            'filename': 'critical_file.log',
         },
     },
     "root": {
         "handlers": ["console", "file", "debug_file", "info_file", "warning_file", "error_file", "critical_file"],
-        "level": "DEBUG",
+        "level": "INFO",
     },
     "loggers": {
         "django": {
@@ -220,3 +220,4 @@ LOGGING = {
         },
     },
 }
+
