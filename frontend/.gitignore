@@ -41,3 +41,6 @@ info_file.log
 warning_file.log
 error_file.log
 critical_file.log
+
+# pycache
+__pycache__/*
