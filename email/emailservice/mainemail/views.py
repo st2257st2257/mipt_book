@@ -5,8 +5,15 @@ from django.http import JsonResponse
 from confluent_kafka import Consumer, KafkaError
 from confluent_kafka import Producer
 
-from mainemail.services import sendEmail
-from mainemail.tasks import send_verification_email
+from mainemail.services import sendEmail, log
+from mainemail.tasks import \
+    send_verification_email, \
+    send_task_email
+from rest_framework.decorators import api_view
+import json
+from rest_framework import status
+from rest_framework.response import Response
+
 
 @csrf_exempt
 def index_kafka_send(request):
@@ -29,9 +36,37 @@ def index_kafka_send(request):
 
 @csrf_exempt
 def send_test(request):
-    send_verification_email.delay(123)
+    for i in range(1):
+        log("test email sent", "i")
+        send_verification_email.delay(123)
     # sendEmail("TEST", "text text text", "kristal.as@phystech.edu")
     return JsonResponse({"result": True})
+
+
+@csrf_exempt
+@api_view(('POST', 'GET'))
+def send_email(request):
+    if request.method == 'POST':
+        data_request = json.loads(list(request.POST.dict())[0])
+        try:
+            if data_request.get('type') == "send_email":
+                email_address = data_request.get('email_address')
+                email_text = data_request.get('email_text')
+                email_title = data_request.get('email_title')
+                log("Отправка сообщения через форму", "i")
+                send_task_email.delay(email_address, email_text, email_title)
+                return JsonResponse({'result': 'Email sent successfully'})
+        except ConnectionError as e:
+            log(f"ConnectionError. Error:{e}", "e")
+            return Response(
+                {"Error": "ConnectionError", "value": str(e)},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        except Exception as e:
+            log(f"Error:{e}", "e")
+            return Response({"Error": "Error", "value": str(e)},
+                            status=status.HTTP_503_SERVICE_UNAVAILABLE)
+    if request.method == 'GET':
+        return render(request, 'email_test/index_send.html')
 
 
 @csrf_exempt

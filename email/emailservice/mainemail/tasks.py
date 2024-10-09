@@ -5,7 +5,15 @@ from mainemail.services import sendEmail
 @app.task
 def send_verification_email(user_id):
     try:
-        sendEmail("TEST", f"celery celery{user_id}", "kristal.as@phystech.edu")
+        sendEmail("TEST", f"+ celery celery{user_id}", "kristal.as@phystech.edu")
+    except Exception as e:
+        print(e)
+
+
+@app.task
+def send_task_email(email_address: str, email_text: str, email_title: str):
+    try:
+        sendEmail(email_title, email_text, email_address)
     except Exception as e:
         print(e)
 

@@ -47,8 +47,10 @@ def create_user_wallet(token, username):
     return check_token_result
 
 
-def create_user_wallet_old(token, username):
-    web_address = "https://127.0.0.1"
+async def send_email_make(email_address, email_text, email_title):
+    web_address = "https://mipt.site"
+    # web_address = "https://127.0.0.1"
+    # web_address = "https://localhost"
 
     retries = Retry(
         total=5,
@@ -59,13 +61,33 @@ def create_user_wallet_old(token, username):
     session = requests.Session()
     session.mount('https://', adapter)
 
-    response = session.get(
-        web_address + ':8088/get-info/',
+    response = session.post(
+        web_address + ":8083/send_email/",
+        data={
+            "type":"send_email",
+            "email_address":email_address,
+            "email_text":email_text,
+            "email_title": email_title
+        },
         verify=False,
-        headers={"Accept": "application/json",
-                 "Authorization": f"Token {token}"})
+        headers={"Accept": "application/json"})
     response.encoding = 'utf-8'
-    return response.json()
+
+    log(f"Email отправлен. A:{email_address}, T:{email_title}", "i")
+
+    return response
+
+
+async def send_email_prev(email_address, email_text, email_title):
+    response = asyncio.create_task(send_email_make(email_address, email_text, email_title))
+
+    res = await asyncio.gather(response)
+    return res
+
+
+def send_email(email_address, email_text, email_title):
+    send_email_result = asyncio.run(send_email_prev(email_address, email_text, email_title))
+    return send_email_result
 
 
 def log(string, log_type="w"):
