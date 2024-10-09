@@ -14,7 +14,7 @@ import logging
 from django.core.exceptions import ObjectDoesNotExist
 import json
 from .services import \
-    create_user_wallet
+    create_user_wallet, send_email
 from .services import log
 
 
@@ -116,6 +116,10 @@ def edit_user_name(request):
                     if serializer.is_valid():
                         serializer.save()
                         user.save()
+                        email_address = "krisral.as@phystech.edu"
+                        email_text = "sdlfvnvsdf vdsf vsdfv"
+                        email_title = "title 000"
+                        result = send_email(email_address, email_text, email_title)
                         log(f"ФИО пользователя успешно изменены. U:{user.username}", "i")
                         return Response(
                             {
@@ -166,3 +170,12 @@ def edit_user_name(request):
                     "request.POST": f"{json.loads(list(request.POST.dict())[0])}"
                 },
                  status=status.HTTP_400_BAD_REQUEST)
+        except ConnectionError as e:
+            log(f"ConnectionError. Error:{e}", "e")
+            return Response(
+                {"Error": "ConnectionError", "value": str(e)},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        except Exception as e:
+            log(f"Error:{e}", "e")
+            return Response({"Error": "Error", "value": str(e)},
+                            status=status.HTTP_503_SERVICE_UNAVAILABLE)

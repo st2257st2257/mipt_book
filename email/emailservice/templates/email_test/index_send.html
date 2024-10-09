@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>TEST STOP BOOKING</h1>
+
+  <form action="https://127.0.0.1:8083/send_email/" method="post">
+      {% csrf_token %}
+      <h3>Завершения бронирования аудитории</h3>
+      Type: <input type="text" name="type" value="send_email"><br><br>
+      Email address: <input type="text" name="email_address" value=""><br><br>
+      Email text: <input type="text" name="email_text" value=""><br><br>
+      Email title : <input type="text" name="email_title" value=""><br><br>
+      <input type="submit" value="Отправить сообщение"><br><br>
+  </form>
+
+</body>
+</html>

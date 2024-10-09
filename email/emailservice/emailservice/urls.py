@@ -21,11 +21,13 @@ from mainemail.views import \
     index_kafka_send, \
     index_kafka_get, \
     send_test, \
-    index_kafka_registration
+    index_kafka_registration, \
+    send_email
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('send_test/', send_test),
+    path('send_email/', send_email),
     # path('send_weekly/', send_weekly),
     path('kafka_start/', index_kafka_send),
     path('kafka_get/', index_kafka_get),
