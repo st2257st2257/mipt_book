@@ -99,6 +99,7 @@ class AudienceViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        log(f"Запрос на получение аудиторий по фильтрам. Параметры:{queryset}", "d")
         building_name = self.request.query_params.get('building_name')
         institute = self.request.query_params.get('institute')
         status = self.request.query_params.get('status')
