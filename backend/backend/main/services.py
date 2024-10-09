@@ -8,6 +8,7 @@ import requests
 import json
 import logging
 import datetime
+from config import get_booking_text
 
 
 async def make_auth_request(token):
@@ -201,6 +202,17 @@ def get_book_audience_response(
             f"U:{new_book.user.username}, "
             f"P:{pair_number} "
             f"BB:{number_bb}", "i")
+
+        # Собираем данные для отправки email сообщения
+        email_address = get_email_by_username(user) # "kristal.as@phystech.edu"
+        email_text = get_booking_text(
+            username=user,
+            pair_number=pair_number,
+            audience=number,
+            number_bb=number_bb)
+        email_title = f"Бронирование аудитории {number}ГК"
+        send_email(email_address, email_text, email_title)
+
         return Response(
             {
                 "result": True,
@@ -221,6 +233,14 @@ def get_book_audience_response(
                 "pair_number": pair_number
             },
             status=status.HTTP_204_NO_CONTENT)
+
+
+def get_email_by_username(username: str):
+    user = get_user_by_username(username)
+    if user is not None:
+        return get_user_by_username(username).email
+    else:
+        return "askristal@gmail.com"
 
 
 def log(string, log_type="w"):
