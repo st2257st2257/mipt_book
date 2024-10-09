@@ -76,6 +76,49 @@ def check_token_old(token: str):
         }
 
 
+async def send_email_make(email_address, email_text, email_title):
+    web_address = "https://mipt.site"
+    # web_address = "https://127.0.0.1"
+    # web_address = "https://localhost"
+
+    retries = Retry(
+        total=5,
+        backoff_factor=0.1,
+        status_forcelist=[ 500, 502, 503, 504 ])
+
+    adapter = HTTPAdapter(max_retries=retries)
+    session = requests.Session()
+    session.mount('https://', adapter)
+
+    response = session.post(
+        web_address + ":8083/send_email/",
+        data={
+            "type":"send_email",
+            "email_address":email_address,
+            "email_text":email_text,
+            "email_title": email_title
+        },
+        verify=False,
+        headers={"Accept": "application/json"})
+    response.encoding = 'utf-8'
+
+    log(f"Email отправлен. A:{email_address}, T:{email_title}", "i")
+
+    return response
+
+
+async def send_email_prev(email_address, email_text, email_title):
+    response = asyncio.create_task(send_email_make(email_address, email_text, email_title))
+
+    res = await asyncio.gather(response)
+    return res
+
+
+def send_email(email_address, email_text, email_title):
+    send_email_result = asyncio.run(send_email_prev(email_address, email_text, email_title))
+    return send_email_result
+
+
 def get_audience_by_number(number):
     if len(Audience.objects.filter(number=number)) == 1:
         log(f"Запрос на получение аудитории. A:{number}", "d")
