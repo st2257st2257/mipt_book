@@ -1,6 +1,8 @@
 import requests
 from requests.adapters import HTTPAdapter, Retry
 import asyncio
+import logging
+import datetime
 
 
 async def create_user_wallet_make(token, username):
@@ -25,6 +27,8 @@ async def create_user_wallet_make(token, username):
         verify=False,
         headers={"Accept": "application/json"})
     response.encoding = 'utf-8'
+
+    log(f"Кошелёк создан. U:{username}, T:{token}", "d")
 
     print(response.status_code, response.reason)
 
@@ -62,3 +66,19 @@ def create_user_wallet_old(token, username):
                  "Authorization": f"Token {token}"})
     response.encoding = 'utf-8'
     return response.json()
+
+
+def log(string, log_type="w"):
+    _ = f"{str(datetime.datetime.now())[:-7]} {string}"
+    if log_type == "d":
+        logging.debug(_)
+    elif log_type == "i":
+        logging.info(_)
+    elif log_type == "w":
+        logging.warning(_)
+    elif log_type == "e":
+        logging.error(_)
+    elif log_type == "c":
+        logging.critical(_)
+    else:
+        logging.debug(_)

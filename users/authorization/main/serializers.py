@@ -1,6 +1,7 @@
 from .models import User, Access, Role, InstituteGroup, Preferences
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
+from .services import log
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -24,6 +25,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         # set password
         user.set_password(validated_data.get('password', 'pass'))
         user.save()
+        log(f"Пользователь создан. Username:{validated_data.get('username', 'blank_user_name')}", "d")
         return user
 
     def update(self, user, validated_data):
@@ -33,6 +35,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         user.third_name = validated_data.get("third_name", user.third_name)
         user.email = validated_data.get("email", user.email)
         user.save()
+        log(f"", "d")
         return user
 
     class Meta:

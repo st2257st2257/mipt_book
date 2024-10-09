@@ -14,6 +14,7 @@ from django.core.exceptions import ObjectDoesNotExist
 import json
 from .services import \
     create_user_wallet
+from .services import log
 
 
 class IndexAuth(APIView):
@@ -85,9 +86,11 @@ def register_user(request):
             user = User.objects.get(username=username)
             token = Token.objects.get_or_create(user=user)
             user_wallet = create_user_wallet(token, user)
+            log(f"Пользователь успешно зарегистрирован. U:{user.username}", "i")
             return Response(
                 {"data": serializer.data, "result": user_wallet},
                 status=status.HTTP_201_CREATED)
+        log(f"Неправильный serializer, S:{str(serializer)}", "e")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -105,6 +108,7 @@ def edit_user_name(request):
                     if serializer.is_valid():
                         serializer.save()
                         user.save()
+                        log(f"ФИО пользователя успешно изменены. U:{user.username}", "d")
                         return Response(
                             {
                                 "Result": "True",
@@ -112,6 +116,7 @@ def edit_user_name(request):
                             },
                             status=status.HTTP_202_ACCEPTED)
                     else:
+                        log(f"Неправильный serializer, S:{str(serializer)}", "e")
                         return Response(serializer.data, status=status.HTTP_406_NOT_ACCEPTABLE)
                 elif data_request.get('type') == "edit_user_group":
                     group_name  = data_request.get("group", "Б02-001")
@@ -119,8 +124,10 @@ def edit_user_name(request):
                     if len(group) == 1:
                         user.institute_group = group[0]
                         user.save()
+                        log(f"Группа успешно изменена, U:{user.username}, G:{group_name}", "d")
                         return Response({"Result": "True"}, status=status.HTTP_202_ACCEPTED)
                     else:
+                        log(f"Неправильное название группы, G:{group_name}", "e")
                         return Response(
                             {
                                 "Error": "GROUP_NOT_ACCEPTABLE",
@@ -128,6 +135,7 @@ def edit_user_name(request):
                             },
                             status=status.HTTP_406_NOT_ACCEPTABLE)
                 else:
+                    log(f"Неправильный тип запроса, T:{data_request.get('type')}", "e")
                     return Response(
                         {
                             "Error": "BAD_REQUEST_TYPE",
@@ -135,10 +143,12 @@ def edit_user_name(request):
                                            "edit_user_name, edit_user_email, edit_user_group"},
                         status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
             else:
+                log(f"Нельзя получить пользователя по токену, T:{token}", "e")
                 return Response(
                     {"Error": "BAD_REQUEST_TYPE", "Description": "Current user is none"},
                     status=status.HTTP_400_BAD_REQUEST)
         except ObjectDoesNotExist as e:
+            log(f"Error:{e}", "e")
             return Response(
                 {
                     "Error": "BAD_REQUEST_TYPE",
