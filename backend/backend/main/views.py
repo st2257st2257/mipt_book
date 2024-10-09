@@ -119,6 +119,7 @@ class BookViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        log(f"Запрос на получение бронирований по фильтрам. Параметры:{queryset}", "d")
         audience_number = self.request.query_params.get('audience_number')
         user = self.request.query_params.get('user')
         pair_number = self.request.query_params.get('pair_number')
@@ -144,6 +145,7 @@ class BookHistoryViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        log(f"Запрос на получение истории бронирований по фильтрам. Параметры:{queryset}", "d")
         audience_number = self.request.query_params.get('audience_number')
         user = self.request.query_params.get('user')
         pair_number = self.request.query_params.get('pair_number')
