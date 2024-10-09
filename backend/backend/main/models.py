@@ -109,7 +109,7 @@ class Book(models.Model):
     visibility = models.IntegerField(default=0)
 
     def __str__(self):
-        return f'Book: {self.user.username}|{self.number_bb}'
+        return f'Book: {self.user}|{self.number_bb}'
 
     def to_history(self):
         audience = Audience.objects.get(number=self.audience.number)

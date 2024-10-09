@@ -81,7 +81,7 @@ def get_audience_by_number(number):
         log(f"Запрос на получение аудитории. A:{number}", "d")
         return Audience.objects.get(number=number)
     else:
-        log(f"Запрос на получение аудитории неуспешен. A:{number}", "w")
+        log(f"Запрос на получение аудитории неуспешен. A:{number}", "d")
         return None
 
 
@@ -180,17 +180,17 @@ def get_book_audience_response(
             status=status.HTTP_204_NO_CONTENT)
 
 
-def log(string: str, log_type="w"):
+def log(string, log_type="w"):
     _ = f"{str(datetime.datetime.now())[:-7]} {string}"
     if log_type == "d":
-        return logging.debug(_)
+        logging.debug(_)
     elif log_type == "i":
-        return logging.info(_)
+        logging.info(_)
     elif log_type == "w":
-        return logging.warning(_)
+        logging.warning(_)
     elif log_type == "e":
-        return logging.error(_)
+        logging.error(_)
     elif log_type == "c":
-        return logging.critical(_)
+        logging.critical(_)
     else:
-        return logging.debug(_)
+        logging.debug(_)

@@ -88,7 +88,7 @@ class UsersWalletViewSet(viewsets.ModelViewSet):
         username = self.request.query_params.get('username')
         if username is not None:
             queryset = queryset.filter(username=username)
-        log(f"Запрос на получение параметров кошелька. Параметры:{queryset}, U:{username}", "d")
+        log(f"Запрос на получение параметров кошелька. Параметры:{queryset}, U:{username}", "e")
         return self.filter_queryset(queryset)
 
 
@@ -99,7 +99,6 @@ class AudienceViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        log(f"Запрос на получение аудиторий по фильтрам. Параметры:{queryset}", "d")
         building_name = self.request.query_params.get('building_name')
         institute = self.request.query_params.get('institute')
         status = self.request.query_params.get('status')
@@ -109,6 +108,7 @@ class AudienceViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(building__institute__name=institute)
         if status is not None:
             queryset = queryset.filter(audience_status__name=status)
+        log(f"Запрос на получение аудиторий по фильтрам. Параметры:{queryset}", "d")
         return self.filter_queryset(queryset)
 
 
@@ -119,7 +119,6 @@ class BookViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        log(f"Запрос на получение бронирований по фильтрам. Параметры:{queryset}", "d")
         audience_number = self.request.query_params.get('audience_number')
         user = self.request.query_params.get('user')
         pair_number = self.request.query_params.get('pair_number')
@@ -135,6 +134,7 @@ class BookViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(audience__building__name=building_name)
         if institute is not None:
             queryset = queryset.filter(audience__building__institute__name=institute)
+        log(f"Запрос на получение бронирований по фильтрам. Параметры:{queryset}", "d")
         return self.filter_queryset(queryset)
 
 
@@ -145,7 +145,6 @@ class BookHistoryViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        log(f"Запрос на получение истории бронирований по фильтрам. Параметры:{queryset}", "d")
         audience_number = self.request.query_params.get('audience_number')
         user = self.request.query_params.get('user')
         pair_number = self.request.query_params.get('pair_number')
@@ -161,6 +160,7 @@ class BookHistoryViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(date=date)
         if booking_time is not None:
             queryset = queryset.filter(booking_time=booking_time)
+        log(f"Запрос на получение истории бронирований по фильтрам. Параметры:{queryset}", "d")
         return self.filter_queryset(queryset)
 
 
@@ -170,6 +170,7 @@ def book_audience(request):
     if request.method == 'POST':
         data_request = json.loads(list(request.POST.dict())[0])
         if data_request.get('type') == "book_audience":
+            log(f"Бронирование аудитории. Параметры:{data_request}", "d")
             token = request.POST.get('token')
             check_token_result = asyncio.run(check_token(token))
             if check_token_result["result"]:
@@ -179,10 +180,12 @@ def book_audience(request):
                     number_bb=int(data_request.get('number_bb', 0)),
                     pair_number=int(data_request.get('pair_number', 0)))
             else:
+                log(f"Проверка токена выдала ошибку. T:{token}", "e")
                 return Response(
                     {"Error": "BAD_TOKEN"},
                     status=status.HTTP_401_UNAUTHORIZED)
         else:
+            log(f"Неправильный тип обращения. T:{request.POST.get('type')}", "e")
             return Response(
                 {
                     "Error": "BAD_REQUEST_TYPE",
