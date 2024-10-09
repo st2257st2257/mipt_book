@@ -28,7 +28,7 @@ async def create_user_wallet_make(token, username):
         headers={"Accept": "application/json"})
     response.encoding = 'utf-8'
 
-    log(f"Кошелёк создан. U:{username}, T:{token}", "d")
+    log(f"Кошелёк создан. U:{username}, T:{token}", "i")
 
     print(response.status_code, response.reason)
 

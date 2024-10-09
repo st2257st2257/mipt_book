@@ -9,6 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.authtoken.models import Token
+import logging
 
 from django.core.exceptions import ObjectDoesNotExist
 import json
@@ -33,6 +34,7 @@ class IndexAuth(APIView):
             'institute_group': request.user.institute_group.name,
             'user_role': request.user.user_role.name
         }
+        log(f"Запрос на получение информации о пользователе, U:{request.user.username}", "i")
         return Response(content)
 
 
@@ -43,6 +45,7 @@ class RoleViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        log(f"Запрос к получению роли", "i")
         return self.filter_queryset(queryset)
 
 
@@ -53,6 +56,7 @@ class InstituteGroupViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        log(f"Запрос к получению институтских групп", "i")
         return self.filter_queryset(queryset)
 
 
@@ -63,6 +67,7 @@ class AccessViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        log(f"Запрос к получению уровней доступа", "i")
         return self.filter_queryset(queryset)
 
 
@@ -73,12 +78,14 @@ class PreferencesViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        log(f"Запрос к получению предпочтений доступных в системе", "i")
         return self.filter_queryset(queryset)
 
 
 @api_view(['POST'])
 def register_user(request):
     if request.method == 'POST':
+        log(f"Начало регистрации пользователя", "i")
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -104,11 +111,12 @@ def edit_user_name(request):
             if user is not None:
                 if data_request.get('type') == "edit_user_name" or \
                     data_request.get('type') == "edit_user_email":
+                    log(f"Начало редактирования ФИО или Почты", "i")
                     serializer = UserSerializer(user, data=data_request, partial=True)
                     if serializer.is_valid():
                         serializer.save()
                         user.save()
-                        log(f"ФИО пользователя успешно изменены. U:{user.username}", "d")
+                        log(f"ФИО пользователя успешно изменены. U:{user.username}", "i")
                         return Response(
                             {
                                 "Result": "True",
@@ -116,15 +124,17 @@ def edit_user_name(request):
                             },
                             status=status.HTTP_202_ACCEPTED)
                     else:
+                        log(f"===== 7", "e")
                         log(f"Неправильный serializer, S:{str(serializer)}", "e")
                         return Response(serializer.data, status=status.HTTP_406_NOT_ACCEPTABLE)
                 elif data_request.get('type') == "edit_user_group":
+                    log(f"Начало редактирования группы пользователя", "i")
                     group_name  = data_request.get("group", "Б02-001")
                     group = InstituteGroup.objects.filter(name=group_name)
                     if len(group) == 1:
                         user.institute_group = group[0]
                         user.save()
-                        log(f"Группа успешно изменена, U:{user.username}, G:{group_name}", "d")
+                        log(f"Группа успешно изменена, U:{user.username}, G:{group_name}", "i")
                         return Response({"Result": "True"}, status=status.HTTP_202_ACCEPTED)
                     else:
                         log(f"Неправильное название группы, G:{group_name}", "e")
