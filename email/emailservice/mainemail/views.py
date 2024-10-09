@@ -47,13 +47,13 @@ def send_test(request):
 @api_view(('POST', 'GET'))
 def send_email(request):
     if request.method == 'POST':
-        data_request = json.loads(list(request.POST.dict())[0])
+        data_request = request.POST  # json.loads(list(request.POST.dict())[0])
         try:
             if data_request.get('type') == "send_email":
                 email_address = data_request.get('email_address')
                 email_text = data_request.get('email_text')
                 email_title = data_request.get('email_title')
-                log("Отправка сообщения через форму", "i")
+                log(f"Отправка сообщения через форму. A:{email_address}, Text:{email_text}, Title:{email_title}", "i")
                 send_task_email.delay(email_address, email_text, email_title)
                 return JsonResponse({'result': 'Email sent successfully'})
         except ConnectionError as e:

@@ -116,9 +116,9 @@ def edit_user_name(request):
                     if serializer.is_valid():
                         serializer.save()
                         user.save()
-                        email_address = "krisral.as@phystech.edu"
-                        email_text = "sdlfvnvsdf vdsf vsdfv"
-                        email_title = "title 000"
+                        email_address = "kristal.as@phystech.edu"
+                        email_text = f"ФИО пользователя {user.username} успешно изменено. Запрос был получен с данными: {data_request}"
+                        email_title = f"Изменение ФИО пользователя{user.username}"
                         result = send_email(email_address, email_text, email_title)
                         log(f"ФИО пользователя успешно изменены. U:{user.username}", "i")
                         return Response(
