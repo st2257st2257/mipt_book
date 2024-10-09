@@ -22,7 +22,8 @@ from .services import \
     get_timetable, \
     check_token, \
     get_book_audience_response, \
-    create_user_wallet
+    create_user_wallet, \
+    log
 import logging
 import datetime
 
@@ -44,6 +45,7 @@ class InstituteViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
+        log(f"Запрос на получение институтов.", "d")
         queryset = super().get_queryset()
         return self.filter_queryset(queryset)
 
@@ -54,6 +56,7 @@ class BuildingViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
+        log(f"Запрос на получение здания. Параметры:{self.request.query_params}", "d")
         queryset = super().get_queryset()
         name = self.request.query_params.get('name')
         institute = self.request.query_params.get('institute')
@@ -71,6 +74,7 @@ class AudienceStatusViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        log(f"Запрос на получение статусов аудитории. Параметры:{queryset}", "d")
         return self.filter_queryset(queryset)
 
 
@@ -84,6 +88,7 @@ class UsersWalletViewSet(viewsets.ModelViewSet):
         username = self.request.query_params.get('username')
         if username is not None:
             queryset = queryset.filter(username=username)
+        log(f"Запрос на получение параметров кошелька. Параметры:{queryset}, U:{username}", "d")
         return self.filter_queryset(queryset)
 
 
@@ -196,6 +201,11 @@ def index_user_wallet(request):
     #   "type":     "create_user_wallet",
     #   "username": "test_user"
     # }
+    # logger.debug('')
+    # logger.info('')
+    # logger.warning('')
+    # logger.error('')
+    # logger.critical('')
     if request.method == 'POST':
         if request.POST.get('type') == "create_user_wallet":
             token = request.POST['token']
@@ -204,10 +214,11 @@ def index_user_wallet(request):
                 if check_token_result["result"]:
                     username = str(request.POST.get('username', None))
                     username.replace('Пользователь: ', '')
-                    logging.info(f"Username for register: '{username}'")
+                    log(f"Username for register: '{username}'", "i")
                     if username is not None: # and username == check_token_result["value"]["username"]:
                         user_wallet = create_user_wallet(username, token=token)
                         if user_wallet:
+                            log(f"User wallet created. Id:{user_wallet.id}, Name:{user_wallet.username}", "i")
                             return Response(
                                 {
                                     "result": True,
@@ -217,25 +228,31 @@ def index_user_wallet(request):
                                 },
                                 status=status.HTTP_201_CREATED)
                         else:
+                            log(f"Problems with creating user wallet. User:{username}", "w")
                             return Response(
                                 {"Error": "FORBIDDEN_USERNAME"},
                                 status=status.HTTP_403_FORBIDDEN)
                     else:
+                        log(f"No username in request data. User:{username}, Data:{request.POST}", "w")
                         return Response(
                                 {"Error": "NON_AUTHORITATIVE_INFORMATION"},
                                 status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
                 else:
+                    log(f"Problems with checking token. Token:{token}", "w")
                     return Response(
                         {"Error": "BAD_TOKEN", "value": check_token_result},
                         status=status.HTTP_401_UNAUTHORIZED)
             except ConnectionError as e:
+                log(f"ConnectionError. Error:{e}", "e")
                 return Response(
                     {"Error": "ConnectionError", "value": str(e)},
                     status=status.HTTP_503_SERVICE_UNAVAILABLE)
             except Exception as e:
+                log(f"Error:{e}", "e")
                 return Response({"Error": "Error", "value": str(e)},
                                 status=status.HTTP_503_SERVICE_UNAVAILABLE)
         else:
+            log(f"BAD_REQUEST_TYPE. Request type:{request.POST.get('type')}", "e")
             return Response(
                 {"Error": "BAD_REQUEST_TYPE"},
                 status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
@@ -248,6 +265,7 @@ def index_user_wallet(request):
 def index_timetable(request):
     if request.method == 'GET':
         if request.GET.get('type') == "get_timetable":
+            log(f"Get timetable ended with success", "i")
             return Response(
                 {
                     "result": True,
@@ -278,6 +296,7 @@ def index_stop_booking(request):
         if data_request.get('type') == "stop_booking":
             token = data_request.get('token', '')
             audience_number = data_request.get('audience', '')
+            log(f"Start stopping booking. Token:{token}, Audience:{audience_number}", "i")
             try:
                 check_token_result = asyncio.run(check_token(token))
                 if check_token_result["result"]:
@@ -286,7 +305,7 @@ def index_stop_booking(request):
                     if booking_number == 1:
                         book_item = Book.objects.get(audience__number=audience_number)
                         book_item.to_history()
-
+                        log(f"Stopping booking ended with success.", "i")
                         return Response(
                             {
                                 "result": True,
@@ -297,6 +316,7 @@ def index_stop_booking(request):
                     else:
                         for booking in books:
                             booking.to_history()
+                        log(f"Double booking of the audience: {audience_number}. Booking number: {booking_number}", "e")
                         return Response(
                             {
                                 "Error": "BookingError",
@@ -305,15 +325,18 @@ def index_stop_booking(request):
                             },
                             status=status.HTTP_501_NOT_IMPLEMENTED)
                 else:
-                    pass
+                    log(f"Problems with checking token in stop booking. Token:{token}", "e")
             except ConnectionError as e:
+                log(f"ConnectionError. Error:{e}", "e")
                 return Response(
                     {"Error": "ConnectionError", "value": str(e)},
                     status=status.HTTP_503_SERVICE_UNAVAILABLE)
             except Exception as e:
+                log(f"Error:{e}", "e")
                 return Response({"Error": "Error", "value": str(e)},
                                 status=status.HTTP_503_SERVICE_UNAVAILABLE)
         else:
+            log(f"BAD_REQUEST_TYPE. Type:{data_request.get('type')}", "e")
             return Response(
                 {"Error": "BAD_REQUEST_TYPE"},
                 status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
