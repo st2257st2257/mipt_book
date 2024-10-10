@@ -24,7 +24,8 @@ from .services import \
     get_book_audience_response, \
     create_user_wallet, \
     log, \
-    send_email
+    send_email, \
+    update_email
 import logging
 import datetime
 
@@ -172,13 +173,18 @@ def book_audience(request):
     if request.method == 'POST':
         data_request = json.loads(list(request.POST.dict())[0])
         if data_request.get('type') == "book_audience":
-            log(f"Бронирование аудитории. Параметры:{data_request}", "i")
-            token = request.POST.get('token')
+            log(f"Бронирование аудитории. Параметры:{data_request}, token:{data_request.get('token')}", "i")
+            token = data_request.get('token')
             check_token_result = asyncio.run(check_token(token))
             if check_token_result["result"]:
+                # update email of user wallet
+                email = check_token_result['value']['email']
+                update_email_by_token(check_token_result)
+                
                 return get_book_audience_response(
                     number=data_request.get('audience'),
                     user=data_request.get('user'),
+                    email=email,
                     number_bb=int(data_request.get('number_bb', 0)),
                     pair_number=int(data_request.get('pair_number', 0)))
             else:
@@ -220,6 +226,7 @@ def index_user_wallet(request):
             try:
                 check_token_result = asyncio.run(check_token(token))
                 if check_token_result["result"]:
+                    update_email_by_token(check_token_result)
                     username = str(request.POST.get('username', None))
                     username.replace('Пользователь: ', '')
                     log(f"Username for register: '{username}'", "i")
@@ -308,11 +315,12 @@ def index_stop_booking(request):
             try:
                 check_token_result = asyncio.run(check_token(token))
                 if check_token_result["result"]:
+                    update_email_by_token(check_token_result)
                     books = Book.objects.filter(audience__number=audience_number)
                     booking_number = len(books)
                     if booking_number == 1:
                         book_item = Book.objects.get(audience__number=audience_number)
-                        email_address = "kristal.as@phystech.edu" # book_item.user.email "kristal.as@phystech.edu"
+                        email_address = book_item.user.email # book_item.user.email "kristal.as@phystech.edu"
                         username = book_item.user.username
                         book_item.to_history()
 
@@ -358,3 +366,11 @@ def index_stop_booking(request):
                 status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
     if request.method == 'GET':
         return render(request, 'book/stop_booking.html')
+
+
+def update_email_by_token(check_token_result):
+    # update email of user wallet
+    user_name = check_token_result['value']['username']
+    email = check_token_result['value']['email']
+    update_email(user_name, email)
+

@@ -81,6 +81,7 @@ class Audience(models.Model):
 
 class UsersWallet(models.Model):
     username = models.CharField(max_length=255, blank=True)
+    email = models.CharField(max_length=255, blank=True)
     token = models.CharField(max_length=255, blank=True)
     number_bb = models.FloatField()
 

@@ -27,7 +27,7 @@ async def make_auth_request(token):
     session = requests.Session()
     session.mount('https://', adapter)
 
-    log(f"Сделан запрос к сервису авторизации с токеном. T:{token}", "d")
+    log(f"Сделан запрос к сервису авторизации с токеном. T:{token}", "i")
 
     response = session.get(
         web_address + ':8088/get-info/',
@@ -38,42 +38,33 @@ async def make_auth_request(token):
     return response.json()
 
 
+def update_email(username: str, new_email: str):
+    try:
+        user_wallet = UsersWallet.objects.get(username=username)
+        user_wallet.email = new_email
+        user_wallet.save()
+        log(f"Почта кошелька обновлена. Новая почта: {user_wallet.email}.", "i")
+    except Exception as e:
+        log(f"Ошибка в обновлении почты. Error:{e}", "e")
+
+
 async def check_token(token: str):
     response = asyncio.create_task(make_auth_request(token))
 
     res = await asyncio.gather(response)
 
-    if res[0].get("detail", "") == "Invalid token header. Token string should not contain spaces.":
-        log(f"Запрос на авторизацию неудачен. E:{res[0]}", "w")
+    if res[0].get("detail", "") == "Invalid token header. Token string should not contain spaces." or \
+            res[0].get("detail", "") == "Invalid token.":
+        log(f"Запрос на авторизацию неудачен. E:{res[0]}", "e")
         return {
             "result": False,
             "value": res[0]
         }
     else:
-        log(f"Запрос на авторизацию успешен. R:{res[0]}", "d")
+        log(f"Запрос на авторизацию успешен. R:{res[0]}", "i")
         return {
             "result": True,
             "value": res[0]
-        }
-
-
-def check_token_old(token: str):
-    response = requests.get(
-        'https://mipt.site:8088/get-info/',
-        verify=False,
-        headers={"Accept": "application/json",
-                 "Authorization": f"Token {token}"})
-    response.encoding = 'utf-8'
-
-    if response.json().get("detail") == "Invalid token.":
-        return {
-            "result": False,
-            "value": "Wrong token"
-        }
-    else:
-        return {
-            "result": True,
-            "value": response.json()
         }
 
 
@@ -180,6 +171,7 @@ def get_timetable():
 def get_book_audience_response(
         number: str,
         user: str,
+        email: str,
         number_bb: int,
         pair_number: int):
     new_book = Book(
@@ -213,7 +205,7 @@ def get_book_audience_response(
             f"BB:{number_bb}", "i")
 
         # Собираем данные для отправки email сообщения
-        email_address = "kristal.as@phystech.edu" # get_email_by_username(user)  "kristal.as@phystech.edu"
+        email_address = email # get_email_by_username(user)  "kristal.as@phystech.edu"
         email_text = get_booking_text(
             username=user,
             pair_number=pair_number,
