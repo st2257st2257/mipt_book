@@ -224,6 +224,7 @@ def index_user_wallet(request):
         if request.POST.get('type') == "create_user_wallet":
             token = request.POST['token']
             try:
+                log(f"Начало создания кошелька пользователя: D:{request.POST} T:{token}", "i")
                 check_token_result = asyncio.run(check_token(token))
                 if check_token_result["result"]:
                     update_email_by_token(check_token_result)

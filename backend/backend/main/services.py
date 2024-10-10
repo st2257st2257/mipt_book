@@ -16,7 +16,7 @@ async def make_auth_request(token):
     # web_address = "https://127.0.0.1"
     web_address = "https://mipt.site"
 
-    log(f"Начало запроса к сервису авторизации. T:{token}, W:{web_address}", "d")
+    log(f"Начало запроса к сервису авторизации. T:{token}, W:{web_address}", "i")
 
     retries = Retry(
         total=5,

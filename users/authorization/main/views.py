@@ -96,7 +96,8 @@ def register_user(request):
             serializer.save()
             username = serializer.data.get('username', 'test_user')
             user = User.objects.get(username=username)
-            token = Token.objects.get_or_create(user=user)
+            token, created = Token.objects.get_or_create(user=user)
+            log(f"=========. T:{token}", "i")
             user_wallet = create_user_wallet(token, user)
             
             # Собираем данные для отправки email сообщения
