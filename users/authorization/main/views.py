@@ -14,8 +14,13 @@ import logging
 from django.core.exceptions import ObjectDoesNotExist
 import json
 from .services import \
-    create_user_wallet, send_email
-from .services import log
+    create_user_wallet, \
+    send_email
+from .config import \
+    get_change_name_text, \
+    get_registration_text
+from .services import \
+    log
 
 
 class IndexAuth(APIView):
@@ -93,6 +98,13 @@ def register_user(request):
             user = User.objects.get(username=username)
             token = Token.objects.get_or_create(user=user)
             user_wallet = create_user_wallet(token, user)
+            
+            # Собираем данные для отправки email сообщения
+            email_address = user.email # "kristal.as@phystech.edu"
+            email_text = get_registration_text(user.username)
+            email_title = f"Регистрация нового пользователя {user.username}"
+            send_email(email_address, email_text, email_title)
+
             log(f"Пользователь успешно зарегистрирован. U:{user.username}", "i")
             return Response(
                 {"data": serializer.data, "result": user_wallet},
@@ -116,10 +128,13 @@ def edit_user_name(request):
                     if serializer.is_valid():
                         serializer.save()
                         user.save()
-                        email_address = "kristal.as@phystech.edu"
-                        email_text = f"ФИО пользователя {user.username} успешно изменено. Запрос был получен с данными: {data_request}"
-                        email_title = f"Изменение ФИО пользователя{user.username}"
-                        result = send_email(email_address, email_text, email_title)
+
+                        # Собираем данные для отправки email сообщения
+                        email_address = user.email # "kristal.as@phystech.edu"
+                        email_text = get_change_name_text(user.username,data_request)
+                        email_title = f"Изменение ФИО пользователя {user.username}"
+                        send_email(email_address, email_text, email_title)
+
                         log(f"ФИО пользователя успешно изменены. U:{user.username}", "i")
                         return Response(
                             {

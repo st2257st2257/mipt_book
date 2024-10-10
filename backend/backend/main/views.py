@@ -23,7 +23,8 @@ from .services import \
     check_token, \
     get_book_audience_response, \
     create_user_wallet, \
-    log
+    log, \
+    send_email
 import logging
 import datetime
 
@@ -37,6 +38,7 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework import generics
 import json
+from .config import get_stop_booking_text
 
 
 class InstituteViewSet(viewsets.ModelViewSet):
@@ -310,7 +312,15 @@ def index_stop_booking(request):
                     booking_number = len(books)
                     if booking_number == 1:
                         book_item = Book.objects.get(audience__number=audience_number)
+                        email_address = "kristal.as@phystech.edu" # book_item.user.email "kristal.as@phystech.edu"
+                        username = book_item.user.username
                         book_item.to_history()
+
+                        # Собираем данные для отправки email сообщения
+                        email_text = get_stop_booking_text(username, audience_number)
+                        email_title = f"Прекращение бронирования аудитории {audience_number}"
+                        send_email(email_address, email_text, email_title)
+
                         log(f"Stopping booking ended with success.", "i")
                         return Response(
                             {
