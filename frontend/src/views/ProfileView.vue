@@ -300,13 +300,13 @@ const hidePopup = () => {
 	    <span>{{user_name.third_name}}</span><br class="half-line-break">
             <div class="full_name_div"></div>
 	    <span>{{user_name.last_name}}</span>
-                <img class="icon-pic" @click="showPopup_func" src="@/assets/edit.svg" alt="Edit">
+                <img class="icon-pic image_for_click" @click="showPopup_func" src="@/assets/edit.svg" alt="Edit">
             <br>
           </div>
           <div style="position:absolute; bottom: 0; width: 100%">
             <br>
             <span>{{institute_group}}</span>
-            <img class="icon-pic" src="@/assets/edit.svg" alt="Edit">
+            <img class="icon-pic image_for_click" src="@/assets/edit.svg" alt="Edit">
           </div>
         </div>
         <div class="right-element">
@@ -317,7 +317,7 @@ const hidePopup = () => {
 
       <div>
         <div>
-            <p style="font-size: 24px;">Рейтинг бронирования: <img class="icon-pic" @click="showPopupRateInfo_fun" src="@/assets/info.svg"></p>
+            <p style="font-size: 24px;">Рейтинг бронирования: <img class="icon-pic image_for_click" @click="showPopupRateInfo_fun" src="@/assets/info.svg"></p>
             <transition name="fade-rate-info">
                 <div v-if="showPopupRateInfo" class="popup">
                     <div class="popup-content">
@@ -345,7 +345,7 @@ const hidePopup = () => {
 
       <div>
   <div>
-    <p style="font-size: 24px;">Предпочтения:  <img class="icon-pic" @click="showPopup_func" src="@/assets/edit.svg" alt="Edit"></p>
+    <p style="font-size: 24px;">Предпочтения:  <img class="icon-pic image_for_click" @click="showPopup_func" src="@/assets/edit.svg" alt="Edit"></p>
     <transition name="fade">
       <div v-if="showPopup" class="popup">
         <div class="popup-content">
@@ -621,6 +621,10 @@ const hidePopup = () => {
       top: 10px;
       right: 10px;
       cursor: pointer;
+    }
+
+    .image_for_click{
+        cursor: pointer;
     }
 
 </style>

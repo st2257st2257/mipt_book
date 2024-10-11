@@ -71,8 +71,14 @@ async function loadBBNumber(){
 
 <template>
   <div class="container-head">
-    <div class="left-element button-lk">ББ: {{number_bb}} единиц</div>
-    <div class="right-element button-lk">Личный кабинет</div>
+    <a href="/info" class="logo">
+        <div class="left-element button-lk">ББ: {{number_bb}} единиц</div>
+    </a>
+
+    <a href="/profile" class="logo">
+        <div class="right-element button-lk">Личный кабинет</div>
+    </a>
+
   </div>
 </template>
 
