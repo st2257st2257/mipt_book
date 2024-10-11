@@ -26,10 +26,6 @@ SECRET_KEY = 'django-insecure-24@o^wa4cv&t*wbqohm!yfsy&v8-^mf9i(ri0#zen$5^0+p7*+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-#CSRF_TRUSTED_ORIGINS = [
-#    'http://127.0.0.1:8000'
-#],
-
 ALLOWED_HOSTS = ['*']
 
 CORS_ALLOW_HEADERS = ['*']
@@ -38,8 +34,9 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ORIGIN_WHITELIST = [
     'https://127.0.0.1',
-    'https://127.0.0.1:800',
+    'https://127.0.0.1:8000',
     'https://127.0.0.1:8088',
+    'https://127.0.0.1:8083',
     'https://mipt.site',
     'https://89.169.173.80'
 ]

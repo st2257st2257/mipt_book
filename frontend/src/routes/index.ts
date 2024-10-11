@@ -8,11 +8,13 @@ import AuthRecoverView from "@/views/AuthRecoverView.vue";
 import BookHistoryView from "@/views/BookHistoryView.vue";
 import ProfileView from "@/views/ProfileView.vue";
 import DisplayView from "@/views/DisplayView.vue";
+import InfoView from "@/views/InfoView.vue";
 
 
 const routesAuth = [
     {path: '/auth/', component: AuthView},
     {path: '/display/', component: DisplayView},
+    {path: '/info/', component: InfoView},
     {path: '/auth/login/', component: AuthLoginView},
     {path: '/auth/register/', component: AuthRegisterView},
     {path: '/auth/recover/', component: AuthRecoverView},
