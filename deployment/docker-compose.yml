@@ -2,8 +2,8 @@
 version: "3.9"
 
 services:
-  # Запускаем микросервис бэкэнда
   backend:
+    restart: always
     build:
       context: ../backend/backend/
       dockerfile: Dockerfile
@@ -23,6 +23,7 @@ services:
 
   # Запускаем микросервис авторизации
   users:
+    restart: always
     build:
       context: ../users/authorization/
       dockerfile: Dockerfile
@@ -41,16 +42,67 @@ services:
         condition: service_healthy
 
   # Запускаем брокер сообщений для планировщика задач celery
-  redis:
+  redis_backend:
     image: redis
     restart: always
     networks:
       - mipt_book
     ports:
-      - "6379:6379"
+      - "6378:6378"
+
+  # Запускаем планировщик событий celery для микросервиса отправки сообщений
+  worker_backend:
+    restart: always
+    build:
+      context: ../backend/backend/
+      dockerfile: Dockerfile
+    networks:
+      - mipt_book
+    volumes:
+      - ../backend/backend/pgdb:/var/lib/postgresql/data/
+    depends_on:
+      - redis_backend
+      - backend
+    environment:
+      DEBUG: "True"
+      CELERY_BROKER_URL: "redis_backend://redis_backend:6378/0"
+      CELERY_RESULT_BACKEND: "redis_backend://redis_backend:6378/0"
+      DJANGO_DB: postgres_mipt
+      POSTGRES_HOST: pgdb
+      POSTGRES_USER: postgres_mipt
+      POSTGRES_PASSWORD: mipt_book123
+      POSTGRES_PORT: 5432
+    command: 'celery -A backend worker -l info'
+
+  # Запускаем beat для брокера сообщений
+  beat_backend:
+    restart: always
+    build:
+      context: ../backend/backend/
+      dockerfile: Dockerfile
+    networks:
+      - mipt_book
+    volumes:
+      - ../backend/backend/pgdb:/var/lib/postgresql/data/
+    depends_on:
+      - redis_backend
+      - backend
+      - worker_backend
+    environment:
+      DEBUG: "True"
+      CELERY_BROKER_URL: "redis_backend://redis_backend:6378/0"
+      CELERY_RESULT_BACKEND: "redis_backend://redis_backend:6378/0"
+      DJANGO_DB: postgres_mipt
+      POSTGRES_HOST: pgdb
+      POSTGRES_USER: postgres_mipt
+      POSTGRES_PASSWORD: mipt_book123
+      POSTGRES_PORT: 5432
+    command: ['celery', '-A', 'backend', 'beat', '-l', 'INFO', '--scheduler', 'django_celery_beat.schedulers:DatabaseScheduler']
+
 
   # Запускаем базу данных для микросервиса бэкэнда
   pgdb:
+    restart: always
     image: postgres:latest
     networks:
       - mipt_book
@@ -71,6 +123,7 @@ services:
 
   # Запускаем базу данных для микросервиса авторизации
   pgdb_users:
+    restart: always
     image: postgres:latest
     networks:
       - mipt_book
@@ -91,6 +144,7 @@ services:
 
   # Запускаем микросервис отправки сообщений по протоколу SMTP
   email:
+    restart: always
     build:
       context: ../email/emailservice/
       dockerfile: Dockerfile
@@ -106,6 +160,15 @@ services:
       - "8083:8083"
     volumes:
       - ../email/emailservice:/usr/src/app
+
+  # Запускаем брокер сообщений для планировщика задач celery
+  redis:
+    image: redis
+    restart: always
+    networks:
+      - mipt_book
+    ports:
+      - "6379:6379"
 
   # Запускаем планировщик событий celery для микросервиса отправки сообщений
   worker:
@@ -136,7 +199,7 @@ services:
       - redis
       - email
       - worker
-    command: 'celery -A emailservice worker -l info'
+    command: ['celery', '-A', 'emailservice', 'beat', '-l', 'INFO', '--scheduler', 'django_celery_beat.schedulers:DatabaseScheduler']
 
   # Запускаем фронтенд телеграм приложения
   tg_app_frontend:
