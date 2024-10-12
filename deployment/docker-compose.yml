@@ -48,7 +48,18 @@ services:
     networks:
       - mipt_book
     ports:
-      - "6378:6378"
+      - "6380:6380"
+    command: 'redis-server --port 6380'
+
+  # запускаем ещё один брокер сообщений
+  rabbitmq:
+    image: rabbitmq
+    restart: always
+    networks:
+      - mipt_book
+    ports:
+      - 5672:5672
+      - 15672:15672
 
   # Запускаем планировщик событий celery для микросервиса отправки сообщений
   worker_backend:
@@ -59,14 +70,17 @@ services:
     networks:
       - mipt_book
     volumes:
-      - ../backend/backend/pgdb:/var/lib/postgresql/data/
+      # - ../backend/backend/pgdb:/var/lib/postgresql/data/
+      - ../backend/backend:/usr/src/app
     depends_on:
-      - redis_backend
+      # - redis_backend
+      - rabbitmq
       - backend
     environment:
       DEBUG: "True"
-      CELERY_BROKER_URL: "redis_backend://redis_backend:6378/0"
-      CELERY_RESULT_BACKEND: "redis_backend://redis_backend:6378/0"
+      CELERY_BROKER_URL: "amqp://guest:guest@rabbitmq:5672/"
+      # CELERY_BROKER_URL: "redis://redis:6380/0"
+      # CELERY_RESULT_BACKEND: "redis://redis:6380/0"
       DJANGO_DB: postgres_mipt
       POSTGRES_HOST: pgdb
       POSTGRES_USER: postgres_mipt
@@ -83,15 +97,18 @@ services:
     networks:
       - mipt_book
     volumes:
-      - ../backend/backend/pgdb:/var/lib/postgresql/data/
+      # - ../backend/backend/pgdb:/var/lib/postgresql/data/
+      - ../backend/backend:/usr/src/app
     depends_on:
-      - redis_backend
+      # - redis_backend
+      - rabbitmq
       - backend
       - worker_backend
     environment:
       DEBUG: "True"
-      CELERY_BROKER_URL: "redis_backend://redis_backend:6378/0"
-      CELERY_RESULT_BACKEND: "redis_backend://redis_backend:6378/0"
+      CELERY_BROKER_URL: "amqp://guest:guest@rabbitmq:5672/"
+      # CELERY_BROKER_URL: "redis://redis:6380/0"
+      # CELERY_RESULT_BACKEND: "redis://redis:6380/0"
       DJANGO_DB: postgres_mipt
       POSTGRES_HOST: pgdb
       POSTGRES_USER: postgres_mipt

@@ -14,5 +14,8 @@ gunicorn
 xlsxwriter
 # confluent_kafka==1.9.0
 kafka
+celery==5.2.7
 djangorestframework
 django-celery-beat
+redis==3.5.3
+django-celery-results

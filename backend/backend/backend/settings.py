@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_celery_beat',
     'celery',
+    'django_celery_results',
 ]
 
 MIDDLEWARE = [
@@ -143,15 +144,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 
 # CELERY
-REDIS_HOST = '0.0.0.0'
-REDIS_PORT = '6378'
-CELERY_BROKER_URL = 'redis_backend://redis_backend:6378/0'
+## REDIS_HOST = '0.0.0.0'
+## REDIS_PORT = 6379
+
+# CELERY_BROKER_URL = 'redis://redis_backend:6379/0' # 'redis_backend://redis_backend:6378/0'
+CELERY_BROKER_URL='amqp://guest:guest@rabbitmq:5672/'
 CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
-CELERY_RESULT_BACKEND = 'redis_backend://redis_backend:6378/0'
+# CELERY_RESULT_BACKEND = 'redis://redis_backend:6379/0' # 'redis_backend://redis_backend:6378/0'
+
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
-
 
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
