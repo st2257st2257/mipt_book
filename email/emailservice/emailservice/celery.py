@@ -1,7 +1,6 @@
 import os
 from celery import Celery
 from celery.schedules import crontab
-from mainemail.services import sendEmail, log
 
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'emailservice.settings')
