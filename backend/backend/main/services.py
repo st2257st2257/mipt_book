@@ -8,7 +8,10 @@ import requests
 import json
 import logging
 import datetime
-from .config import get_booking_text
+from .config import \
+    get_booking_text, \
+    TIME_SLOT_DICT, \
+    ADMIN_FOOTER_INFO
 
 
 async def make_auth_request(token):
@@ -258,3 +261,172 @@ def log(string, log_type="w"):
         logging.critical(_)
     else:
         logging.debug(_)
+
+
+# BOOKING ITERATION
+
+
+def get_queue_item(booking) -> dict:
+    return {
+        "audience": booking.audience,
+        "audience_number": booking.audience.number,
+        "user_wallet": booking.user,
+        "number_bb": booking.number_bb,
+        "pair_number": booking.pair_number,
+        "time_slot": booking.time_slot,
+        "status": "Ожидание" # 0-Ожидание 1-Принято 2-Отклонено
+    }
+
+
+def check_booking_availability(booking, time_slot):
+    if booking.time_slot <= time_slot <= booking.time_slot + booking.pair_number:
+        return True
+    return False
+
+
+def make_queue_list(time_slot: int):
+    all_booking = Book.objects.all()
+    result_queue = []
+    for booking in all_booking:
+        if check_booking_availability(booking, time_slot):
+            result_queue.append(get_queue_item(booking))
+    return result_queue
+
+
+def time_slot_to_time(slot_number):
+    slot_dict = TIME_SLOT_DICT
+    return slot_dict[slot_number]
+
+
+def get_confirmation_text(queue_item, username):
+    return f"Уважаемый, {username}\n\n" \
+           f"Сообщаем Вам, что бронирование аудитории {queue_item['audience'].number} прошло успешно\n" \
+           f"\n\tНомер аудитории: {str(queue_item['audience'])}\n" \
+           f"\tВремя бронирования: {time_slot_to_time(queue_item['time_slot'])}\n" \
+           f"\tОбщая продолжительность: {queue_item['pair_number']}\n" \
+           f"\tСписанные баллы бронирования: {queue_item['number_bb']} ББ {ADMIN_FOOTER_INFO}"
+
+
+def get_reject_text(
+        queue_item,
+        username,
+        queue_number,
+        queue_len,
+        places_number,
+        min_bb_number):
+    return f"Уважаемый, {username}\n\n" \
+           f"Сообщаем Вам, что бронирование аудитории {queue_item['audience'].number} НЕ ПРОШЛО\n" \
+           f"\nВаш номер в очереди: {queue_number}\n" \
+           f"Общая длина очереди: {queue_len}\n" \
+           f"Число доступных мест: {places_number}" \
+           f"Минимально принятая заявка на бронирование: {min_bb_number}\n" \
+           f"\n\tНомер аудитории: {str(queue_item['audience'])}\n" \
+           f"\tВремя бронирования: {time_slot_to_time(queue_item['time_slot'])}\n" \
+           f"\tОбщая продолжительность: {queue_item['pair_number']}\n" \
+           f"\tСписанные баллы бронирования: 0 ББ {ADMIN_FOOTER_INFO}"
+
+
+def get_end_booking(audience_number, time_slot, pair_number, number_bb, username):
+    return f"Уважаемый, {username}\n\n" \
+           f"Сообщаем Вам, что бронирование аудитории {audience_number} завершено. " \
+           f"Просьба покинуть аудиторию или забронировать следующую\n" \
+           f"\n\tНомер аудитории: {audience_number}\n" \
+           f"\tВремя бронирования: {time_slot_to_time(time_slot)}\n" \
+           f"\tОбщая продолжительность: {pair_number}\n" \
+           f"\tСписанные баллы бронирования: {number_bb} ББ {ADMIN_FOOTER_INFO}"
+
+
+def check_queue_list(time_slot: int):
+    number_of_audiences = len(Audience.objects.exclude(audience_status__name='Отсутствует для бронирования'))
+    queue_list = make_queue_list(time_slot)
+    queue = sorted(queue_list, key=lambda item: int(item["number"]), reverse=True)
+
+    email_list = make_email_list(queue, number_of_audiences)
+    audience_list = make_audience_list(queue, number_of_audiences)
+
+    return email_list, audience_list
+
+
+def make_audience_list(queue, number_of_audiences):
+    for i in range(number_of_audiences):
+        if i <= number_of_audiences:
+            queue[i]["status"] = "Принято"
+        else:
+            queue[i]["status"] = "Отклонено"
+
+    audience_list = []
+    for queue_item in queue:
+        if queue_item["status"] == "Принято":
+            audience_list.append(queue_item)
+
+    return audience_list
+
+
+def make_email_list(queue, number_of_audiences):
+    email_list = []
+    for i in range(number_of_audiences):
+        if i <= number_of_audiences:
+            email_list.append({
+                "email": queue[i].user.email,
+                "title": f"Бронирование прошло успешно | {queue[i]['audience'].number}",
+                "text": get_confirmation_text(
+                    queue_item=queue[i],
+                    username=queue[i].user.username)})
+        else:
+            email_list.append({
+                "email": queue[i].user.email,
+                "title": f"Бронирование не удалось | {queue[i]['audience'].number}",
+                "text": get_reject_text(
+                    queue_item=queue[i],
+                    username=queue[i].user.username,
+                    queue_number=i,
+                    queue_len=len(queue),
+                    places_number=number_of_audiences,
+                    min_bb_number=queue[min(number_of_audiences, len(queue)-1)]["number_bb"]
+                )})
+    return email_list
+
+
+def update_audience():
+    pass
+
+
+def clear_audience(time_slot: int):
+    audiences = Audience.objects.exclude(audience_status__name='Отсутствует для бронирования')
+    for audience in audiences:
+        audience.make_free(time_slot)
+        audience.save()
+
+
+def load_booking(audience_list):
+    for audience in audience_list:
+        if len(Audience.object.filter(number=audience['audience'].number)) == 1:
+            this_audience = Audience.object.get(number=audience['audience'].number)
+        else:
+            log(f"Error: wrong loading audience: {audience['audience'].number}", "i")
+
+
+def update_email_list_by_stop_booking(email_list, audience_list, time_slot):
+    audiences = Audience.objects.all()
+    for audience in audiences:
+        if audience.audience_status.name == "Занято":
+            flag = False
+            for final_audience in audience_list:
+                if final_audience["audience"].number == audience.number:
+                    flag = True
+            if flag:
+                pass
+            else:
+                booking = Book.objects.get(audience__number=audience.number)
+                audience_number = booking.audience.number
+                number_bb = booking.number_bb
+                username = booking.user.username
+                pair_number = booking.pair_number
+                email_test = \
+                    get_end_booking(audience_number, time_slot, pair_number, number_bb, username)
+                email_list.append({
+                    "email": booking.user.email,
+                    "title": f"Бронирование завершилось | {audience_number}",
+                    "text": email_test
+                })
+    return email_list

@@ -60,8 +60,8 @@ class Audience(models.Model):
     def __str__(self):
         return f'Audience: {self.number}|{self.building.name}'
 
-    def make_free(self, pair_number):
-        self.day_history.pair[pair_number][1] = "Свободно"
+    def make_free(self, time_slot):
+        self.day_history.pair[time_slot][1] = "Свободно"
         self.audience_status = AudienceStatus.objects.get(name="Свободно")
         self.day_history.save()
         self.save()
@@ -105,6 +105,7 @@ class Book(models.Model):
     number_bb = models.FloatField(
         validators=[MinValueValidator(0.0), MaxValueValidator(28.0)],)
     pair_number = models.IntegerField(default=0)
+    time_slot = models.IntegerField(default=0)
     date = models.DateField()
     booking_time = models.TimeField(auto_now_add=True)
     visibility = models.IntegerField(default=0)

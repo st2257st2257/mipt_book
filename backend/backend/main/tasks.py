@@ -1,6 +1,6 @@
 from backend.celery import app
 from celery.schedules import crontab
-from main.services import log
+from main.services import log, send_email, get_timetable
 
 
 @app.task
@@ -10,7 +10,12 @@ def send_weekly():
 
 @app.task
 def queue_to_booking():
-    log("2222222222222222222222222222222222222222222222222222222222222", 'i')
+    log("START SENDING", 'i')
+    try:
+        log(str(get_timetable()), "i")
+    except Exception as e:
+        log(e, "e")
+        log("333333333333333333333333333333333333333333333333333333333", 'i')
 
 
 @app.task
