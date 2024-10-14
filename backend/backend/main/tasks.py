@@ -1,6 +1,6 @@
 from backend.celery import app
 from celery.schedules import crontab
-from main.services import log, send_email, get_timetable
+from main.services import log, send_email, get_timetable, update_audience
 
 
 @app.task
@@ -19,6 +19,12 @@ def queue_to_booking():
 
 
 @app.task
+def update_audience_regular(time_slot):
+    log(f"REGULAR UPDATE: +++ === +++ ={time_slot}= +++ === +++", 'i')
+    update_audience(time_slot)
+
+
+@app.task
 def send_weekly_new():
     log("============", 'i')
 
@@ -29,3 +35,4 @@ def setup_periodic_tasks(sender, **kwargs):
     log("Начало выполнения периодической задачи", 'i')
     sender.add_periodic_task(10.0, send_weekly.s(), name='test_send_weekly')
     sender.add_periodic_task(5.0, queue_to_booking.s(), name='queue_to_booking')
+    sender.add_periodic_task(5.0, update_audience_regular.s(), name='update_audience_regular')

@@ -271,8 +271,8 @@ class UsersWalletAdmin(admin.ModelAdmin):
 
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
-    search_fields = ("id", "audience", "user", "number_bb", "pair_number", "date", "booking_time")
-    list_display = ("id", "audience", "user", "number_bb", "pair_number", "date", "booking_time", )
+    search_fields = ("id", "audience", "user", "number_bb", "pair_number", "date", "booking_time", "time_slot")
+    list_display = ("id", "audience", "user", "number_bb", "pair_number", "date", "booking_time", "time_slot",)
 
     actions = ["finish_booking", "stop_booking", "cancel_booking"]
 
