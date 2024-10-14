@@ -115,7 +115,7 @@ class Book(models.Model):
 
     def to_history(self):
         audience = Audience.objects.get(number=self.audience.number)
-        audience.make_free(pair_number=self.pair_number)
+        audience.make_free(time_slot=self.pair_number)
 
         history_booking = BookHistory(
             audience=self.audience.number,  # CharField

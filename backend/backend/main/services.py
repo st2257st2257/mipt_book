@@ -176,30 +176,33 @@ def get_book_audience_response(
         user: str,
         email: str,
         number_bb: int,
-        pair_number: int):
+        pair_number: int,
+        time_slot: int):
     new_book = Book(
         audience=get_audience_by_number(number),
         user=get_user_by_username(user),
         number_bb=number_bb,
         pair_number=pair_number,
+        time_slot=time_slot,
         date=datetime.datetime.now().date(),
         booking_time=datetime.datetime.now().time(),
         visibility=1)
     new_book.save()
     audience = Audience.objects.get(number=number)
     if audience.day_history.pair[pair_number][1] == "Свободно":
-        audience.day_history.pair[pair_number][1] = "Занято"
+        # Останавливаем мгновенные бронирования
+        ## audience.day_history.pair[pair_number][1] = "Занято"
         log(f"Изменена дневная история. A:{number}, P:{pair_number}", "d")
-        audience.day_history.pair[pair_number][2] = user
+        ## audience.day_history.pair[pair_number][2] = user
         log(f"Изменён пользователь дневной истории. A:{number}, U:{user}", "d")
-        audience.day_history.pair[pair_number][3] = str(number_bb)
+        ## audience.day_history.pair[pair_number][3] = str(number_bb)
         log(f"Изменены баллы бронирования дневной истории. A:{number}, BB:{number_bb}", "d")
-        audience.audience_status = AudienceStatus.objects.get(name="Занято")
-        audience.audience_status.save()
+        ## audience.audience_status = AudienceStatus.objects.get(name="Занято")
+        ## audience.audience_status.save()
         log(f"Статус занятости сохранён. A:{number}", "d")
-        audience.day_history.save()
+        ## audience.day_history.save()
         log(f"Дневная история сохранена. A:{number}", "d")
-        audience.save()
+        ## audience.save()
         log(f"Аудитория сохранена. A:{number}", "d")
         log(f"Audience booked. "
             f"A:{new_book.audience.number}, "
@@ -285,10 +288,15 @@ def check_booking_availability(booking, time_slot):
     if booking.time_slot <= time_slot < booking.time_slot + booking.pair_number:
         # Если бронирование вместе с количеством пар раньше по времени, чем
         # текущий временной слот, что бронирование удаляется (переноситься в историю)
-        if booking.time_slot + booking.pair_number <= time_slot:
-            booking.to_history()
+        # if booking.time_slot + booking.pair_number <= time_slot:
+        #     booking.to_history()
         log(f"88888888888 True", "i")
         return True
+    else:
+        if booking.time_slot + booking.pair_number <= time_slot:
+            booking.to_history()
+            log(f"777777777 True", "i")
+        log(f"6666666 True", "i")
     log(f"88888888888 False", "i")
     return False
 

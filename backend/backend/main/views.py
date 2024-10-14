@@ -39,7 +39,7 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework import generics
 import json
-from .config import get_stop_booking_text
+from .config import get_stop_booking_text, TIME_SLOT_DICT
 
 
 class InstituteViewSet(viewsets.ModelViewSet):
@@ -181,12 +181,19 @@ def book_audience(request):
                 email = check_token_result['value']['email']
                 update_email_by_token(check_token_result)
                 
+                time_slot = -1
+                for number, time_slot_name in TIME_SLOT_DICT.items():
+                    if time_slot_name == data_request.get('time_slot', "00:00"):
+                        time_slot = number
+                log(f"========================{time_slot}", "i")
+                
                 return get_book_audience_response(
                     number=data_request.get('audience'),
                     user=data_request.get('user'),
                     email=email,
                     number_bb=int(data_request.get('number_bb', 0)),
-                    pair_number=int(data_request.get('pair_number', 0)))
+                    pair_number=int(data_request.get('pair_number', 0)),
+                    time_slot=time_slot)
             else:
                 log(f"Проверка токена выдала ошибку. T:{token}", "e")
                 return Response(
