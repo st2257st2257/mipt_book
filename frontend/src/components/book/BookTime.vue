@@ -1,6 +1,16 @@
 <script setup lang="ts">
 import {ref} from 'vue'
 
+// setup selected time slot
+const emit = defineEmits<{
+  (e: "select-time-slot", time_slot: String):void
+}>()
+
+function emitSelect(){
+  emit('select-time-slot', String(formatTime(selected_time.value)));
+}
+
+
 function fDate(hours : number, minutes : number){
   // short for factoryDate
   let out = new Date();
@@ -11,6 +21,13 @@ function fDate(hours : number, minutes : number){
   return out;
 }
 
+function getDefaultTime(){
+  for(let i = 0; i<times.value.length ; i++){
+    if(!isOld(times.value[i])) return times.value[i];
+  }
+  return times.value[0];
+}
+
 let times = ref([
   fDate(17,0), fDate(18,0), fDate(19,30),
   fDate(21,0), fDate(22,30), fDate(0,0),
@@ -19,7 +36,9 @@ let times = ref([
 
 let selected_time = ref<Date>(new Date());
 
-function onMounted(){}
+function onMounted(){
+  selected_time.value = getDefaultTime();
+}
 
 function isOld(date : Date){
   let now = new Date();
@@ -31,8 +50,11 @@ function formatTime(date: Date){
 }
 
 function selectTime(time: Date){
+  // emitSelect();
   if(isOld(time)) return;
   selected_time.value = time;
+  emitSelect();
+  // console.log(String(selected_time.value));
 }
 
 </script>

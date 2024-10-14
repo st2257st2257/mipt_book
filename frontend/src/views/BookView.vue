@@ -11,12 +11,16 @@ let form_audience_name = ref<String>("");
 let form_number_bb = ref<Number>(0);
 let form_pair_number = ref<Number>(1);
 let form_token = ref<String>("");
+let form_time_slot = ref<String>("");
 
 function selectAudience(audience: IAudience) {
   form_audience_name.value = audience.number;
 }
 function selectAmount(amount: Number){
   form_pair_number.value = amount;
+}
+function selectTimeSlot(time_slot: String){
+  form_time_slot.value = String(time_slot);
 }
 
 let token = ref<string|null>(null);
@@ -44,6 +48,7 @@ async function sendForm(){
         'audience': form_audience_name.value,
         'number_bb': form_number_bb.value,
         'pair_number': form_pair_number.value,
+	'time_slot': form_time_slot.value,
         'user': username.value
       })
     });
@@ -121,7 +126,7 @@ async function sendForm(){
     <form @submit.prevent="sendForm">
 
       <BookAudience @select-audience="selectAudience"/>
-      <BookTime />
+      <BookTime @select-time-slot="selectTimeSlot"/>
       <BookAmount @select-amount="selectAmount"/>
 
       <div class="container-head" style="height: 60px;">
