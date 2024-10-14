@@ -26,3 +26,6 @@ critical_file.log
 
 # pycache
 __pycache__/*
+
+# database
+db.sqlite3
