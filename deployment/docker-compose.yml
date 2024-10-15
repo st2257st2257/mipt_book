@@ -120,7 +120,7 @@ services:
   # Запускаем базу данных для микросервиса бэкэнда
   pgdb:
     restart: always
-    image: postgres:latest
+    image: postgres:16
     networks:
       - mipt_book
     ports:
@@ -141,7 +141,7 @@ services:
   # Запускаем базу данных для микросервиса авторизации
   pgdb_users:
     restart: always
-    image: postgres:latest
+    image: postgres:16
     networks:
       - mipt_book
     ports:

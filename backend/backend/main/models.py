@@ -186,7 +186,7 @@ class DayHistory(models.Model):
             blank=True,
             null=True
         ),
-        max_length=8,
+        max_length=20,
         blank=True,
         null=True
     )

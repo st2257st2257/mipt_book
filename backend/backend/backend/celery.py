@@ -83,18 +83,23 @@ app.conf.beat_schedule = {
     },
     'test_1': {
         'task': 'main.tasks.update_audience_regular',
-        'schedule': crontab(hour=20, minute=47),
-        'args': (11,),
+        'schedule': crontab(hour=23, minute=53),
+        'args': (1,),
     },
     'test_2': {
         'task': 'main.tasks.update_audience_regular',
-        'schedule': crontab(hour=20, minute=49),
-        'args': (12,),
+        'schedule': crontab(hour=23, minute=54),
+        'args': (2,),
     },
     'test_3': {
         'task': 'main.tasks.update_audience_regular',
-        'schedule': crontab(hour=20, minute=51),
-        'args': (13,),
+        'schedule': crontab(hour=23, minute=55),
+        'args': (3,),
+    },
+    'test_4': {
+        'task': 'main.tasks.update_audience_regular',
+        'schedule': crontab(hour=23, minute=56),
+        'args': (4,),
     },
 }
 

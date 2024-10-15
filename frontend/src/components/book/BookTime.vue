@@ -29,9 +29,12 @@ function getDefaultTime(){
 }
 
 let times = ref([
-  fDate(17,0), fDate(18,0), fDate(19,30),
-  fDate(21,0), fDate(22,30), fDate(0,0),
-  fDate(1,30), fDate(3,0),
+  fDate(9,0), fDate(10,45), fDate(12,20),
+  fDate(15,30),
+  fDate(17,5), fDate(18,35), fDate(20,0),
+  fDate(22,0), fDate(23,59), fDate(0,0),
+  fDate(1,30), fDate(3,0), fDate(4,30),
+  fDate(6,0),
 ])
 
 let selected_time = ref<Date>(new Date());
