@@ -15,7 +15,7 @@ function fDate(hours : number, minutes : number){
   // short for factoryDate
   let out = new Date();
   out.setHours(hours); out.setMinutes(minutes)
-  if (hours < 12) { // hardcoded nonsense
+  if (hours < 8) { // hardcoded nonsense
     out.setDate(out.getDate()+1);
   }
   return out;
@@ -61,7 +61,7 @@ function selectTime(time: Date){
 </script>
 
 <template>
-  <h3>Время бронирования</h3>
+  <h3>Время начала бронирования</h3>
   <div class="time-selector" id="timeSelector">
     <template v-for="time in times">
       <div  class="time-option"

@@ -370,7 +370,7 @@ const hidePopup = () => {
     </div>
 
     <div class="div-pop-up-edit-fio">
-        <button @click="hidePopup" style="background-color: #dc3545;color: white;padding: 10px 20px;border: none;border-radius: 5px;cursor: pointer;">Закрыть</button>
+        <button @click="hidePopup" type="reset" style="background-color: #dc3545;color: white;padding: 10px 20px;border: none;border-radius: 5px;cursor: pointer;">Закрыть</button>
         <button type="submit" style="background-color: #4caf50; color: white;padding: 10px 20px;border: none;border-radius: 5px;cursor: pointer;">Сохранить</button>
     </div>
   </form>

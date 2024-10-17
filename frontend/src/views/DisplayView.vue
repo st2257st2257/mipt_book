@@ -95,7 +95,23 @@ const filteredItems = () => {
   return items; //.filter(item => item.age > 25);
 };
 
+
 defineExpose({ filteredItems });
+
+
+/* pop up functions */
+const showPopupRateInfo = ref(false);
+let audience_number = ref<string|null>(null);
+
+
+const showAudienceInfo = (my_audience_number: string) => {
+  audience_number.value = my_audience_number;
+  showPopupRateInfo.value = true;
+};
+
+const hideAudienceInfo = () => {
+  showPopupRateInfo.value = false;
+};
 
 
 </script>
@@ -109,23 +125,29 @@ defineExpose({ filteredItems });
 
 <div>
   <div class="centered-div"><h3>Аудитории ГК:</h3></div>
-  <div class="room-list room-list-grid" style="padding-bottom: 70px;">
+  <!-- <p style="font-size: 24px;">SHOW <img class="icon-pic image_for_click" @click="showAudienceInfo" src="@/assets/info.svg"></p>
+  --><div class="room-list room-list-grid" style="padding-bottom: 70px;">
     <template v-for="audience in audiences_gk">
-        <div :class="['room-item', `background_${audience.audience_status.name}`, `number_of_users${audience.number_of_users}`]"
+	    <div @click="showAudienceInfo(`${audience.number}`)" :class="['room-item', `background_${audience.audience_status.name}`, `number_of_users${audience.number_of_users}`]"
         style="max-width: 150px; max-height: 100px; min-height: 100px; min-width: 150px;">
             <i class="icon fas fa-door-open status-available"></i>
             <p>Аудитория {{audience.number}} {{audience.building.name}}</p>
             <p>{{audience.audience_status.name}}</p>
-
-            <!-- <p>Описание: {{audience.description}}</p>
-            <p>Номер аудитории: {{audience.number}}</p>
-            <p>Число пользователей: {{audience.number_of_users}}</p>
-            <p>Имя института: {{audience.building.institute.name}}</p>
-            <p>Название здания: {{audience.building.name}}</p>
-            <p>Статус: {{audience.audience_status.name}}</p>
-            <p></p> -->
         </div>
     </template>
+
+    	<transition name="fade-rate-info">
+                <div v-if="showPopupRateInfo" class="popup">
+                    <div class="popup-content">
+                        <button @click="hideAudienceInfo" style="background-color: #dc3545;color: white;padding: 10px 20px;border: none;border-radius: 5px;cursor: pointer;">Закрыть</button>
+			<p>{{audience_number}}sdsd sdf sdf  sdf s df s df s df</p>
+			<p>sdsd sdf sdf  sdf s df s df s df</p>
+			<p>sdsd sdf sdf  sdf s df s df s df</p>
+			<p>sdsd sdf sdf  sdf s df s df s df</p>
+                    </div>
+                </div>
+	</transition>
+
   </div>
 </div>
 
@@ -230,4 +252,44 @@ defineExpose({ filteredItems });
     .status-reserved {
       color: orange;
     }
+
+
+/*styles for popup*/
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  z-index: 10;
+}
+
+.popup-content {
+  max-height: 70vh; /*Adjust as needed */
+  overflow-y: auto;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s;
+}
+
+.fade-enter-active-rate-info,
+.fade-leave-active-rate-info {
+  transition: opacity 0.3s;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.fade-enter-rate-info,
+.fade-leave-to-rate-info {
+  opacity: 0;
+}
+
 </style>
