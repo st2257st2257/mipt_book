@@ -175,11 +175,7 @@ const hideAudienceInfo = () => {
                     <div class="popup-content">
                         <button @click="hideAudienceInfo" style="background-color: #dc3545;color: white;padding: 10px 20px;border: none;border-radius: 5px;cursor: pointer;">Закрыть</button>
 			<p>Номер аудитории: {{audience_number}}</p>
-			<p>{{time_slots_arr_length}}</p>
-			<p>{{time_slots_arr.length}}</p>
-			<p v-for="time_slot in time_slots_arr">{{time_slot}}sdsd sdf sdf  sdf s df s df s df</p>
-			<p>sdsd sdf sdf  sdf s df s df s df</p>
-			<p>sdsd sdf sdf  sdf s df s df s df</p>
+			<p v-for="time_slot in time_slots_arr">Время:{{time_slot[0]}} Статус:{{time_slot[1]}} Мероприятие:{{time_slot[2]}} Баллы Бронирования:{{time_slot[3]}} Вместимость:{{time_slot[4]}}человек</p>
                     </div>
                 </div>
 	</transition>
