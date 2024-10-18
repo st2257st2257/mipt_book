@@ -14,6 +14,14 @@ interface Institute {
   name: string
 }
 
+interface TimeSlot {
+  number: string,
+  pair_number: number,
+  event_name: string,
+  bb_number: string,
+  people_number: string
+}   
+
 interface Audience {
   number: string,
   number_of_users: number,
@@ -35,6 +43,9 @@ interface Building {
 // const web_site = "127.0.0.1";
 const web_site = inject('web_site');
 
+let time_slots_arr_length = 1;
+let time_slots_arr: any[] = reactive([]);
+// let time_slots_arr: Ref<TimeSlot[]> = ref([]);
 let audiences: Ref<Audience[]> = ref([]);
 let audiences_gk: Ref<Audience[]> = ref([]);
 let audiences_lk: Ref<Audience[]> = ref([]);
@@ -57,7 +68,6 @@ async function loadAudience(){
       console.error('Сеть ответила с ошибкой: ' + response.status);
 
       if(response.status == 401){
-        // token.value = null;
         localStorage.removeItem("auth-token");
       }
     }
@@ -67,23 +77,46 @@ async function loadAudience(){
     audiences_gk.value = data_number.filter(item => item.building.name == 'ГК');
     audiences_lk.value = data_number.filter(item => item.building.name == 'ЛК');
 
-    // username.value = data_number[0].username;
-    // number_bb.value = String(data_number[0].number_bb);
-
     console.log('Ответ от сервера header data_number:', data_number);
-    // console.log('Ответ от сервера header username:', username);
-    // console.log('Ответ от сервера header number_bb:', number_bb);
-    // console.log('Ответ от сервера header username.value:', username.value);
-    // console.log('Ответ от сервера header number_bb.value:', number_bb.value);
-    // user_name.first_name = data.name.first_name;
-    // user_name.last_name = data.name.last_name;
-    // user_name.third_name = data.name.third_name;
-    // institute_group.value = data.institute_group;
-    // book_rating.value = data.book_rate;
   } catch (error) {
     console.error('Ошибка при отправке данных:', error);
   }
 }
+
+
+async function loadTimeSlots(my_audience_number: string){
+  try {
+    const response = await fetch("https://" + web_site + ":8000/timetable/?type=get_timetable&audience_number=" + my_audience_number,{
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    });
+
+    if (!response.ok) {
+      console.error('Сеть ответила с ошибкой: ' + response.status);
+    }
+
+
+    time_slots_arr.length = 0;
+    const data_number = await response.json();
+    console.log('============', data_number.data[0].day_history);
+    for (let i = 1; i < data_number.data[0].day_history.length; i++){
+	time_slots_arr.push(data_number.data[0].day_history[i]);
+    }
+    time_slots_arr_length = time_slots_arr.length;
+    console.log(time_slots_arr.length);
+    // time_slots_arr
+    // audiences.value = data_number;
+    // audiences_gk.value = data_number.filter(item => item.building.name == 'ГК');
+    // audiences_lk.value = data_number.filter(item => item.building.name == 'ЛК');
+
+    console.log('Ответ от сервера header data_number:', data_number);
+  } catch (error) {
+    console.error('Ошибка при отправке данных:', error);
+  }
+}
+
 
 const filteredItems = () => {
    let items: { id: number, name: string, age: number }[]  = [
@@ -106,6 +139,7 @@ let audience_number = ref<string|null>(null);
 
 const showAudienceInfo = (my_audience_number: string) => {
   audience_number.value = my_audience_number;
+  loadTimeSlots(my_audience_number);
   showPopupRateInfo.value = true;
 };
 
@@ -140,8 +174,10 @@ const hideAudienceInfo = () => {
                 <div v-if="showPopupRateInfo" class="popup">
                     <div class="popup-content">
                         <button @click="hideAudienceInfo" style="background-color: #dc3545;color: white;padding: 10px 20px;border: none;border-radius: 5px;cursor: pointer;">Закрыть</button>
-			<p>{{audience_number}}sdsd sdf sdf  sdf s df s df s df</p>
-			<p>sdsd sdf sdf  sdf s df s df s df</p>
+			<p>Номер аудитории: {{audience_number}}</p>
+			<p>{{time_slots_arr_length}}</p>
+			<p>{{time_slots_arr.length}}</p>
+			<p v-for="time_slot in time_slots_arr">{{time_slot}}sdsd sdf sdf  sdf s df s df s df</p>
 			<p>sdsd sdf sdf  sdf s df s df s df</p>
 			<p>sdsd sdf sdf  sdf s df s df s df</p>
                     </div>

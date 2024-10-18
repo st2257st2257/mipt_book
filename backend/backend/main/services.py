@@ -171,6 +171,20 @@ def get_timetable():
     return res
 
 
+def get_time_slots(audience_number):
+    log(f"Получение расписания бронирования.", "d")
+    res = []
+    audiences = Audience.objects.filter(number=audience_number)
+    for item in audiences:
+        val = {
+            "status": item.audience_status.name,
+            "day_history": item.day_history.pair,
+            "date": item.day_history.date
+        }
+        res.append(val)
+    return res
+
+
 def get_book_audience_response(
         number: str,
         user: str,

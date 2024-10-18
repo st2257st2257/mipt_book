@@ -25,7 +25,7 @@ from .services import \
     create_user_wallet, \
     log, \
     send_email, \
-    update_email
+    update_email, get_time_slots
 import logging
 import datetime
 
@@ -289,6 +289,16 @@ def index_timetable(request):
     if request.method == 'GET':
         if request.GET.get('type') == "get_timetable":
             log(f"Get timetable ended with success", "i")
+            audience_number = request.GET.get('audience_number', '')
+            if audience_number != '':
+                return Response(
+                    {
+                        "result": True,
+                        "audience": audience_number,
+                        "data": get_time_slots(audience_number),
+                        "user": 2
+                    },
+                    status=status.HTTP_201_CREATED)
             return Response(
                 {
                     "result": True,
