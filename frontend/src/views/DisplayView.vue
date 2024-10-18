@@ -173,10 +173,24 @@ const hideAudienceInfo = () => {
     	<transition name="fade-rate-info">
                 <div v-if="showPopupRateInfo" class="popup">
                     <div class="popup-content">
-                        <button @click="hideAudienceInfo" style="background-color: #dc3545;color: white;padding: 10px 20px;border: none;border-radius: 5px;cursor: pointer;">Закрыть</button>
-			<p>Номер аудитории: {{audience_number}}</p>
-			<p v-for="time_slot in time_slots_arr">Время:{{time_slot[0]}} Статус:{{time_slot[1]}} Мероприятие:{{time_slot[2]}} Баллы Бронирования:{{time_slot[3]}} Вместимость:{{time_slot[4]}}человек</p>
-                    </div>
+                        <button @click="hideAudienceInfo" style="background-color: #dc3545; width: 100%;  color: white;padding: 10px 20px;border: none;border-radius: 5px;cursor: pointer;">Закрыть</button>
+			<div style="display: flex; justify-content: space-between;">
+				<p>Номер аудитории:</p>
+				<p class="time">{{audience_number}} ГК  </p>
+			</div>
+			<div class="time-slot" v-for="time_slot in time_slots_arr">
+			    <div style="display: flex; justify-content: space-between;">
+				<p class="time">Время:{{time_slot[0]}}</p>   
+				<p style="padding-left: 10px;">{{time_slot[1]}}</p>
+			    </div>
+			    <div style="display: flex; justify-content: space-between;">
+			        <p class="capacity">Баллов для бронирования</p>
+				<p>{{time_slot[3]}} ед.</p>
+			    </div>
+			    <p class="event">Мероприятие: {{time_slot[2]}}</p>
+			</div>
+			<button @click="hideAudienceInfo" style="background-color: #dc3545; width: 100%;  color: white;padding: 10px 20px;border: none;border-radius: 5px;cursor: pointer;">Закрыть</button>
+		    </div>
                 </div>
 	</transition>
 
@@ -324,4 +338,37 @@ const hideAudienceInfo = () => {
   opacity: 0;
 }
 
+
+/* Popup styles */
+.time-slot {
+  min-width: 20vw;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.time-slot p {
+  margin-bottom: 5px;
+}
+
+.time {
+  font-weight: bold;
+}
+
+.status {
+  color: #007bff; /*Пример цвета для "Забронировано" */
+}
+
+.event {
+  font-style: italic;
+}
+
+.points {
+  color: #333;
+}
+
+.capacity {
+  color: #555;
+}
 </style>
