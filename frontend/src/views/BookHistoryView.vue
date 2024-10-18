@@ -291,6 +291,7 @@ async function loadBookHistory(){
     }
 
     .booking-table {
+      max-width: 100vw;
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
