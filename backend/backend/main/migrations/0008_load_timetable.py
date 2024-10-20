@@ -3,7 +3,6 @@ from django.db import migrations, models
 import pandas as pd
 import datetime
 
-
 TIME_SLOT_DICT = {
     1: "09:00",
     2: "10:45",

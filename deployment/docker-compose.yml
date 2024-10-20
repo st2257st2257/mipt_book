@@ -242,21 +242,21 @@ services:
       - ./frontend.conf.d:/etc/nginx/http.d
 
   # документация к проекту
-  swagger-ui:
-    build:
-      context: ../swagger
-      dockerfile: Dockerfile
-    networks:
-      - mipt_book
-    # restart: always
-    image: swaggerapi/swagger-ui
-    container_name: swagger-ui
-    ports:
-      - "8001:8001"
-    volumes:
-      - ../swagger:/usr/share/nginx/html/swagger
-    environment:
-      API_URL: ../swagger/api.yaml
+  # swagger-ui:
+  #   build:
+  #     context: ../swagger
+  #     dockerfile: Dockerfile
+  #   networks:
+  #     - mipt_book
+  #   # restart: always
+  #   image: swaggerapi/swagger-ui
+  #   container_name: swagger-ui
+  #   ports:
+  #     - "8001:8001"
+  #   volumes:
+  #     - ../swagger:/usr/share/nginx/html/swagger
+  #   environment:
+  #     API_URL: ../swagger/api.yaml
 
   # nginx
   #nginx:

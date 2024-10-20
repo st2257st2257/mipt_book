@@ -1,12 +1,19 @@
+import django.contrib.postgres.fields
+from django.db import migrations, models
+import pandas as pd
+import os
+import datetime
 # Код позволяет получить последнее время занятия аудиторий
 # по заданному файлу расписания
 # (c) Aleksandr Kristal @st2257
 
 import pandas as pd
 import numpy as np
+from main.services import log
 from collections import namedtuple
 
-pair_name_arr = {
+
+PAIR_NAME_ARR = {
     '900 - 1025': 1,
     '1045 - 1210': 2,
     '1220 - 1345': 3,
@@ -14,6 +21,15 @@ pair_name_arr = {
     '1530 - 1655': 5,
     '1705 - 1830': 6,
     '1835 - 2000': 7}
+
+PAIR_NAME_DICT = {
+    1: '900 - 1025',
+    2: '1045 - 1210',
+    3: '1220 - 1345',
+    4: '1355 - 1520',
+    5: '1530 - 1655',
+    6: '1705 - 1830',
+    7: '1835 - 2000'}
 
 building_arr = ['ГК', 'ЛК', 'Акт.зал', 'КПМ', 'Гл.Физ.', 'Цифра', 'Квант', 'УПМ', 'ауд.', 'ОКТЧ', 'БК', 'Арктика']
 
@@ -87,8 +103,8 @@ class EventItem:
         return f"DT:{self.day_time} WD:{self.week_day} DT:{self.day_time} PN:{self.pair_name} PNb:{self.pair_number}"
 
     def update_pair_number(self):
-        if self.day_time in pair_name_arr.keys():
-            self.pair_number = pair_name_arr[self.day_time]
+        if self.day_time in PAIR_NAME_ARR.keys():
+            self.pair_number = PAIR_NAME_ARR[self.day_time]
             return True
         return False
 
@@ -245,7 +261,11 @@ def get_pair_number_by_list_index(right_list, list_index):
 
 
 def make_timetable(file_name="res_data.xlsx", sheet_name="1 курс"):
+    # current_dir = os.getcwd()
+    # file_path = os.path.join(current_dir, file_name)
+    # data = pd.read_excel(file_path, sheet_name=sheet_name)
     data = pd.read_excel(file_name, sheet_name=sheet_name)
+    log(data, "i")
 
     temp_arr = []
     time_matching_arr = []
@@ -360,3 +380,151 @@ def get_audiences(timetable):
                 group_name=group.name
             )
     return audience_list
+
+
+def get_audiences_many(timetables):
+    # создаём список аудиторий для заполнения по расписанию
+    audience_list = AudienceList()
+    # считываем расписания всех групп
+    for timetable in timetables:
+        for group in timetable.group_arr:
+            # считываем все мероприятия выбранной группы
+            for event in group.event_arr:
+                # в случае отсутствия аудитории с заданными номером и зданием добавляем её в список
+                number, building = "", ""
+                if get_audience_by_pair_name(group.get_pair_name(event.week_day, event.pair_number)):
+                    number, building = get_audience_by_pair_name(group.get_pair_name(event.week_day, event.pair_number))
+                if not audience_list.is_in(number, building):
+                    audience_list.create_new(number, building)
+
+                # добавляем выбранное событие
+                audience_list.add_time_slot(
+                    audience_number=number,
+                    audience_building=building,
+                    week_day=event.week_day,
+                    day_time=event.day_time,
+                    pair_name=event.pair_name,
+                    group_name=group.name
+                )
+    return audience_list
+
+TIME_SLOT_DICT = {
+    1: "09:00",
+    2: "10:45",
+    3: "12:20",
+    4: "13:45",
+    5: "15:30",
+    6: "17:05",
+    7: "18:35",
+    8: "20:00",
+    9: "22:00",
+    10: "23:59",
+    11: "01:30",
+    12: "03:00",
+    13: "04:30",
+    14: "06:00",}
+
+WEEK_DAYS_DICT = {
+    1: "Понедельник",
+    2: "Вторник",
+    3: "Среда",
+    4: "Четверг",
+    5: "Пятница",
+    6: "Суббота",
+    7: "Воскресенье",}
+
+
+def get_status_by_event_name(audience, i, j):
+    if i < 7:
+        event_name = audience.timetable.day_arr[WEEK_DAYS_DICT[j]].pair_arr[PAIR_NAME_DICT[i+1]].pair_name
+        if event_name == '':
+            return 'Свободно'
+        return 'Отсутствует для бронирования'
+    return 'Свободно'
+
+
+def get_owner_by_event_group_name(audience, i, j):
+    if i < 7:
+        group_name = audience.timetable.day_arr[WEEK_DAYS_DICT[j]].pair_arr[PAIR_NAME_DICT[i+1]].group_name
+        if group_name == '':
+            return 'Отсутствует'
+        return group_name
+    return 'Отсутствует'
+
+
+def get_pair_name(audience, i, j):
+    if i < 7:
+        return audience.timetable.day_arr[WEEK_DAYS_DICT[j]].pair_arr[PAIR_NAME_DICT[i+1]].pair_name
+    return ''
+
+
+def read_excel_timetable(apps, schema_editor):
+    """Заполняет таблицу базовыми значениями, забитыми в эксель файле"""
+    """Заполняется: Аудитории, Кошельки"""
+
+    # Создаем аудитории для бронирования
+    Building = apps.get_model('main', 'Building')
+    AudienceStatus = apps.get_model('main', 'AudienceStatus')
+    Audience = apps.get_model('main', 'Audience')
+    DayHistory = apps.get_model('main', 'DayHistory')
+
+    # Читаем данные файлов и записываем их в соответствующий класс
+    # users_wallets = pd.read_excel("excel/res_data1.xlsx", sheet_name="1 курс")
+    timetables = [make_timetable(file_name=f"excel/res_data{i}.xlsx", sheet_name=f"{i} курс") for i in range(1, 6)]
+    # audiences = [get_audiences(timetables[j]) for j in range(5)]
+
+    # Создаём список последних бронирований
+    audience_list = get_audiences_many(timetables)
+    # audience_list.audience_list - список всех аудиторий в расписании
+
+    # Building.objects.all().delete()
+    # AudienceStatus.objects.all().delete()
+    Audience.objects.all().delete()
+    DayHistory.objects.all().delete()
+    for audience in audience_list.audience_list:
+        audience_number = audience.number
+        building_name = audience.building
+
+        if len(Building.objects.filter(name=building_name)) == 1:
+            build = Building.objects.get(name=building_name)
+            audience_status = AudienceStatus.objects.get(name="Свободно")
+            _audience = Audience.objects.create(
+                number=audience_number,
+                description=f"Аудитория номер: {audience_number} {building_name}",
+                building=build,
+                audience_status=audience_status,
+                number_of_users=20,
+                day_history=DayHistory.objects.create(
+                    pair=[
+                        [
+                            TIME_SLOT_DICT[i+1],   #  время бронирования
+                            "Свободно",            #  статус аудитории
+                            "blank_user",          #  кто бронирует аудиторию
+                            "0",                   #  число баллов бронирования
+                            "21"                   #  число человек, которое вмещает аудитория
+                        ] for i in range(14)],
+                    date="2023-03-08"),
+                week_pairs=[
+                    [
+                        [
+                            TIME_SLOT_DICT[i+1],   #  время бронирования
+                            get_status_by_event_name(audience, i, j),        #  статус аудитории
+                            get_owner_by_event_group_name(audience, i, j),  #  кто бронирует аудиторию
+                            get_pair_name(audience, i, j),
+                            "0",                   #  число баллов бронирования
+                            "20",                  #  число человек, которое вмещает аудитория
+                            WEEK_DAYS_DICT[j]      # день недели
+                        ]
+                    for i in range(14)] for j in range(1,6)])
+            _audience.day_history.audience = _audience
+            _audience.day_history.save()
+
+
+class Migration(migrations.Migration):
+    dependencies = [
+        ('main', '0009_audience_week_pairs'),
+    ]
+
+    operations = [
+        migrations.RunPython(read_excel_timetable),
+    ]

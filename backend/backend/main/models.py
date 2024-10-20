@@ -55,6 +55,22 @@ class Audience(models.Model):
         related_name="day_history_audience",
         blank=True,
         null=True)
+    week_pairs = fields.ArrayField(
+        fields.ArrayField(  # дни недели
+            fields.ArrayField(  # пары
+                models.CharField(max_length=255, blank=True),
+                max_length=8,
+                blank=True,
+                null=True
+            ),
+            max_length=20,
+            blank=True,
+            null=True
+        ),
+        max_length=7,
+        blank=True,
+        null=True
+    )
     description = models.CharField(max_length=256, blank=True)
 
     def __str__(self):
@@ -201,7 +217,7 @@ class DayHistory(models.Model):
 
 @admin.register(DayHistory)
 class DayHistoryAdmin(admin.ModelAdmin):
-    search_fields = ("id", "audience", "date", "booking_time")
+    search_fields = ("id", "date", "booking_time")
     list_display = ("id", "audience", "date", "booking_time", )
 
 
@@ -213,7 +229,7 @@ class InstituteAdmin(admin.ModelAdmin):
 
 @admin.register(Building)
 class BuildingAdmin(admin.ModelAdmin):
-    search_fields = ("id", "name", "institute", "description")
+    search_fields = ("id", "name", "description")
     list_display = ("id", "name", "institute", )
 
 
@@ -225,7 +241,7 @@ class AudienceStatusAdmin(admin.ModelAdmin):
 
 @admin.register(Audience)
 class AudienceAdmin(admin.ModelAdmin):
-    search_fields = ("id", "number", "building", "description")
+    search_fields = ("id", "number", "description")
     list_display = ("id", "number", "building", "number_of_users", "audience_status",)
 
     actions = ["make_free", "make_booked", "make_excluded", "make_all_free", "cancel_daily_booking"]
@@ -271,7 +287,7 @@ class UsersWalletAdmin(admin.ModelAdmin):
 
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
-    search_fields = ("id", "audience", "user", "number_bb", "pair_number", "date", "booking_time", "time_slot")
+    search_fields = ("id", "user", "number_bb", "pair_number", "date", "booking_time", "time_slot")
     list_display = ("id", "audience", "user", "number_bb", "pair_number", "date", "booking_time", "time_slot",)
 
     actions = ["finish_booking", "stop_booking", "cancel_booking"]
@@ -307,5 +323,5 @@ class BookAdmin(admin.ModelAdmin):
 
 @admin.register(BookHistory)
 class BookHistoryAdmin(admin.ModelAdmin):
-    search_fields = ("id", "audience", "user", "number_bb", "pair_number", "date", "booking_time")
+    search_fields = ("id", "number_bb", "pair_number", "date", "booking_time")
     list_display = ("id", "audience", "user", "number_bb", "pair_number", "date", "booking_time", )
