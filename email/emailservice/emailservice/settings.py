@@ -136,8 +136,8 @@ USE_TZ = True
 # EMAIL
 EMAIL_HOST = "smtp.yandex.ru"
 EMAIL_PORT = 465
-EMAIL_HOST_USER = "awesome.gtlk@yandex.com"
-EMAIL_HOST_PASSWORD = "aatoyoihydfqmjrj"
+EMAIL_HOST_USER = "info@mipt.site"
+EMAIL_HOST_PASSWORD = "ygarwzrinvzmihwu"
 EMAIL_USE_SSL = True
 
 

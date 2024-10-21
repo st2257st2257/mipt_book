@@ -88,12 +88,12 @@ app.conf.beat_schedule = {
     },
     'test_2': {
         'task': 'main.tasks.update_audience_regular',
-        'schedule': crontab(day_of_week=1, hour=8, minute=18),
+        'schedule': crontab(day_of_week=1, hour=11, minute=34),
         'args': (2,),
     },
     'test_3': {
         'task': 'main.tasks.update_week_day',
-        'schedule': crontab(day_of_week=1, hour=8, minute=17),
+        'schedule': crontab(day_of_week=1, hour=11, minute=33),
         'args': (1,),
     },
     'update_week_1': {  # Обновляем понедельник
