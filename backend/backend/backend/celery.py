@@ -88,19 +88,50 @@ app.conf.beat_schedule = {
     },
     'test_2': {
         'task': 'main.tasks.update_audience_regular',
-        'schedule': crontab(hour=23, minute=54),
+        'schedule': crontab(day_of_week=1, hour=8, minute=18),
         'args': (2,),
     },
     'test_3': {
-        'task': 'main.tasks.update_audience_regular',
-        'schedule': crontab(hour=23, minute=55),
+        'task': 'main.tasks.update_week_day',
+        'schedule': crontab(day_of_week=1, hour=8, minute=17),
+        'args': (1,),
+    },
+    'update_week_1': {  # Обновляем понедельник
+        'task': 'main.tasks.update_week_day',
+        'schedule': crontab(day_of_week=0, hour=8, minute=0),
+        'args': (1,),
+    },
+    'update_week_2': {  # Обновляем вторник
+        'task': 'main.tasks.update_week_day',
+        'schedule': crontab(day_of_week=1, hour=8, minute=0),
+        'args': (2,),
+    },
+    'update_week_3': {  # Обновляем среду
+        'task': 'main.tasks.update_week_day',
+        'schedule': crontab(day_of_week=2, hour=8, minute=0),
         'args': (3,),
     },
-    'test_4': {
-        'task': 'main.tasks.update_audience_regular',
-        'schedule': crontab(hour=23, minute=56),
+    'update_week_4': {  # Обновляем четверг
+        'task': 'main.tasks.update_week_day',
+        'schedule': crontab(day_of_week=3, hour=8, minute=0),
         'args': (4,),
     },
+    'update_week_5': {  # Обновляем пятницу
+        'task': 'main.tasks.update_week_day',
+        'schedule': crontab(day_of_week=4, hour=8, minute=0),
+        'args': (5,),
+    },
+    'update_week_6': {  # Обновляем субботу
+        'task': 'main.tasks.update_week_day',
+        'schedule': crontab(day_of_week=5, hour=8, minute=0),
+        'args': (6,),
+    },
+    'update_week_7': {  # Обновляем воскресенье
+        'task': 'main.tasks.update_week_day',
+        'schedule': crontab(day_of_week=6, hour=8, minute=0),
+        'args': (0,),
+    },
+
 }
 
-app.conf.timezone = 'UTC'
+app.conf.timezone = 'Europe/Moscow'

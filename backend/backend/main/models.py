@@ -82,6 +82,16 @@ class Audience(models.Model):
         self.day_history.save()
         self.save()
 
+    def clear_booking(self, time_slot):
+        if self.day_history.pair[time_slot][1] != "Отсутствует для бронирования":
+            self.day_history.pair[time_slot][1] = "Свободно"
+            self.audience_status = AudienceStatus.objects.get(name="Свободно")
+        else:
+            self.day_history.pair[time_slot][1] = "Отсутствует для бронирования"
+            self.audience_status = AudienceStatus.objects.get(name="Отсутствует для бронирования")
+        self.day_history.save()
+        self.save()
+
     def make_all_free(self):
         for i in range(len(self.day_history.pair)):
             self.day_history.pair[i][1] = "Свободно"

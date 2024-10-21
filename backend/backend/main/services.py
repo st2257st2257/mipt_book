@@ -457,6 +457,13 @@ def make_email_list(queue, number_of_audiences):
     return email_list
 
 
+def update_audience_day(week_day):
+    for audience in Audience.objects.all():
+        audience.day_history.pair = audience.week_pairs[week_day]
+        log(f"99999999999 {audience.week_pairs[week_day]}", "i")
+        audience.day_history.save()
+
+
 def update_audience(time_slot: int):
     log(f"UPDATE: update_audience", "i")
     # получаем список почт и аудиторий сделанный после проверки и создания очереди
@@ -487,7 +494,7 @@ def clear_audience(time_slot: int):
     audiences = Audience.objects.exclude(audience_status__name='Отсутствует для бронирования')
     for audience in audiences:
         log(f"UPDATE: clear_audience | number:{audience.number} | make free", "i")
-        audience.make_free(time_slot)
+        audience.clear_booking(time_slot)
         audience.save()
 
 

@@ -501,19 +501,21 @@ def read_excel_timetable(apps, schema_editor):
                             "Свободно",            #  статус аудитории
                             "blank_user",          #  кто бронирует аудиторию
                             "0",                   #  число баллов бронирования
-                            "21"                   #  число человек, которое вмещает аудитория
+                            "21",                  #  число человек, которое вмещает аудитория
+                            "",
+                            ""
                         ] for i in range(14)],
                     date="2023-03-08"),
                 week_pairs=[
                     [
                         [
-                            TIME_SLOT_DICT[i+1],   #  время бронирования
-                            get_status_by_event_name(audience, i, j),        #  статус аудитории
+                            TIME_SLOT_DICT[i+1],                            #  время бронирования
+                            get_status_by_event_name(audience, i, j),       #  статус аудитории
                             get_owner_by_event_group_name(audience, i, j),  #  кто бронирует аудиторию
-                            get_pair_name(audience, i, j),
-                            "0",                   #  число баллов бронирования
-                            "20",                  #  число человек, которое вмещает аудитория
-                            WEEK_DAYS_DICT[j]      # день недели
+                            "0",                                            #  число баллов бронирования
+                            "20",                                           #  число человек, которое вмещает аудитория
+                            WEEK_DAYS_DICT[j],                              #  день недели
+                            get_pair_name(audience, i, j),                  #  название мероприятия
                         ]
                     for i in range(14)] for j in range(1,6)])
             _audience.day_history.audience = _audience
