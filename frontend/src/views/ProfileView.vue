@@ -50,25 +50,13 @@ let preferencesIcons: Record<string, string> = {
 };
 
 onMounted(()=>{
-  console.log('========');
-  // const hash = window.location.hash;
-  // const queryString = new URLSearchParams(hash.slice(1));
-
-  // let access_token = queryString.get('access_token');
-  // token.value = access_token;
-  // console.log(access_token);
-  // console.log(queryString);
-
-  // console.log("00000");
-  // sendAuthPost();
-  // sendAuthGet();
-  if (token.value == null){
-  	if (localStorage.getItem("auth-token") == null) {
-	    sendAuthGet().then(() => {
-	        console.log("===== 01");
+  // начинаем авторизацию пользователя обрабатывая все возможные случаи комбинации токенов
+  if (token.value == null){ //  рассматриваем начальный случай когда пустой токен неопределён
+	if (localStorage.getItem("auth-token") == null) { //  рассматриваем случай когда хронилище токена пустое
+	    sendAuthGet().then(() => { //  делаем запрос к яндексу для получения данных пользователя
 		token.value = localStorage.getItem("auth-token");
 		username.value = localStorage.getItem("username");
-	    }).then(() => {
+	    }).then(() => { //  загружаем нужные для отображения данные с микросервисов
 	        console.log("===== 02");
         	if(token.value == null) return;
         	
@@ -76,35 +64,31 @@ onMounted(()=>{
 		loadInfo();
         	loadPreferences();
         	loadBBNumber();
+	    }).then(() => {
+	    	router.go(0);
 	    });
 	}
-	else {
-	    logAuth().then(() => {
+	else { //  обрабатываем случай когда токен созранён - в таком случае подгружаем данные из БД
+	    logAuth().then(() => { //  делаем запрос к яндексу для получения данных пользователя
 		token.value = localStorage.getItem("auth-token");
                 username.value = localStorage.getItem("username");
-	    }).then(() => { 
-	    	console.log("===== 04");
+	    }).then(() => { //  загружаем нужные для отображения данные с микросервисоv
                 if(token.value == null) return;
 
-                console.log("===== 05");
                 loadInfo();
                 loadPreferences();
                 loadBBNumber();
 	    });
-	    
-	    console.log("===== -1");
-	    token.value = localStorage.getItem("auth-token");
-	    username.value = localStorage.getItem("username");
 	}
   }
   else {
-  	console.log("===== 2");
+  	console.log("===== 1");
   	if(token.value == null) return;
-  	console.log("===== 3");
+  	console.log("===== 2");
   	loadInfo();
-  	console.log("===== 4");
+  	console.log("===== 3");
   	loadPreferences();
-  	console.log("===== 5");
+  	console.log("===== 4");
   	loadBBNumber();
   }
 });
