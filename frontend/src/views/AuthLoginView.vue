@@ -68,11 +68,22 @@ async function sendForm(){
     			<input class="center-button auth-input" type="text" name="username" v-model="username">
     
 			<h4>Введите пароль</h4>
-			<a href="https://oauth.yandex.ru/authorize?response_type=token&client_id=fc1c3b1661c643a09f6c3622818b3275" >link</a>
     			<input class="center-button auth-input" type="password" name="password" v-model="password">
     
 			<span style="margin: 8px">{{error_message}}</span>
     			<input type="submit" value="Авторизоваться" class="button-auth center-button">
+			<p style="text-align: center; color: gray;">или войти с помощью</p>
+			
+			<a href="https://oauth.yandex.ru/authorize?response_type=token&client_id=fc1c3b1661c643a09f6c3622818b3275" style="text-decoration: none;">
+				<div style="background: black; display: flex;" class="button-auth center-button-auth">
+				  <div class="auth-text-class" style="">
+				    <img style="width: 24px; padding-right: 10px;" src="https://upload.wikimedia.org/wikipedia/commons/5/58/Yandex_icon.svg"  alt="Логотип Yandex">
+				  </div>
+			          <div style="">
+				    Яндекс ID
+				  </div>
+				</div>
+			</a>
   		</form>
 	</div>
 </template>
@@ -86,13 +97,19 @@ form {
 }
 
 .center-div-login{
-	padding-top: 30vh;
+	padding-top: 15vh;
 }
 
 /*Стили для мобильных устройств (экраны меньше 768px) */
 @media (max-width: 768px) {
     .center-button {
         width: 80%; /*Растягиваем на всю ширину экрана */
+    }
+    .center-button-auth {
+        width: 80vw; /*Растягиваем на всю ширину экрана */
+    }
+    .auth-text-class {
+	padding-left: 30%;
     }
 }
 
@@ -101,7 +118,15 @@ form {
     .center-button {
         width: 30%; /*Ограничиваем ширину до 80% */
     }
+    .center-button-auth {
+        width: 30vw; /*Растягиваем на всю ширину экрана */
+    }
+    .auth-text-class {
+        padding-left: 40%;
+    }
+
 }
+
 
 /*Базовые стили */
 .auth-input {

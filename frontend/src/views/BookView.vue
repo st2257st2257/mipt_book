@@ -49,7 +49,7 @@ onMounted(()=>{
           router.push("/auth/login/").then(()=>{
             router.go(0); // force reload
           });
-      }, 7500);
+      }, 6500);
   }
 });
 
@@ -180,10 +180,9 @@ async function sendForm(){
       <transition name="fade">
       <div v-if="showPopupBookingInfo" class="popup">
         <div class="popup-content">
-            <h2>Для бронирования аудиторий необходимо</h2>
-            <h2>авторизоваться с помощью почты МФТИ</h2>
-	    <p>К примеру: ivanov.ii@phystech.edu</p>
-	    <a href="https://mipt.site/auth/login/"><button>Авторизоваться</button></a>
+            <h3>Для бронирования аудиторий необходимо авторизоваться с помощью почты МФТИ</h3>
+	    <h5>К примеру: ivanov.ii@phystech.edu</h5>
+	    <a href="https://mipt.site/auth/login/"><button style="background-color: #4caf50;color: white;padding: 10px 20px;border: none; border-radius: 5px; cursor: pointer; width:100%;">Авторизоваться</button></a>
         </div>
       </div>
     </transition>
