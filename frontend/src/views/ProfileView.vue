@@ -65,7 +65,11 @@ onMounted(()=>{
         	loadPreferences();
         	loadBBNumber();
 	    }).then(() => {
-	    	router.go(0);
+	        if (token.value == null) {
+		    console.log("go to auth page");
+		} 
+		else {
+		    router.go(0);}
 	    });
 	}
 	else { //  обрабатываем случай когда токен созранён - в таком случае подгружаем данные из БД
