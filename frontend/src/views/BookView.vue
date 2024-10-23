@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {onMounted, ref, provide, inject} from 'vue'
+import { useRouter } from 'vue-router';
 
 import Header from "@/components/TheHeader.vue";
 import BookAudience from "@/components/book/BookAudience.vue";
@@ -12,6 +13,8 @@ let form_number_bb = ref<Number>(0);
 let form_pair_number = ref<Number>(1);
 let form_token = ref<String>("");
 let form_time_slot = ref<String>("");
+
+const router = useRouter();
 
 function selectAudience(audience: IAudience) {
   form_audience_name.value = audience.number;
@@ -32,10 +35,32 @@ let username = ref<string|null>(null);
 // const web_site = "127.0.0.1";
 const web_site = inject('web_site');
 
+const showPopupBookingInfo = ref(false);
+
 onMounted(()=>{
   token.value = localStorage.getItem("auth-token");
   username.value = localStorage.getItem("username");
+
+  if (localStorage.getItem("auth-token") == null) {
+      setTimeout(()=>{
+          showPopupBookingInfo_fun();
+      }, 1000);
+      setTimeout(()=>{
+          router.push("/auth/login/").then(()=>{
+            router.go(0); // force reload
+          });
+      }, 7500);
+  }
 });
+
+const showPopupBookingInfo_fun = () => {
+  showPopupBookingInfo.value = true;
+};
+
+const hidePopupBookingInfo = () => {
+  showPopupBookingInfo.value = false;
+};
+
 
 async function sendForm(){
   try {
@@ -152,6 +177,18 @@ async function sendForm(){
       </div>
   </div>
 
+      <transition name="fade">
+      <div v-if="showPopupBookingInfo" class="popup">
+        <div class="popup-content">
+            <h2>Для бронирования аудиторий необходимо</h2>
+            <h2>авторизоваться с помощью почты МФТИ</h2>
+	    <p>К примеру: ivanov.ii@phystech.edu</p>
+	    <a href="https://mipt.site/auth/login/"><button>Авторизоваться</button></a>
+        </div>
+      </div>
+    </transition>
+
+
 
 </template>
 
@@ -215,5 +252,43 @@ async function sendForm(){
       right: 10px;
       cursor: pointer;
     }
+
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  z-index: 10;
+}
+
+.popup-content {
+  max-height: 70vh; /*Adjust as needed */
+  overflow-y: auto;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s;
+}
+
+.fade-enter-active-rate-info,
+.fade-leave-active-rate-info {
+  transition: opacity 0.3s;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.fade-enter-rate-info,
+.fade-leave-to-rate-info {
+  opacity: 0;
+}
+
 
 </style>
