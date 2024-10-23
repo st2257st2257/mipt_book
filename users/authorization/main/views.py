@@ -11,6 +11,7 @@ from rest_framework import status
 from rest_framework.authtoken.models import Token
 import logging
 
+import requests
 from django.core.exceptions import ObjectDoesNotExist
 import json
 from .services import \
@@ -195,3 +196,81 @@ def edit_user_name(request):
             log(f"Error:{e}", "e")
             return Response({"Error": "Error", "value": str(e)},
                             status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+
+@api_view(['POST', 'GET'])
+def oauth_yandex(request):
+    if request.method == 'GET':
+        log(f"request.GET:{request.GET}  dict:{request.GET.dict()}", "i")
+        data_request = request.GET.dict()
+
+        url = "https://login.yandex.ru/info"
+        params = {
+            "oauth_token": data_request.get("access_token"), # , "y0_AgAEA7qkNfKRAAymngAAAAEVhwM5AADyHiBoCChFpLOXWx4oCfaSrCdGmw"),
+            "format": "json",
+            "jwt_secret": "6cd8b4452aa241128a54e3470866bc1f"
+        }
+        
+        response = requests.get(url, params=params)
+        log(response.status_code, "i")
+
+        if response.status_code == 200:
+            log(response.json(), "i")
+            
+            log(f"== {response.json().get('default_email')}", "i")
+
+            if len(User.objects.filter(username=response.json().get("default_email"))) == 0: 
+                new_user = User.objects.create_user(response.json().get("default_email"))
+                new_user.email = response.json().get("default_email")
+                new_user.first_name = response.json().get("first_name").split(" ")[0]
+            
+                if len(response.json().get("first_name").split(" ")) > 1:
+                    new_user.third_name = response.json().get("first_name").split(" ")[1]
+            
+                new_user.last_name = response.json().get("last_name")
+                new_user.token = data_request.get("access_token")
+                new_user.institute_group = InstituteGroup.objects.get(name="Б02-003")
+                new_user.user_role = Role.objects.get(name="Пользователь")
+                new_user.save()
+
+                #  token = Token.objects.create(user=new_user)
+                #  token.save()
+
+                new_token, created = Token.objects.get_or_create(user=new_user)
+                log(f"=========. T:{new_token}", "i")
+                user_wallet = create_user_wallet(new_token, new_user)
+
+                return Response({
+                    "Result": response.json(),
+                    "token_for_user": new_token.key, 
+                    "access_token": data_request.get("access_token", "")}, status=status.HTTP_202_ACCEPTED)
+            elif len(User.objects.filter(username=response.json().get("default_email"))) == 1:
+                my_user = User.objects.get(username=response.json().get("default_email"))
+
+                my_token, created = Token.objects.get_or_create(user=my_user)
+
+                return Response({
+                    "Result": response.json(),
+                    "token_for_user": my_token.key,
+                    "access_token": data_request.get("access_token", "")}, status=status.HTTP_202_ACCEPTED)
+
+        token  = data_request.get("token", "")
+        try:
+            user = Token.objects.get(key=token).user
+            if user is not None:
+                log("Возвращаем подтверждение существования пользователя при корректности токена", "i")
+                return Response({"Result": "True"}, status=status.HTTP_202_ACCEPTED)
+            else:
+                log("Создание пользователя по полученному токену из Яндекс Авторизации", "i")
+                return Response({"Result": "True"}, status=status.HTTP_202_ACCEPTED)
+        except ConnectionError as e:
+            log(f"ConnectionError. Error:{e}", "e")
+            return Response(
+                {"Error": "ConnectionError", "value": str(e)},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        except Exception as e:
+            log(f"Error:{e}", "e")
+            return Response({"Error": "Error", "value": str(e)},
+                            status=status.HTTP_503_SERVICE_UNAVAILABLE)
+    if request.method == 'GET':
+        return render(request, 'oauth/index.html')

@@ -22,6 +22,7 @@
     "@vitejs/plugin-vue": "^5.0.5",
     "@vue/babel-plugin-jsx": "^1.2.2",
     "@vue/tsconfig": "^0.5.1",
+    "@yandex/ymaps3-types": "^1.0.15147272",
     "npm-run-all2": "^6.2.0",
     "typescript": "~5.4.0",
     "vite": "^5.3.1",

@@ -50,12 +50,63 @@ let preferencesIcons: Record<string, string> = {
 };
 
 onMounted(()=>{
-  token.value = localStorage.getItem("auth-token");
-  username.value = localStorage.getItem("username");
-  if(token.value == null) return;
-  loadInfo();
-  loadPreferences();
-  loadBBNumber();
+  console.log('========');
+  // const hash = window.location.hash;
+  // const queryString = new URLSearchParams(hash.slice(1));
+
+  // let access_token = queryString.get('access_token');
+  // token.value = access_token;
+  // console.log(access_token);
+  // console.log(queryString);
+
+  // console.log("00000");
+  // sendAuthPost();
+  // sendAuthGet();
+  if (token.value == null){
+  	if (localStorage.getItem("auth-token") == null) {
+	    sendAuthGet().then(() => {
+	        console.log("===== 01");
+		token.value = localStorage.getItem("auth-token");
+		username.value = localStorage.getItem("username");
+	    }).then(() => {
+	        console.log("===== 02");
+        	if(token.value == null) return;
+        	
+		console.log("===== 03");
+		loadInfo();
+        	loadPreferences();
+        	loadBBNumber();
+	    });
+	}
+	else {
+	    logAuth().then(() => {
+		token.value = localStorage.getItem("auth-token");
+                username.value = localStorage.getItem("username");
+	    }).then(() => { 
+	    	console.log("===== 04");
+                if(token.value == null) return;
+
+                console.log("===== 05");
+                loadInfo();
+                loadPreferences();
+                loadBBNumber();
+	    });
+	    
+	    console.log("===== -1");
+	    token.value = localStorage.getItem("auth-token");
+	    username.value = localStorage.getItem("username");
+	}
+  }
+  else {
+  	console.log("===== 2");
+  	if(token.value == null) return;
+  	console.log("===== 3");
+  	loadInfo();
+  	console.log("===== 4");
+  	loadPreferences();
+  	console.log("===== 5");
+  	loadBBNumber();
+  }
 });
 
 import { useRouter } from 'vue-router';
@@ -278,6 +329,72 @@ const hidePopup = () => {
       }
     }
 
+
+async function sendAuthPost(){
+  try {
+    const response = await fetch("https://" + web_site + ":8088/oauth_yandex/",{
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        'access_token': "y0_AgAEA7qkNfKRAAymngAAAAEVhwM5AADyHiBoCChFpLOXWx4oCfaSrCdGmw"
+      })
+    });
+
+    if (!response.ok) {
+      console.error('Сеть ответила с ошибкой: ' + response.status);
+    }
+
+    const data = await response.json();
+    console.log('Ответ от сервера default_email:', data["Result"]["default_email"]);
+    console.log('Ответ от сервера id:', data["Result"]["id"]);
+    console.log('Ответ от сервера first_name:', data["Result"]["first_name"]);
+    console.log('Ответ от сервера last_name:', data["Result"]["last_name"]);
+    console.log('Ответ от сервера sex:', data["Result"]["sex"]);
+  } catch (error) {
+    console.error('Ошибка при отправке данных:', error);
+  }
+};
+
+async function sendAuthGet(){
+  try {
+
+    const hash = window.location.hash;
+    const queryString = new URLSearchParams(hash.slice(1));
+
+    let access_token = queryString.get('access_token');
+    token.value = access_token;
+    console.log(access_token);
+
+    const response = await fetch("https://" + web_site + ":8088/oauth_yandex/?access_token=" + access_token,{
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    });
+
+    if (!response.ok) {
+      console.error('Сеть ответила с ошибкой: ' + response.status);
+    }
+
+   const data = await response.json();
+    console.log('Ответ от сервера default_email:', data["Result"]["default_email"]);
+    console.log('Ответ от сервера id:', data["Result"]["id"]);
+    console.log('Ответ от сервера first_name:', data["Result"]["first_name"]);
+    console.log('Ответ от сервера last_name:', data["Result"]["last_name"]);
+    console.log('Ответ от сервера sex:', data["Result"]["sex"]);
+    console.log('Ответ от сервера sex:', data["token_for_user"]);
+
+    localStorage.setItem("auth-token", data["token_for_user"]);
+    console.log('========================', localStorage.getItem("auth-token"));
+  } catch (error) {
+    console.error('Ошибка при отправке данных:', error);
+  }
+}
+
+async function logAuth(){
+  console.log('====');
+  return "";
+}
 
 </script>
 

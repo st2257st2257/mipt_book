@@ -30,6 +30,7 @@ router.register(r'preferences', views.PreferencesViewSet)
 urlpatterns = [
     path('edit_user_name/', views.edit_user_name),
     path('register/', views.register_user),
+    path('oauth_yandex/', views.oauth_yandex),
     path('admin/', admin.site.urls),
     path('base-info/', include(router.urls)),
     path('get-info/', views.IndexAuth.as_view()),

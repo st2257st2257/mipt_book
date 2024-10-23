@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import '@/assets/auth.css'
-import {ref, provide, inject} from "vue";
+import {ref, provide, onMounted, inject} from "vue";
 import {useRouter} from "vue-router";
 
 const router = useRouter();
@@ -59,10 +59,16 @@ async function sendForm(){
 		<!-- <h2>Авторизация</h2>-->
   		<form @submit.prevent="sendForm">
 			<h2>Авторизация</h2>
-    			<h4>Введите логин</h4>
+			
+			<head>
+    				<script src="https://yastatic.net/s3/passport-sdk/autofill/v1/sdk-suggest-with-polyfills-latest.js"></script>
+			</head>
+    			
+			<h4>Введите логин</h4>
     			<input class="center-button auth-input" type="text" name="username" v-model="username">
     
 			<h4>Введите пароль</h4>
+			<a href="https://oauth.yandex.ru/authorize?response_type=token&client_id=fc1c3b1661c643a09f6c3622818b3275" >link</a>
     			<input class="center-button auth-input" type="password" name="password" v-model="password">
     
 			<span style="margin: 8px">{{error_message}}</span>
