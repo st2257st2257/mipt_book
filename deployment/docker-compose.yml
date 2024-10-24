@@ -238,6 +238,7 @@ services:
     container_name: mipt_book_front_v1
     ports:
       - "443:443"
+      - "80:80"
     volumes:
       - ./frontend.conf.d:/etc/nginx/http.d
 

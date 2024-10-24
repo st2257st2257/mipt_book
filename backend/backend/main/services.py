@@ -43,10 +43,14 @@ async def make_auth_request(token):
 
 def update_email(username: str, new_email: str):
     try:
-        user_wallet = UsersWallet.objects.get(username=username)
-        user_wallet.email = new_email
-        user_wallet.save()
-        log(f"Почта кошелька обновлена. Новая почта: {user_wallet.email}.", "i")
+        users_len = UsersWallet.objects.filter(username=username)
+        if len(users_len) == 1:
+            user_wallet = UsersWallet.objects.get(username=username)
+            user_wallet.email = new_email
+            user_wallet.save()
+            log(f"Почта кошелька обновлена. Новая почта: {user_wallet.email}.", "i")
+        else:
+            log(f"Ошибка в обновлении почты: username='{username}' len(users)={users_len}", "e")
     except Exception as e:
         log(f"Ошибка в обновлении почты. Error:{e}", "e")
 
