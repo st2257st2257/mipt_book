@@ -35,8 +35,8 @@ WORKDIR /usr/src/app
 # 3.2) docker exec -it container_id python manage.py createsuperuser
 
 #CMD ["sh", "-c", "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
-CMD ["sh", "-c", "python manage.py makemigrations && python manage.py migrate && python manage.py runsslserver --certificate mipt.crt --key mipt.key 0.0.0.0:8000"]
-#CMD ["sh", "-c", "gunicorn -c gunicorn.conf.py --certfile=mipt.crt --keyfile=mipt.key backend.wsgi:application --log-level debug"]
+#CMD ["sh", "-c", "python manage.py makemigrations && python manage.py migrate && python manage.py runsslserver --certificate mipt.crt --key mipt.key 0.0.0.0:8000"]
+CMD ["sh", "-c", "gunicorn -c gunicorn.conf.py --certfile=mipt.crt --keyfile=mipt.key backend.wsgi:application --log-level debug"]
 
 
 # ANY OTHER COMMANDS:
