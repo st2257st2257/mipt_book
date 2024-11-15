@@ -2,6 +2,7 @@ import django.contrib.postgres.fields
 from django.db import migrations, models
 import pandas as pd
 import os
+import re
 import datetime
 # Код позволяет получить последнее время занятия аудиторий
 # по заданному файлу расписания
@@ -123,6 +124,13 @@ def get_event_list(file_name, sheet_name):
                 res_array.append((aud_name, day_index, pair_index, pair_name))
     return res_array
 
+
+def remove_phone_numbers(text):
+    phone_pattern = r"(?:\+7|8)[\s-]?\(?\d{3}\)?[\s-]?\d{3}[\s-]?\d{2}[\s-]?\d{2}"
+    cleaned_text = re.sub(phone_pattern, "", text)
+    return cleaned_text
+
+
 def read_excel_timetable(apps, schema_editor):
     """Заполняет таблицу базовыми значениями, забитыми в эксель файле"""
     """Заполняется: Аудитории, Кошельки"""
@@ -172,8 +180,8 @@ def read_excel_timetable(apps, schema_editor):
             EventItem.objects.filter(name=name[:63],pair=pair).delete()
 
             event_item = EventItem.objects.create(
-                name=name[:63],
-                description=description[:254],
+                name=remove_phone_numbers(name[:63]),
+                description=remove_phone_numbers(description[:254]),
                 pair=pair,
                 owner_user_wallet="mipt",
                 event_type=event_type,

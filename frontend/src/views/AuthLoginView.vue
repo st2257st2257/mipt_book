@@ -74,7 +74,7 @@ async function sendForm(){
     			<input type="submit" value="Авторизоваться" class="button-auth center-button">
 			<p style="text-align: center; color: gray;">или войти с помощью</p>
 			
-			<a href="https://oauth.yandex.ru/authorize?response_type=token&client_id=fc1c3b1661c643a09f6c3622818b3275" style="text-decoration: none;">
+			<a href="https://oauth.yandex.ru/authorize?response_type=token&client_id=eae3d99b385a4c1b88147da1da2acd2c" style="text-decoration: none;">
 				<div style="background: black; display: flex;" class="button-auth center-button-auth">
 				  <div class="auth-text-class" style="">
 				    <img style="width: 24px; padding-right: 10px;" src="https://upload.wikimedia.org/wikipedia/commons/5/58/Yandex_icon.svg"  alt="Логотип Yandex">
