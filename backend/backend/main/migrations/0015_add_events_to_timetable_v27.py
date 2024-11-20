@@ -236,7 +236,7 @@ def read_excel_timetable(apps, schema_editor):
                         _audience.week_pairs[day_index][pair_index][2] = pair_name[0:6]
                     else:
                         _audience.week_pairs[day_index][pair_index][2] = "Лекция"
-                _audience.week_pairs[day_index][pair_index][6] = pair_name
+                _audience.week_pairs[day_index][pair_index][6] = remove_phone_numbers(pair_name)
                 _audience.save()
 
 
