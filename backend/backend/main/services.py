@@ -567,18 +567,19 @@ def get_email_by_username(username: str):
 
 def log(string, log_type="w"):
     _ = f"{str(datetime.datetime.now())[:-7]} {string}"
-    if log_type == "d":
-        logging.debug(_)
-    elif log_type == "i":
-        logging.info(_)
-    elif log_type == "w":
-        logging.warning(_)
-    elif log_type == "e":
-        logging.error(_)
-    elif log_type == "c":
-        logging.critical(_)
-    else:
-        logging.debug(_)
+    match log_type:
+        case "d":
+            logging.debug(_)
+        case "i":
+            logging.info(_)
+        case "w":
+            logging.warning(_)
+        case "e":
+            logging.error(_)
+        case "c":
+            logging.critical(_)
+        case _:
+            logging.debug(_)
 
 
 # BOOKING ITERATION
