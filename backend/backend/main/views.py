@@ -178,43 +178,44 @@ class BookHistoryViewSet(viewsets.ModelViewSet):
 def book_audience(request):
     if request.method == 'POST':
         data_request = json.loads(list(request.POST.dict())[0])
-        if data_request.get('type') == "book_audience":
-            log(f"Бронирование аудитории. Параметры:{data_request}, token:{data_request.get('token')}", "i")
-            token = data_request.get('token')
-            check_token_result = asyncio.run(check_token(token))
-            if check_token_result["result"]:
-                # update email of user wallet
-                email = check_token_result['value']['email']
-                update_email_by_token(check_token_result)
-                
-                time_slot = -1
-                for number, time_slot_name in TIME_SLOT_DICT.items():
-                    if time_slot_name == data_request.get('time_slot', "00:00"):
-                        time_slot = number
-                log(f"========================{time_slot} {data_request.get('time_slot', '00:00')}", "i")
-                
-                return get_book_audience_response(
-                    number=data_request.get('audience'),
-                    user=data_request.get('user'),
-                    email=email,
-                    number_bb=int(data_request.get('number_bb', 0)),
-                    pair_number=int(data_request.get('pair_number', 0)),
-                    time_slot=time_slot)
-            else:
-                log(f"Проверка токена выдала ошибку. T:{token}", "e")
+        request_type = data_request.get('type')
+        match request_type:
+            case "book_audience":
+                log(f"Бронирование аудитории. Параметры:{data_request}, token:{data_request.get('token')}", "i")
+                token = data_request.get('token')
+                check_token_result = asyncio.run(check_token(token))
+                if check_token_result["result"]:
+                    email = check_token_result['value']['email']
+                    update_email_by_token(check_token_result)
+
+                    time_slot = -1
+                    for number, time_slot_name in TIME_SLOT_DICT.items():
+                        if time_slot_name == data_request.get('time_slot', "00:00"):
+                            time_slot = number
+                    log(f"========================{time_slot} {data_request.get('time_slot', '00:00')}", "i")
+
+                    return get_book_audience_response(
+                        number=data_request.get('audience'),
+                        user=data_request.get('user'),
+                        email=email,
+                        number_bb=int(data_request.get('number_bb', 0)),
+                        pair_number=int(data_request.get('pair_number', 0)),
+                        time_slot=time_slot)
+                else:
+                    log(f"Проверка токена выдала ошибку. T:{token}", "e")
+                    return Response(
+                        {"Error": "BAD_TOKEN"},
+                        status=status.HTTP_401_UNAUTHORIZED)
+            case _:
+                log(f"Неправильный тип обращения. T:{request.POST.get('type')}", "e")
                 return Response(
-                    {"Error": "BAD_TOKEN"},
-                    status=status.HTTP_401_UNAUTHORIZED)
-        else:
-            log(f"Неправильный тип обращения. T:{request.POST.get('type')}", "e")
-            return Response(
-                {
-                    "Error": "BAD_REQUEST_TYPE",
-                    "YOUR_REQUEST_TYPE": request.POST.get('type'),
-                    "data": json.loads(list(request.POST.dict())[0]),
-                    "data_dict": list(request.POST.dict())[0],
-                },
-                status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+                    {
+                        "Error": "BAD_REQUEST_TYPE",
+                        "YOUR_REQUEST_TYPE": request.POST.get('type'),
+                        "data": json.loads(list(request.POST.dict())[0]),
+                        "data_dict": list(request.POST.dict())[0],
+                    },
+                    status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
     if request.method == 'GET':
         return render(request, 'book/test.html')
 
@@ -229,79 +230,82 @@ def index_user_wallet(request):
     #   "username": "test_user"
     # }
     if request.method == 'POST':
-        if request.POST.get('type') == "create_user_wallet":
-            token = request.POST['token']
-            try:
-                log(f"Начало создания кошелька пользователя: D:{request.POST} T:{token}", "i")
-                check_token_result = asyncio.run(check_token(token))
-                if check_token_result["result"]:
-                    update_email_by_token(check_token_result)
-                    username = str(request.POST.get('username', None))
-                    email = str(request.POST.get('email', ''))
-                    username.replace('Пользователь: ', '')
-                    log(f"Username for register: '{username}'", "i")
-                    if username is not None:
-                        user_wallet = create_user_wallet(username, token=token, email=email)
-                        if user_wallet:
-                            log(f"User wallet created. Id:{user_wallet.id}, Name:{user_wallet.username}", "i")
-                            return Response(
-                                {
-                                    "result": True,
-                                    "create_user_wallet_id": user_wallet.id,
-                                    "username": user_wallet.username,
-                                    "number_bb": user_wallet.number_bb
-                                },
-                                status=status.HTTP_201_CREATED)
+        request_type = request.POST.get('type')
+        match request_type:
+            case "create_user_wallet":
+                token = request.POST['token']
+                try:
+                    log(f"Начало создания кошелька пользователя: D:{request.POST} T:{token}", "i")
+                    check_token_result = asyncio.run(check_token(token))
+                    if check_token_result["result"]:
+                        update_email_by_token(check_token_result)
+                        username = str(request.POST.get('username', None))
+                        email = str(request.POST.get('email', ''))
+                        username.replace('Пользователь: ', '')
+                        log(f"Username for register: '{username}'", "i")
+                        if username is not None:
+                            user_wallet = create_user_wallet(username, token=token, email=email)
+                            if user_wallet:
+                                log(f"User wallet created. Id:{user_wallet.id}, Name:{user_wallet.username}", "i")
+                                return Response(
+                                    {
+                                        "result": True,
+                                        "create_user_wallet_id": user_wallet.id,
+                                        "username": user_wallet.username,
+                                        "number_bb": user_wallet.number_bb
+                                    },
+                                    status=status.HTTP_201_CREATED)
+                            else:
+                                log(f"Problems with creating user wallet. User:{username}", "w")
+                                return Response(
+                                    {"Error": "FORBIDDEN_USERNAME"},
+                                    status=status.HTTP_403_FORBIDDEN)
                         else:
-                            log(f"Problems with creating user wallet. User:{username}", "w")
+                            log(f"No username in request data. User:{username}, Data:{request.POST}", "w")
                             return Response(
-                                {"Error": "FORBIDDEN_USERNAME"},
-                                status=status.HTTP_403_FORBIDDEN)
+                                    {"Error": "NON_AUTHORITATIVE_INFORMATION"},
+                                    status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
                     else:
-                        log(f"No username in request data. User:{username}, Data:{request.POST}", "w")
+                        log(f"Problems with checking token. Token:{token}", "w")
                         return Response(
-                                {"Error": "NON_AUTHORITATIVE_INFORMATION"},
-                                status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
-                else:
-                    log(f"Problems with checking token. Token:{token}", "w")
+                            {"Error": "BAD_TOKEN", "value": check_token_result},
+                            status=status.HTTP_401_UNAUTHORIZED)
+                except ConnectionError as e:
+                    log(f"ConnectionError. Error:{e}", "e")
                     return Response(
-                        {"Error": "BAD_TOKEN", "value": check_token_result},
-                        status=status.HTTP_401_UNAUTHORIZED)
-            except ConnectionError as e:
-                log(f"ConnectionError. Error:{e}", "e")
-                return Response(
-                    {"Error": "ConnectionError", "value": str(e)},
-                    status=status.HTTP_503_SERVICE_UNAVAILABLE)
-            except Exception as e:
-                log(f"Error:{e}", "e")
-                return Response({"Error": "Error", "value": str(e)},
-                                status=status.HTTP_503_SERVICE_UNAVAILABLE)
-        elif request.POST.get('type') == "update_user_wallet":
-            token = request.POST['token']
-            try:
-                log(f"Начало обновления кошелька пользователя: D:{request.POST} T:{token}", "i")
-                if False:
-                    username = str(request.POST.get('username', None))
-                    email = str(request.POST.get('email', ''))
-                    log(f"Update userwallet: '{username}'", "i")
+                        {"Error": "ConnectionError", "value": str(e)},
+                        status=status.HTTP_503_SERVICE_UNAVAILABLE)
+                except Exception as e:
+                    log(f"Error:{e}", "e")
+                    return Response({"Error": "Error", "value": str(e)},
+                                    status=status.HTTP_503_SERVICE_UNAVAILABLE)
+            case "update_user_wallet":
+                # elif request.POST.get('type') == "update_user_wallet":
+                token = request.POST['token']
+                try:
+                    log(f"Начало обновления кошелька пользователя: D:{request.POST} T:{token}", "i")
+                    if False:
+                        username = str(request.POST.get('username', None))
+                        email = str(request.POST.get('email', ''))
+                        log(f"Update userwallet: '{username}'", "i")
 
-                    for hist_item in BookHistory.objects.filter(user=str(email).split("@")[0]):
-                        hist_item.user = username
-                        hist_item.save()
+                        for hist_item in BookHistory.objects.filter(user=str(email).split("@")[0]):
+                            hist_item.user = username
+                            hist_item.save()
 
-                    update_user_wallet(username, token=token, email=email)
+                        update_user_wallet(username, token=token, email=email)
+                    return Response(
+                            {"Error": "Обновление кошелька временно откоючено"},
+                            status=status.HTTP_201_CREATED)
+                except Exception as e:
+                    log(f"Error:{e}", "e")
+                    return Response({"Error": "Error", "value": str(e)},
+                                    status=status.HTTP_503_SERVICE_UNAVAILABLE)
+            case _:
+                log(f"BAD_REQUEST_TYPE. Request type:{request.POST.get('type')}", "e")
                 return Response(
-                        {"Error": "Обновление кошелька временно откоючено"},
-                        status=status.HTTP_201_CREATED)
-            except Exception as e:
-                log(f"Error:{e}", "e")
-                return Response({"Error": "Error", "value": str(e)},
-                                status=status.HTTP_503_SERVICE_UNAVAILABLE)
-        else:
-            log(f"BAD_REQUEST_TYPE. Request type:{request.POST.get('type')}", "e")
-            return Response(
-                {"Error": "BAD_REQUEST_TYPE"},
-                status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+                    {"Error": "BAD_REQUEST_TYPE"},
+                    status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
     if request.method == 'GET':
         return render(request, 'wallet/index.html')
 
@@ -310,37 +314,39 @@ def index_user_wallet(request):
 @api_view(('POST', 'GET'))
 def index_timetable(request):
     if request.method == 'GET':
-        if request.GET.get('type') == "get_timetable":
-            log(f"Get timetable ended with success", "i")
-            audience_number = request.GET.get('audience_number', '')
-            if audience_number != '':
+        request_type = request.GET.get('type')
+        match request_type:
+            case "get_timetable":
+                log(f"Get timetable ended with success", "i")
+                audience_number = request.GET.get('audience_number', '')
+                if audience_number != '':
+                    return Response(
+                        {
+                            "result": True,
+                            "audience": audience_number,
+                            "data": get_time_slots(audience_number),
+                            "user": 2
+                        },
+                        status=status.HTTP_201_CREATED)
                 return Response(
                     {
                         "result": True,
-                        "audience": audience_number,
-                        "data": get_time_slots(audience_number),
-                        "user": 2
+                        "audience": get_timetable(),
+                        "user": 1
                     },
                     status=status.HTTP_201_CREATED)
-            return Response(
-                {
-                    "result": True,
-                    "audience": get_timetable(),
-                    "user": 1
-                },
-                status=status.HTTP_201_CREATED)
-        elif request.GET.get('type') == "get_week_timetable":
-            audience_number = request.GET.get('audience_number', '')
-            return Response(
-                {
-                    "result": True,
-                    "audience": get_week_time_slots(audience_number),
-                    "user": 1
-                },
-                status=status.HTTP_201_CREATED)
-        else:
-            return render(request,
-                  'timetable/index.html')
+            case "get_week_timetable":
+                audience_number = request.GET.get('audience_number', '')
+                return Response(
+                    {
+                        "result": True,
+                        "audience": get_week_time_slots(audience_number),
+                        "user": 1
+                    },
+                    status=status.HTTP_201_CREATED)
+            case _:
+                return render(request,
+                      'timetable/index.html')
     if request.method == 'POST':
         return Response(
                 {"Error": "BAD_REQUEST_TYPE"}
@@ -376,72 +382,73 @@ def index_stop_booking(request):
                     book_item = Book.objects.get(audience__number=audience_number)
 
                     # Проверяем тип запроса на корректность
-                    if data_request.get('type') == "cancel_booking":
-                        log(f"CANCEL BOOKING: token={token} audience_number={audience_number}", "i")
+                    request_type = request.GET.get('type')
+                    match request_type:
+                        case "cancel_booking":
+                            log(f"CANCEL BOOKING: token={token} audience_number={audience_number}", "i")
 
-                        email_address = book_item.user.email # book_item.user.email "kristal.as@phystech.edu"
-                        username = book_item.user.username
-                        book_item.to_history()
+                            email_address = book_item.user.email # book_item.user.email "kristal.as@phystech.edu"
+                            username = book_item.user.username
+                            book_item.to_history()
 
-                        # Собираем данные для отправки email сообщения
-                        email_text = get_stop_booking_text(username, audience_number)
-                        email_title = f"Прекращение бронирования аудитории {audience_number}"
-                        send_email(email_address, email_text, email_title)
+                            # Собираем данные для отправки email сообщения
+                            email_text = get_stop_booking_text(username, audience_number)
+                            email_title = f"Прекращение бронирования аудитории {audience_number}"
+                            send_email(email_address, email_text, email_title)
 
-                        log(f"Stopping booking ended with success.", "i")
-                        return Response(
-                            {
-                                "result": True,
-                                "audience": audience_number,
-                                "token": token
-                            },
-                            status=status.HTTP_201_CREATED)
-                    elif data_request.get('type') == "finalize_booking":
-                        log(f"FINALIZE BOOKING: token={token} audience_number={audience_number}", "i")
+                            log(f"Stopping booking ended with success.", "i")
+                            return Response(
+                                {
+                                    "result": True,
+                                    "audience": audience_number,
+                                    "token": token
+                                },
+                                status=status.HTTP_201_CREATED)
+                        case "finalize_booking":
+                            log(f"FINALIZE BOOKING: token={token} audience_number={audience_number}", "i")
 
-                        email_address = book_item.user.email # book_item.user.email "kristal.as@phystech.edu"
-                        username = book_item.user.username
-                        book_item.to_history()
+                            email_address = book_item.user.email # book_item.user.email "kristal.as@phystech.edu"
+                            username = book_item.user.username
+                            book_item.to_history()
 
-                        # Собираем данные для отправки email сообщения
-                        email_text = get_stop_booking_text(username, audience_number)
-                        email_title = f"Прекращение бронирования аудитории {audience_number}"
-                        send_email(email_address, email_text, email_title)
+                            # Собираем данные для отправки email сообщения
+                            email_text = get_stop_booking_text(username, audience_number)
+                            email_title = f"Прекращение бронирования аудитории {audience_number}"
+                            send_email(email_address, email_text, email_title)
 
-                        log(f"Stopping booking ended with success.", "i")
-                        return Response(
-                            {
-                                "result": True,
-                                "audience": audience_number,
-                                "token": token
-                            },
-                            status=status.HTTP_201_CREATED)
-                    elif data_request.get('type') == "not_my_booking":
-                        token = data_request.get('token', '')
-                        audience_number = data_request.get('audience', '')
+                            log(f"Stopping booking ended with success.", "i")
+                            return Response(
+                                {
+                                    "result": True,
+                                    "audience": audience_number,
+                                    "token": token
+                                },
+                                status=status.HTTP_201_CREATED)
+                        case "not_my_booking":
+                            token = data_request.get('token', '')
+                            audience_number = data_request.get('audience', '')
 
-                        user = UsersWallet.objects.get(username=check_token_result['value']['username'])
-                        mark_not_my_booking(user=user, booking=book_item)
+                            user = UsersWallet.objects.get(username=check_token_result['value']['username'])
+                            mark_not_my_booking(user=user, booking=book_item)
 
-                        log(f"NOT MY BOOKING: token={token} audience_number={audience_number}", "i")
+                            log(f"NOT MY BOOKING: token={token} audience_number={audience_number}", "i")
 
-                        return Response({"Result": "good | not_my_booking"})
+                            return Response({"Result": "good | not_my_booking"})
+                        case "this_is_my_booking":
+                            token = data_request.get('token', '')
+                            audience_number = data_request.get('audience', '')
 
-                    elif data_request.get('type') == "this_is_my_booking":
-                        token = data_request.get('token', '')
-                        audience_number = data_request.get('audience', '')
+                            user = UsersWallet.objects.get(username=check_token_result['value']['username'])
+                            mark_this_is_my_booking(user=user, booking=book_item)
 
-                        user = UsersWallet.objects.get(username=check_token_result['value']['username'])
-                        mark_this_is_my_booking(user=user, booking=book_item)
+                            log(f"THIS IS MY BOOKING: token={token} audience_number={audience_number}", "i")
 
-                        log(f"THIS IS MY BOOKING: token={token} audience_number={audience_number}", "i")
-
-                        return Response({"Result": "good | this_is_my_booking"})
-                    else:
-                        log(f"BAD_REQUEST_TYPE. Type:{data_request.get('type')}", "e")
-                        return Response(
-                            {"Error": "BAD_REQUEST_TYPE"},
-                            status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+                            return Response({"Result": "good | this_is_my_booking"})
+                        case _:
+                            log(f"BAD_REQUEST_TYPE. Type:{data_request.get('type')}", "e")
+                            return Response(
+                                {"Error": "BAD_REQUEST_TYPE"},
+                                status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
                 else:
                     for booking in books:
                         booking.to_history()
