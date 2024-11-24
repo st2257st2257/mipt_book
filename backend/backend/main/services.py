@@ -578,7 +578,7 @@ def log(string, log_type="w"):
             logging.error(_)
         case "c":
             logging.critical(_)
-        case _:
+        case __:
             logging.debug(_)
 
 
