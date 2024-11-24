@@ -264,7 +264,7 @@ def update_user_wallet(username, token="", email=""):
                 number_bb=get_bb_amount_by_email(email))
         users_wallet.save()
         log(f"Кошелёк пользователя успешно создан и обновлён. U:{username}", "d")
-    return users_wallet
+        return users_wallet
 
 
 def mark_not_my_booking(user, booking):
