@@ -8,10 +8,11 @@ from django.conf import settings
 EMAIL_KEY = settings.EMAIL_KEY
 from django.conf import settings
 TG_LOG_TOKEN = settings.TG_LOG_TOKEN
+MAIN_HOST = settings.MAIN_HOST
 
 
 async def create_user_wallet_make(token, user, request_type="create_user_wallet"):
-    web_address = "https://mipt.site"
+    web_address = MAIN_HOST
 
     retries = Retry(
         total=5,

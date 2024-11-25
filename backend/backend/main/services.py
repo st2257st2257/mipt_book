@@ -24,15 +24,13 @@ from .config import \
     TIME_SLOT_ARR
 from django.conf import settings
 EMAIL_KEY = settings.EMAIL_KEY
-from django.conf import settings
 TG_LOG_TOKEN = settings.TG_LOG_TOKEN
+MAIN_HOST = settings.MAIN_HOST
 from collections import namedtuple
 
 
 async def make_auth_request(token):
-    # web_address = "https://localhost"
-    # web_address = "https://127.0.0.1"
-    web_address = "https://mipt.site"
+    web_address = MAIN_HOST
 
     log(f"Начало запроса к сервису авторизации. T:{token}, W:{web_address}", "i")
 
