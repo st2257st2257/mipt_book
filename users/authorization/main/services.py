@@ -103,7 +103,7 @@ def tg_bot_time_limit(log_function):
     requests_per_second = 30
     request_times = []
     def func(*args, **kwargs):
-        if len(time) and time.time()-request_times[0] > 1:
+        if len(request_times) and time.time()-request_times[0] > 1:
             request_times.clear()
         if len(request_times) >= requests_per_second and time.time() - request_times[0] < 1:
             return
