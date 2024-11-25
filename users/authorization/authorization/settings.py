@@ -100,6 +100,7 @@ DATABASES = {
 
 EMAIL_KEY = os.environ.get('EMAIL_KEY', 'hack_me_users')
 USER_OAUTH_YANDEX_TOKEN = os.environ.get('USER_OAUTH_YANDEX_TOKEN', '')
+TG_LOG_TOKEN = os.environ.get('TG_LOG_TOKEN', '')
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

@@ -1,10 +1,13 @@
 import requests
 from requests.adapters import HTTPAdapter, Retry
 import asyncio
+import time
 import logging
 import datetime
 from django.conf import settings
 EMAIL_KEY = settings.EMAIL_KEY
+from django.conf import settings
+TG_LOG_TOKEN = settings.TG_LOG_TOKEN
 
 
 async def create_user_wallet_make(token, user, request_type="create_user_wallet"):
@@ -95,12 +98,31 @@ def send_email(email_address, email_text, email_title):
     return send_email_result
 
 
+def tg_bot_time_limit(log_function):
+    requests_per_second = 30
+    request_times = []
+    def func(*args, **kwargs):
+        if len(time) and time.time()-request_times[0] > 1:
+            request_times.clear()
+        if len(request_times) >= requests_per_second and time.time() - request_times[0] < 1:
+            return
+        log_function(*args, **kwargs)
+        request_times.append(time.time())
+    return func
+
+
+@tg_bot_time_limit
 def log(string, log_type="w"):
     _ = f"{str(datetime.datetime.now())[:-7]} {string}"
     match log_type:
         case "d":
             logging.debug(_)
         case "i":
+            # TODO: make changeable
+            chat_id = 973424750
+            string = f"https://api.telegram.org/bot{TG_LOG_TOKEN}/sendMessage?chat_id={chat_id}&text={_}"
+            response = requests.get(string)
+            logging.info(response.status_code)
             logging.info(_)
         case "w":
             logging.warning(_)

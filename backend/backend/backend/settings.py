@@ -15,7 +15,7 @@ SECRET_KEY = os.environ.get('BACKEND_SECRET_KEY', '')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['mipt.site']
+ALLOWED_HOSTS = ['mipt.site', 'localhost']
 
 CORS_ALLOW_HEADERS = ['*']
 
@@ -101,7 +101,7 @@ DATABASES = {
 }
 
 EMAIL_KEY = os.environ.get('EMAIL_KEY', 'hack_me_backend')
-
+TG_LOG_TOKEN = os.environ.get('TG_LOG_TOKEN', '')
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
