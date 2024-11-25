@@ -1,5 +1,6 @@
 from requests.adapters import HTTPAdapter, Retry
 import asyncio
+import time
 from .models import \
     Audience, \
     UsersWallet, \
@@ -23,13 +24,13 @@ from .config import \
     TIME_SLOT_ARR
 from django.conf import settings
 EMAIL_KEY = settings.EMAIL_KEY
+TG_LOG_TOKEN = settings.TG_LOG_TOKEN
+MAIN_HOST = settings.MAIN_HOST
 from collections import namedtuple
 
 
 async def make_auth_request(token):
-    # web_address = "https://localhost"
-    # web_address = "https://127.0.0.1"
-    web_address = "https://mipt.site"
+    web_address = MAIN_HOST
 
     log(f"Начало запроса к сервису авторизации. T:{token}, W:{web_address}", "i")
 
@@ -264,7 +265,7 @@ def update_user_wallet(username, token="", email=""):
                 number_bb=get_bb_amount_by_email(email))
         users_wallet.save()
         log(f"Кошелёк пользователя успешно создан и обновлён. U:{username}", "d")
-    return users_wallet
+        return users_wallet
 
 
 def mark_not_my_booking(user, booking):
@@ -565,20 +566,40 @@ def get_email_by_username(username: str):
         return "askristal@gmail.com"
 
 
+def tg_bot_time_limit(log_function):
+    requests_per_second = 30
+    request_times = []
+    def func(*args, **kwargs):
+        if len(request_times) and time.time()-request_times[0] > 1:
+            request_times.clear()
+        if len(request_times) >= requests_per_second and time.time() - request_times[0] < 1:
+            return
+        log_function(*args, **kwargs)
+        request_times.append(time.time())
+    return func
+
+
+@tg_bot_time_limit
 def log(string, log_type="w"):
     _ = f"{str(datetime.datetime.now())[:-7]} {string}"
-    if log_type == "d":
-        logging.debug(_)
-    elif log_type == "i":
-        logging.info(_)
-    elif log_type == "w":
-        logging.warning(_)
-    elif log_type == "e":
-        logging.error(_)
-    elif log_type == "c":
-        logging.critical(_)
-    else:
-        logging.debug(_)
+    match log_type:
+        case "d":
+            logging.debug(_)
+        case "i":
+            # TODO: make changeable
+            chat_id = 973424750
+            string = f"https://api.telegram.org/bot{TG_LOG_TOKEN}/sendMessage?chat_id={chat_id}&text={_}"
+            response = requests.get(string)
+            logging.info(response.status_code)
+            logging.info(_)
+        case "w":
+            logging.warning(_)
+        case "e":
+            logging.error(_)
+        case "c":
+            logging.critical(_)
+        case __:
+            logging.debug(_)
 
 
 # BOOKING ITERATION

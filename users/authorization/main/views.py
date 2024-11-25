@@ -136,66 +136,67 @@ def edit_user_name(request):
         try:
             user = Token.objects.get(key=token).user
             if user is not None:
-                if data_request.get('type') == "edit_user_name" or \
-                    data_request.get('type') == "edit_user_email":
-                    log(f"Начало редактирования ФИО или Почты", "i")
-                    serializer = UserSerializer(user, data=data_request, partial=True)
-                    if serializer.is_valid():
-                        serializer.save()
-                        user.save()
+                request_type = data_request.get('type')
+                match request_type:
+                    case "edit_user_name" | "edit_user_email":
+                        log(f"Начало редактирования ФИО или Почты", "i")
+                        serializer = UserSerializer(user, data=data_request, partial=True)
+                        if serializer.is_valid():
+                            serializer.save()
+                            user.save()
 
-                        # Собираем данные для отправки email сообщения
-                        email_address = user.email
-                        email_text = get_change_name_text(user.username,data_request)
-                        email_title = f"Изменение ФИО пользователя {user.username}"
-                        send_email(email_address, email_text, email_title)
+                            # Собираем данные для отправки email сообщения
+                            email_address = user.email
+                            email_text = get_change_name_text(user.username,data_request)
+                            email_title = f"Изменение ФИО пользователя {user.username}"
+                            send_email(email_address, email_text, email_title)
 
-                        log(f"ФИО пользователя успешно изменены. U:{user.username}", "i")
-                        return Response(
-                            {
-                                "Result": "True",
-                                "serializer": str(serializer)
-                            },
-                            status=status.HTTP_202_ACCEPTED)
-                    else:
-                        log(f"===== 7", "e")
-                        log(f"Неправильный serializer, S:{str(serializer)}", "e")
-                        return Response(serializer.data, status=status.HTTP_406_NOT_ACCEPTABLE)
-                elif data_request.get('type') == "edit_user_group":
-                    log(f"Начало редактирования группы пользователя", "i")
-                    group_name  = data_request.get("group", "Б00-000")
-                    group = InstituteGroup.objects.filter(name=group_name)
-                    if len(group) == 1:
-                        user.institute_group = group[0]
-                        user.save()
-                        log(f"Группа успешно изменена, U:{user.username}, G:{group_name}", "i")
+                            log(f"ФИО пользователя успешно изменены. U:{user.username}", "i")
+                            return Response(
+                                {
+                                    "Result": "True",
+                                    "serializer": str(serializer)
+                                },
+                                status=status.HTTP_202_ACCEPTED)
+                        else:
+                            log(f"===== 7", "e")
+                            log(f"Неправильный serializer, S:{str(serializer)}", "e")
+                            return Response(serializer.data, status=status.HTTP_406_NOT_ACCEPTABLE)
+                    case "edit_user_group":
+                        log(f"Начало редактирования группы пользователя", "i")
+                        group_name  = data_request.get("group", "Б00-000")
+                        group = InstituteGroup.objects.filter(name=group_name)
+                        if len(group) == 1:
+                            user.institute_group = group[0]
+                            user.save()
+                            log(f"Группа успешно изменена, U:{user.username}, G:{group_name}", "i")
+                            return Response({"Result": "True"}, status=status.HTTP_202_ACCEPTED)
+                        else:
+                            log(f"Неправильное название группы, G:{group_name}", "e")
+                            return Response(
+                                {
+                                    "Error": "GROUP_NOT_ACCEPTABLE",
+                                    "Description": "Wrong group name"
+                                },
+                                status=status.HTTP_406_NOT_ACCEPTABLE)
+                    case "add_preference":
+                        log(f"Редактирование предпочтений пользователя", "i")
+                        preference_name  = data_request.get("preference_name", "Тихо")
+                        user.add_preference(preference_name)
                         return Response({"Result": "True"}, status=status.HTTP_202_ACCEPTED)
-                    else:
-                        log(f"Неправильное название группы, G:{group_name}", "e")
+                    case "remove_preference":
+                        log(f"Редактирование предпочтений пользователя", "i")
+                        preference_name  = data_request.get("preference_name", "Тихо")
+                        user.remove_preference(preference_name)
+                        return Response({"Result": "True"}, status=status.HTTP_202_ACCEPTED)
+                    case _:
+                        log(f"Неправильный тип запроса, T:{data_request.get('type')}", "e")
                         return Response(
                             {
-                                "Error": "GROUP_NOT_ACCEPTABLE",
-                                "Description": "Wrong group name"
-                            },
-                            status=status.HTTP_406_NOT_ACCEPTABLE)
-                elif data_request.get('type') == "add_preference":
-                    log(f"Редактирование предпочтений пользователя", "i")
-                    preference_name  = data_request.get("preference_name", "Тихо")
-                    user.add_preference(preference_name)
-                    return Response({"Result": "True"}, status=status.HTTP_202_ACCEPTED)
-                elif data_request.get('type') == "remove_preference":
-                    log(f"Редактирование предпочтений пользователя", "i")
-                    preference_name  = data_request.get("preference_name", "Тихо")
-                    user.remove_preference(preference_name)
-                    return Response({"Result": "True"}, status=status.HTTP_202_ACCEPTED)
-                else:
-                    log(f"Неправильный тип запроса, T:{data_request.get('type')}", "e")
-                    return Response(
-                        {
-                            "Error": "BAD_REQUEST_TYPE",
-                            "Description": "Wrong request type. Acceptable: "
-                                           "edit_user_name, edit_user_email, edit_user_group"},
-                        status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+                                "Error": "BAD_REQUEST_TYPE",
+                                "Description": "Wrong request type. Acceptable: "
+                                               "edit_user_name, edit_user_email, edit_user_group"},
+                            status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
             else:
                 log(f"Нельзя получить пользователя по токену, T:{token}", "e")
                 return Response(
@@ -280,17 +281,6 @@ def oauth_yandex(request):
                 log(f"Авторизация пользователя u:{oauth_email}", "i")
                 my_user = User.objects.get(email=oauth_email)
                 my_token, created = Token.objects.get_or_create(user=my_user)
-                
-                if False:
-                    # Обновление каждого пользователя через смену лигина пользователя
-                    for this_user in User.objects.all():
-                        # Проходимся по всем ФИО и отправляем запрос на обновление
-                        this_user.username = get_usrname_by_email(this_user.email)
-                        this_user.save()
-                        this_token, this_created = Token.objects.get_or_create(user=this_user)
-                        create_user_wallet(this_token, this_user, request_type="update_user_wallet")
-                        log(f"Запрос на обновление фио пользователей u:{my_user}", "i")
-
 
                 return Response({
                     "Result": response.json(),
