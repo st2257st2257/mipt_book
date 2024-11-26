@@ -1,4 +1,5 @@
 from requests.adapters import HTTPAdapter, Retry
+import aiohttp
 import asyncio
 import time
 from .models import \
@@ -34,24 +35,25 @@ async def make_auth_request(token):
 
     log(f"Начало запроса к сервису авторизации. T:{token}, W:{web_address}", "i")
 
-    retries = Retry(
-        total=5,
-        backoff_factor=0.1,
-        status_forcelist=[ 500, 502, 503, 504 ])
-
-    adapter = HTTPAdapter(max_retries=retries)
-    session = requests.Session()
-    session.mount('https://', adapter)
-
-    log(f"Сделан запрос к сервису авторизации с токеном. T:{token}", "i")
-
-    response = session.get(
-        web_address + ':8088/get-info/',
-        verify=False,
-        headers={"Accept": "application/json",
-                 "Authorization": f"Token {token}"})
-    response.encoding = 'utf-8'
-    return response.json()
+    async with aiohttp.ClientSession() as session:
+        try:
+            async with session.get(
+                "https://" + web_address + ':8088/get-info/',
+                headers={"Accept": "application/json", "Authorization": f"Token {token}"},
+                ssl=False
+            ) as response:
+                response.raise_for_status()
+                log(f"Сделан запрос к сервису авторизации с токеном. T:{token}", "i")
+                data = await response.json()
+                log(data, "i")
+                log("=-=-=-=-=", "i")
+                return data
+        except aiohttp.ClientError as e:
+            log(f"Ошибка при запросе к сервису авторизации: {e}", "e")
+            return None
+        except aiohttp.ClientResponseError as e:
+             log(f"Сервер вернул ошибку: {e.status} - {await e.text()}", "e")
+             return None
 
 
 def update_email(username: str, new_email: str):

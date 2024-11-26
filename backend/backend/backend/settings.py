@@ -24,7 +24,7 @@ if allowed_hosts_str:
     allowed_hosts = [host.strip() for host in re.split(r',\s*', allowed_hosts_str)]
     ALLOWED_HOSTS = allowed_hosts
 else:
-    ALLOWED_HOSTS = ['localhost'] # Fallback to localhost if not set in .env
+    ALLOWED_HOSTS = ['mipt.site', 'localhost'] # Fallback to localhost if not set in .env
 MAIN_HOST = os.environ.get('MAIN_HOST', 'mipt.site')
 
 

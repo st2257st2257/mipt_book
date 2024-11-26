@@ -365,6 +365,7 @@ def index_stop_booking(request):
     if request.method == 'POST':
         data_request = json.loads(list(request.POST.dict())[0])
         # data_request = request.POST
+        log(data_request, "i")
         try:
             token = data_request.get('token', '')
             audience_number = data_request.get('audience', '')
@@ -382,7 +383,8 @@ def index_stop_booking(request):
                     book_item = Book.objects.get(audience__number=audience_number)
 
                     # Проверяем тип запроса на корректность
-                    request_type = request.GET.get('type')
+                    request_type = data_request.get('type')
+                    log(f"==={request_type}", "i")
                     match request_type:
                         case "cancel_booking":
                             log(f"CANCEL BOOKING: token={token} audience_number={audience_number}", "i")
