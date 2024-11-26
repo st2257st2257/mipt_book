@@ -382,7 +382,7 @@ def index_stop_booking(request):
                     book_item = Book.objects.get(audience__number=audience_number)
 
                     # Проверяем тип запроса на корректность
-                    request_type = request.GET.get('type')
+                    request_type = data_request.get('type')
                     match request_type:
                         case "cancel_booking":
                             log(f"CANCEL BOOKING: token={token} audience_number={audience_number}", "i")
