@@ -403,6 +403,7 @@ def get_timetable():
     for item in audiences:
         val = {item.number: {
             "status": item.audience_status.name,
+            "building": item.building.name,
             "day_history": item.day_history.pair,
             "date": item.day_history.date
             }
@@ -856,7 +857,7 @@ def update_email_list_by_stop_booking(email_list, audience_list, time_slot):
     # добавление списка почты уведомлениями о завершении бронирования
     audiences = Audience.objects.all()
     for audience in audiences:
-        log(f"UPDATE: update_email_list_by_stop_booking | number:{audience.number}", "i")
+        log(f"UPDATE: update_email_list_by_stop_booking | number:{audience.number}", "d")
         if audience.audience_status.name == "Занято":
             flag = False
             for final_audience in audience_list:

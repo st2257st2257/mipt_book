@@ -153,7 +153,14 @@ def read_excel_timetable(apps, schema_editor):
     # AudienceStatus.objects.all().delete()
     Audience.objects.all().delete()
     DayHistory.objects.all().delete()
-    for audience_event in audience_event_list:
+    aud_ev_len = len(audience_event_list)
+
+    # Получаем дефолтные значения
+    audience_status = AudienceStatus.objects.get(name="Свободно")
+    event_type = EventType.objects.get(name="Лекция")
+
+    for index, audience_event in enumerate(audience_event_list):
+        log(f"{index}/{aud_ev_len}", "d")
         audience_number = ""
         building_name = ""
         try:
@@ -174,7 +181,6 @@ def read_excel_timetable(apps, schema_editor):
                 len(EventType.objects.filter(name="Лекция")) == 1:
             # Создаем и добавляем событие
             pair = Pair.objects.get(time_slot_index=pair_index+1, week_day_index=day_index+1)
-            event_type = EventType.objects.get(name="Лекция")
 
             # Удаляем те же самые события
             EventItem.objects.filter(name=name[:63],pair=pair).delete()
@@ -188,14 +194,13 @@ def read_excel_timetable(apps, schema_editor):
                 audience_number=f"{audience_number} {building_name}"
             )
             event_item.save()
-            log(f"ADD EVENT TO SEARCH: {event_item.name}", "i")
 
-        log(f"ADD EVENT TO TIMETABLE: {audience_event}", "i")
+        audience_list = Audience.objects.filter(number=audience_number)
+        building_list = Building.objects.filter(name=building_name)
 
-        if len(Building.objects.filter(name=building_name)) == 1:
-            build = Building.objects.get(name=building_name)
-            audience_status = AudienceStatus.objects.get(name="Свободно")
-            if len(Audience.objects.filter(number=audience_number)) == 0:
+        if len(building_list) == 1:
+            build = building_list[0]
+            if len(audience_list) == 0:
                 _audience = Audience.objects.create(
                     number=audience_number,
                     description=f"Аудитория номер: {audience_number} {building_name}",
@@ -228,8 +233,8 @@ def read_excel_timetable(apps, schema_editor):
                         for i in range(14)] for j in range(1,8)])
                 _audience.day_history.audience = _audience
                 _audience.day_history.save()
-            if len(Audience.objects.filter(number=audience_number)) == 1:
-                _audience = Audience.objects.get(number=audience_number)
+            if len(audience_list) == 1:
+                _audience = audience_list[0]
                 _audience.week_pairs[day_index][pair_index][1] = "Отсутствует для бронирования"
                 if len(pair_name) > 6:
                     if pair_name[3] == "-" and (pair_name[3] == "М" or pair_name[3] == "Б"):
