@@ -288,7 +288,11 @@ const hideAudienceInfo = () => {
 <div class="main-room-item">
 
 <div>
-  <div class="centered-div"><h3>Аудитории ГК:</h3></div>
+        <div class="right-element">
+                <img src="@/assets/gk_m.jpg" class="building-icon-m" alt="Рисунок ГК">
+        </div>
+       <div class="centered-div" style="width: 50%;text-align: center;"><h3>Аудитории ГК</h3></div>
+
   <!-- <p style="font-size: 24px;">SHOW <img class="icon-pic image_for_click" @click="showAudienceInfo" src="@/assets/info.svg"></p>
   --><div class="room-list room-list-grid" style="padding-bottom: 70px;">
     <template v-for="audience in audiences_gk">
@@ -335,7 +339,11 @@ const hideAudienceInfo = () => {
 </div>
 
 <div>
-  <div class="centered-div"><h3>Аудитории ЛК:</h3></div>
+          <div class="right-element">
+                <img src="@/assets/lk_m.jpg" class="building-icon-m" alt="Рисунок ЛК">
+        </div>
+       <div class="centered-div" style="width: 50%;text-align: center;"><h3>Аудитории ЛК</h3></div>
+       
   <div class="room-list room-list-grid" style="padding-bottom: 70px;">
     <template v-for="audience in audiences_lk">
         <div @click="showAudienceInfo(`${audience.number}`)" :class="['room-item', `background_${audience.audience_status.name}`, `number_of_users${audience.number_of_users}`]"
@@ -350,7 +358,11 @@ const hideAudienceInfo = () => {
 
 
 <div>
-  <div class="centered-div"><h3>Цифры:</h3></div>
+	<div class="right-element">
+        	<img src="@/assets/arctica_m.jpg" class="building-icon-m" alt="Рисунок цифры">
+        </div>
+       <div class="centered-div" style="width: 50%;text-align: center;"><h3>Аудитории Цифры</h3></div>
+  
   <div class="room-list room-list-grid" style="padding-bottom: 70px;">
     <template v-for="audience in audiences_digit">
         <div @click="showAudienceInfo(`${audience.number}`)" :class="['room-item', `background_${audience.audience_status.name}`, `number_of_users${audience.number_of_users}`]"
@@ -365,7 +377,12 @@ const hideAudienceInfo = () => {
 
 
 <div>
-  <div class="centered-div"><h3>Арктика:</h3></div>
+         <div class="right-element">
+                <img src="@/assets/arctica_m.jpg" class="building-icon-m" alt="Рисунок арктики">
+        </div>
+       <div class="centered-div" style="width: 50%;text-align: center;"><h3>Аудитории Арктики</h3></div>
+
+
   <div class="room-list room-list-grid" style="padding-bottom: 70px;">
     <template v-for="audience in audiences_digit">
         <div @click="showAudienceInfo(`${audience.number}`)" :class="['room-item', `background_${audience.audience_status.name}`, `number_of_users${audience.number_of_users}`]"
@@ -383,6 +400,14 @@ const hideAudienceInfo = () => {
 </template>
 
 <style scoped>
+
+
+.building-icon-m {
+    width: 300px;
+    display: block;
+    margin: 0 auto;
+}
+
     .room-list {
       flex-wrap: wrap;
       justify-content: center;
