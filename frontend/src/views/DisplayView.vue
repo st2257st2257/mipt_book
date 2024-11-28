@@ -103,6 +103,9 @@ let time_slots_arr: any[] = reactive([]);
 let audiences: Ref<Audience[]> = ref([]);
 let audiences_gk: Ref<Audience[]> = ref([]);
 let audiences_lk: Ref<Audience[]> = ref([]);
+let audiences_digit: Ref<Audience[]> = ref([]);
+let audiences_arctica: Ref<Audience[]> = ref([]);
+let audiences_quant: Ref<Audience[]> = ref([]);
 
 const router = useRouter();
 
@@ -181,6 +184,9 @@ async function loadAudience(){
     audiences.value = data_number;
     audiences_gk.value = data_number.filter(item => item.building.name == 'ГК');
     audiences_lk.value = data_number.filter(item => item.building.name == 'ЛК');
+    audiences_digit.value = data_number.filter(item => item.building.name == 'Цифра');
+    audiences_arctica.value = data_number.filter(item => item.building.name == 'Арктика');
+    audiences_quant.value = data_number.filter(item => item.building.name == 'Квант');
 
     console.log('Ответ от сервера header data_number:', data_number);
   } catch (error) {
@@ -211,10 +217,6 @@ async function loadTimeSlots(my_audience_number: string){
     }
     time_slots_arr_length = time_slots_arr.length;
     console.log(time_slots_arr.length);
-    // time_slots_arr
-    // audiences.value = data_number;
-    // audiences_gk.value = data_number.filter(item => item.building.name == 'ГК');
-    // audiences_lk.value = data_number.filter(item => item.building.name == 'ЛК');
 
     console.log('Ответ от сервера header data_number:', data_number);
   } catch (error) {
@@ -306,17 +308,7 @@ const hideAudienceInfo = () => {
 				<p>Номер аудитории:</p>
 				<p class="time">{{audience_number}} ГК  </p>
 			</div>
-		        <!-- div class="time-slot" v-for="time_slot in time_slots_arr">
-			    <div style="display: flex; justify-content: space-between;">
-				<p class="time">Время:{{time_slot[0]}}</p>   
-				<p style="padding-left: 10px;">{{time_slot[1]}}</p>
-			    </div>
-			    <div style="display: flex; justify-content: space-between;">
-			        <p class="capacity">Баллов для бронирования</p>
-				<p>{{time_slot[3]}} ед.</p>
-			    </div>
-			    <p class="event">Мероприятие: {{time_slot[2]}}</p>
-		        </div> -->
+		
 			<form @submit.prevent="sendForm">
 				<div v-for="time_slot in time_slots_arr">
 			    		<div :class="['time-slot-new', `background_${time_slot[1]}`]">
@@ -333,7 +325,7 @@ const hideAudienceInfo = () => {
 				<p>Время начала: {{ time_slot_arr[form_time_slot] }}</p>
 				<p>Время окончания:{{ time_slot_arr[form_end_time_slot + 1] }}</p>
 				<p>Число пар: {{ form_pair_number }} шт.</p>
-				<button type="submit" @click="hideAudienceInfo" style="background-color: #4caf50; width: 100%;  color: white; padding: 10px 20px;border: none;border-radius: 5px;cursor: pointer;"><h3>Забронировать</h3></button>
+				<button type="submit" @click="hideAudienceInfo" style="background-color: #4caf50; width: 100%;  color: white; padding: 10px 20px;border: none;border-radius: 5px;cursor: pointer;"><h3>Занять аудиторию</h3></button>
 		    	</form>
 		    </div>
                 </div>
@@ -346,19 +338,41 @@ const hideAudienceInfo = () => {
   <div class="centered-div"><h3>Аудитории ЛК:</h3></div>
   <div class="room-list room-list-grid" style="padding-bottom: 70px;">
     <template v-for="audience in audiences_lk">
-        <div :class="['room-item', `background_${audience.audience_status.name}`, `number_of_users${audience.number_of_users}`]"
+        <div @click="showAudienceInfo(`${audience.number}`)" :class="['room-item', `background_${audience.audience_status.name}`, `number_of_users${audience.number_of_users}`]"
         style="max-width: 150px; max-height: 100px; min-height: 100px; min-width: 150px;">
             <i class="icon fas fa-door-open status-available"></i>
             <p>Аудитория {{audience.number}} {{audience.building.name}}</p>
             <p>{{audience.audience_status.name}}</p>
+        </div>
+    </template>
+  </div>
+</div>
 
-            <!-- <p>Описание: {{audience.description}}</p>
-            <p>Номер аудитории: {{audience.number}}</p>
-            <p>Число пользователей: {{audience.number_of_users}}</p>
-            <p>Имя института: {{audience.building.institute.name}}</p>
-            <p>Название здания: {{audience.building.name}}</p>
-            <p>Статус: {{audience.audience_status.name}}</p>
-            <p></p> -->
+
+<div>
+  <div class="centered-div"><h3>Цифры:</h3></div>
+  <div class="room-list room-list-grid" style="padding-bottom: 70px;">
+    <template v-for="audience in audiences_digit">
+        <div @click="showAudienceInfo(`${audience.number}`)" :class="['room-item', `background_${audience.audience_status.name}`, `number_of_users${audience.number_of_users}`]"
+        style="max-width: 150px; max-height: 100px; min-height: 100px; min-width: 150px;">
+            <i class="icon fas fa-door-open status-available"></i>
+            <p>Аудитория {{audience.number}} {{audience.building.name}}</p>
+            <p>{{audience.audience_status.name}}</p>
+        </div>
+    </template>
+  </div>
+</div>
+
+
+<div>
+  <div class="centered-div"><h3>Арктика:</h3></div>
+  <div class="room-list room-list-grid" style="padding-bottom: 70px;">
+    <template v-for="audience in audiences_digit">
+        <div @click="showAudienceInfo(`${audience.number}`)" :class="['room-item', `background_${audience.audience_status.name}`, `number_of_users${audience.number_of_users}`]"
+        style="max-width: 150px; max-height: 100px; min-height: 100px; min-width: 150px;">
+            <i class="icon fas fa-door-open status-available"></i>
+            <p>Аудитория {{audience.number}} {{audience.building.name}}</p>
+            <p>{{audience.audience_status.name}}</p>
         </div>
     </template>
   </div>

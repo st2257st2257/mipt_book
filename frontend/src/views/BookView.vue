@@ -48,6 +48,7 @@ function selectTimeSlot(time_slot: String){
 
 let token = ref<string|null>(null);
 let username = ref<string|null>(null);
+let open_number = ref<string|null>(null);
 
 // DO THIS
 // const web_site = "mipt.site";
@@ -61,10 +62,24 @@ const showPopupAudNumberInfo = ref(false);
 const showPopupTimeSlotInfo = ref(false);
 
 onMounted(()=>{
+  open_number.value = localStorage.getItem("open-number");
   token.value = localStorage.getItem("auth-token");
   username.value = localStorage.getItem("username");
 
   checkBookHistory();
+
+  if (localStorage.getItem("open-number") == null) {
+    localStorage.setItem("open-number", "1");
+    router.push("/display/").then(()=>{
+        router.go(0); // first go to display
+    });
+    console.log("Переброска на дисплей аудиторий");
+  }
+  else {
+    localStorage.setItem("open-number", String(Number(open_number.value) + 1));
+    console.log("Количество заходов на сайт: ", open_number.value);
+  }
+
 
   if (localStorage.getItem("auth-token") == null) {
       setTimeout(()=>{

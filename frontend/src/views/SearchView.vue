@@ -101,7 +101,7 @@ async function loadSearch(){
         <p class="above_title">Поиск по парам:</p>
         <form @submit.prevent="loadSearch">
             <div style="display: flex;">
-                <div style="border-radius: 10px; min-height: 7.5vw;">
+                <div style="border-radius: 10px;">
                     <input type="text" class="container-search-text" id="scales" name="scales" v-model="search_text" placeholder="Б02-003, Загряд, Мат ан..."/>
                 </div>
                 <div class="container-search-for-button">
@@ -159,6 +159,8 @@ async function loadSearch(){
   }
   .container-search-button {
     min-width: 20vw;
+    border-radius: 10px;
+    border: none;
   }
   .container-res-item {
     min-height: 20vw;
@@ -172,7 +174,7 @@ async function loadSearch(){
     min-width: 65vw;
   }
   .container-search-for-button {
-    min-height: 7.5vw;
+    
   }
 }
 
@@ -182,6 +184,8 @@ async function loadSearch(){
   }
   .container-search-button {
     min-width: 20vw;
+    border-radius: 10px;
+    border: none;
   }
   .container-res-item {
     height: 10vw;
@@ -195,7 +199,7 @@ async function loadSearch(){
     min-width: 65vw;
   }
   .container-search-for-button {
-    min-height: 3.75vw;
+    
   }
 }
 
@@ -243,7 +247,6 @@ async function loadSearch(){
 .container-search-for-button {
   background: #275ff2;
   border-radius: 10px;
-  min-height: 7.5vw;
 }
 
 .time-container {
