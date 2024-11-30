@@ -105,7 +105,10 @@ let audiences_gk: Ref<Audience[]> = ref([]);
 let audiences_lk: Ref<Audience[]> = ref([]);
 let audiences_digit: Ref<Audience[]> = ref([]);
 let audiences_arctica: Ref<Audience[]> = ref([]);
-let audiences_quant: Ref<Audience[]> = ref([]);
+let audiences_kpm: Ref<Audience[]> = ref([]);
+let audiences_bk: Ref<Audience[]> = ref([]);
+let audiences_kvant: Ref<Audience[]> = ref([]);
+
 
 const router = useRouter();
 
@@ -125,6 +128,13 @@ onMounted(()=>{
   form_end_time_slot.value = 0;
   form_pair_number.value = 0;
   form_end_time_slot.value = 0;
+
+  // const calElement = document.getElementById('cal');
+  // if (calElement) {
+  // 	calElement.value = toLocalISOString(new Date());
+  // } else {
+  // 	console.error("Element with id 'cal' not found.");
+  // }
 });
 
 async function sendForm(){
@@ -163,6 +173,39 @@ async function sendForm(){
   }
 }
 
+
+
+function sortAudiences(data: Audience[], building_name: String): Audience[] {
+  return data.filter(item => item.building.name === building_name).sort((a, b) => {
+    const numberA = parseInt(a.number);
+    const numberB = parseInt(b.number);
+
+    if (isNaN(numberA) || isNaN(numberB)) {
+      if (isNaN(numberA) && isNaN(numberB)) return 0;  
+      if (isNaN(numberA)) return 1;
+      return -1;
+    }
+
+    if (String(a.audience_status?.name) === "Свободно" && String(b.audience_status?.name) !== "Свободно") {
+      return -1;
+    } else if (String(a.audience_status?.name) !== "Свободно" && String(b.audience_status?.name) === "Свободно") {
+      return 1;
+    } else {
+        if (String(a.audience_status?.name) === "Отсутствует для бронирования" && String(b.audience_status?.name) !== "Отсутствует для бронирования") {
+            return 1;
+        } else if (String(a.audience_status?.name) !== "Отсутствует для бронирования" && String(b.audience_status?.name) === "Отсутствует для бронирования") {
+            return -1;
+        }
+        else {
+            return numberB - numberA;
+        }
+    }
+
+  });
+}
+
+
+
 async function loadAudience(){
   try {
     const response = await fetch("https://" + web_site + ":8000/base-info/audience/?institute=%D0%9C%D0%A4%D0%A2%D0%98",{
@@ -182,11 +225,14 @@ async function loadAudience(){
 
     const data_number = await response.json() as Audience[];
     audiences.value = data_number;
-    audiences_gk.value = data_number.filter(item => item.building.name == 'ГК');
-    audiences_lk.value = data_number.filter(item => item.building.name == 'ЛК');
-    audiences_digit.value = data_number.filter(item => item.building.name == 'Цифра');
-    audiences_arctica.value = data_number.filter(item => item.building.name == 'Арктика');
-    audiences_quant.value = data_number.filter(item => item.building.name == 'Квант');
+    audiences_gk.value = sortAudiences(data_number, "ГК");
+
+    audiences_lk.value = sortAudiences(data_number, 'ЛК');
+    audiences_digit.value = sortAudiences(data_number, 'Цифра');
+    audiences_arctica.value = sortAudiences(data_number, 'Арктика');
+    audiences_kvant.value = sortAudiences(data_number, 'Квант');
+    audiences_kpm.value = sortAudiences(data_number, 'КПМ');
+    audiences_bk.value = sortAudiences(data_number, 'БК');
 
     console.log('Ответ от сервера header data_number:', data_number);
   } catch (error) {
@@ -278,6 +324,33 @@ const hideAudienceInfo = () => {
 };
 
 
+function toLocalISOString(date: Date): string {
+  return date.toLocaleString('default', {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+  });
+}
+
+
+function goShowByTime() {
+    setTimeout(()=>{
+        router.push("/").then(()=>{
+            router.go(0);
+        });
+    }, 100);
+}
+
+
+function goToSearch() {
+    setTimeout(()=>{
+        router.push("/search/").then(()=>{
+            router.go(0);
+        });
+    }, 100)
+}
 </script>
 
 <template>
@@ -285,11 +358,51 @@ const hideAudienceInfo = () => {
     <Header />
   </div>
 
-<div class="main-room-item">
+  <div class="nav-container">
+  	<div class="cont-item nav-bar">
+  		<div><h3>Выберите здание</h3></div>
+  		<div class="fast-icons-container">
+			  <div class="fast-icon-list">
+				<div class="fast-icon"><a href="#gk_section">
+					  <img src="@/assets/gk_s.jpg" class="building-icon-s padding-gk-s" alt="Рисунок ГК"></a>
+				</div>
+				<div class="fast-icon"><a href="#lk_section">
+					<img src="@/assets/lk_s.jpg" class="building-icon-s padding-lk-s" alt="Рисунок ЛК"></a>
+				</div>
+				<div class="fast-icon"><a href="#arctica_section">
+					<img src="@/assets/arctica_s.jpg" class="building-icon-s padding-arctica-s" alt="Рисунок Арктика"></a>
+				</div>
+				<div class="fast-icon"><a href="#digit_section">
+					<img src="@/assets/digit_s.jpg" class="building-icon-s padding-digit-s" alt="Рисунок Цифра"></a>
+				</div>
+				<div class="fast-icon"><a href="#kpm_section">
+					<img src="@/assets/kpm_s.jpg" class="building-icon-s padding-kpm-s" alt="Рисунок КПМ"></a>
+				</div>
+				<div class="fast-icon"><a href="#bk_section">
+					<img src="@/assets/bk_s.jpg" class="building-icon-s padding-bk-s" alt="Рисунок БиоКорпус"></a>
+				</div>
+				<div class="fast-icon"><a href="#kvant_section">
+					<img src="@/assets/kvant_s.jpg" class="building-icon-s padding-kvant-s" alt="Рисунок Квант"></a>
+				</div>
+			</div>
+		</div>
+  	</div>
+
+	<div class="cont-item time-bar">
+  		<div><h3>Выберите время</h3></div>
+  		<div><input type="datetime-local" id="cal" /></div>
+  		<div><button id="show-audiences" @click="goShowByTime()">Показать аудитории по выбранному времени</button></div>
+  		<div><button id="search-button" @click="goToSearch()">Перейти в поиск</button></div>
+	</div>	
+  </div>
+
+
+  <div class="main-room-item">
+
 
 <div>
         <div class="right-element">
-                <img src="@/assets/gk_m.jpg" class="building-icon-m" alt="Рисунок ГК">
+                <img id="gk_section" src="@/assets/gk_m.jpg" class="building-icon-m padding-gk" alt="Рисунок ГК">
         </div>
        <div class="centered-div" style="width: 50%;text-align: center;"><h3>Аудитории ГК</h3></div>
 
@@ -340,7 +453,7 @@ const hideAudienceInfo = () => {
 
 <div>
           <div class="right-element">
-                <img src="@/assets/lk_m.jpg" class="building-icon-m" alt="Рисунок ЛК">
+                <img id="lk_section" src="@/assets/lk_m.jpg" class="building-icon-m padding-lk" alt="Рисунок ЛК">
         </div>
        <div class="centered-div" style="width: 50%;text-align: center;"><h3>Аудитории ЛК</h3></div>
        
@@ -359,7 +472,7 @@ const hideAudienceInfo = () => {
 
 <div>
 	<div class="right-element">
-        	<img src="@/assets/arctica_m.jpg" class="building-icon-m" alt="Рисунок цифры">
+        	<img id="digit_section" src="@/assets/digit_m.jpg" class="building-icon-m padding-digit" alt="Рисунок цифры">
         </div>
        <div class="centered-div" style="width: 50%;text-align: center;"><h3>Аудитории Цифры</h3></div>
   
@@ -376,9 +489,10 @@ const hideAudienceInfo = () => {
 </div>
 
 
+<!--  АРКТИКА -->
 <div>
          <div class="right-element">
-                <img src="@/assets/arctica_m.jpg" class="building-icon-m" alt="Рисунок арктики">
+                <img id="arctica_section" src="@/assets/arctica_m.jpg" class="building-icon-m padding-arctica" alt="Рисунок арктики">
         </div>
        <div class="centered-div" style="width: 50%;text-align: center;"><h3>Аудитории Арктики</h3></div>
 
@@ -395,11 +509,184 @@ const hideAudienceInfo = () => {
   </div>
 </div>
 
+
+<!--  КПМ -->
+<div>
+         <div class="right-element">
+                <img id="kpm_section" src="@/assets/kpm_m.jpg" class="building-icon-m padding-kpm" alt="Рисунок КПМ">
+        </div>
+       <div class="centered-div" style="width: 50%;text-align: center;"><h3>Аудитории КПМ</h3></div>
+
+
+  <div class="room-list room-list-grid" style="padding-bottom: 70px;">
+    <template v-for="audience in audiences_kpm">
+        <div @click="showAudienceInfo(`${audience.number}`)" :class="['room-item', `background_${audience.audience_status.name}`, `number_of_users${audience.number_of_users}`]"
+        style="max-width: 150px; max-height: 100px; min-height: 100px; min-width: 150px;">
+            <i class="icon fas fa-door-open status-available"></i>
+            <p>Аудитория {{audience.number}} {{audience.building.name}}</p>
+            <p>{{audience.audience_status.name}}</p>
+        </div>
+    </template>
+  </div>
+</div>
+
+
+<!--  БИОКОРПУС -->
+<div>
+         <div class="right-element">
+                <img id="bk_section" src="@/assets/bk_m.jpg" class="building-icon-m padding-bk" alt="Рисунок БК">
+        </div>
+       <div class="centered-div" style="width: 50%;text-align: center;"><h3>Аудитории Био Корпуса</h3></div>
+
+
+  <div class="room-list room-list-grid" style="padding-bottom: 70px;">
+    <template v-for="audience in audiences_bk">
+        <div @click="showAudienceInfo(`${audience.number}`)" :class="['room-item', `background_${audience.audience_status.name}`, `number_of_users${audience.number_of_users}`]"
+        style="max-width: 150px; max-height: 100px; min-height: 100px; min-width: 150px;">
+            <i class="icon fas fa-door-open status-available"></i>
+            <p>Аудитория {{audience.number}} {{audience.building.name}}</p>
+            <p>{{audience.audience_status.name}}</p>
+        </div>
+    </template>
+  </div>
+</div>
+
+
+<!--  КВАНТ -->
+<div>
+         <div class="right-element">
+                <img id="kvant_section" src="@/assets/kvant_m.jpg" class="building-icon-m padding-kvant" alt="Рисунок БК">
+        </div>
+       <div class="centered-div" style="width: 50%;text-align: center;"><h3>Аудитории Кванта</h3></div>
+
+
+  <div class="room-list room-list-grid" style="padding-bottom: 70px;">
+    <template v-for="audience in audiences_kvant">
+        <div @click="showAudienceInfo(`${audience.number}`)" :class="['room-item', `background_${audience.audience_status.name}`, `number_of_users${audience.number_of_users}`]"
+        style="max-width: 150px; max-height: 100px; min-height: 100px; min-width: 150px;">
+            <i class="icon fas fa-door-open status-available"></i>
+            <p>Аудитория {{audience.number}} {{audience.building.name}}</p>
+            <p>{{audience.audience_status.name}}</p>
+        </div>
+    </template>
+  </div>
+</div>
+
+
 </div>
 
 </template>
 
 <style scoped>
+
+.nav-bar {
+	max-width: 80vw;
+}
+
+.cont-item.time-bar {
+  background-color: #f0f0f0;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px; 
+  width: 70%;
+  margin: 20px auto;
+  max-width: 400px;
+}
+
+.cont-item.time-bar div {
+  margin-bottom: 10px;
+}
+
+.cont-item.time-bar h3 {
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.cont-item.time-bar input[type="datetime-local"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-size: 1em;
+}
+
+.cont-item.time-bar button {
+  background-color: #007aff;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  width: calc(100%);
+  margin-right: 10px;
+}
+
+.cont-item.time-bar button:hover {
+  background-color: #45a049;
+}
+
+
+.cont-item.time-bar button:last-child {
+    margin-right: 0;
+}
+
+.nav-container {
+	max-width: 80vw;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin: 0 auto;
+}
+
+.fast-icons-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+}
+
+.fast-icon-list {
+  display: flex;
+  gap: 10px;
+}
+
+.fast-icon {
+  margin: 0 10px 10px 0;
+}
+
+
+.building-icon-s { width: 100px; }
+
+
+.padding-gk-s { padding-top:69px; }
+.padding-lk-s { padding-top:50px; }
+.padding-bk-s { padding-top:30px; }
+.padding-kpm-s { padding-top:0px; }
+.padding-digit-s { padding-top:67px; }
+.padding-arctica-s { padding-top:65px; }
+.padding-kvant-s { padding-top:78px; }
+
+
+@media (min-width: 768px) {
+	.nav-bar {max-width: 33vw;}
+
+	.padding-gk { padding-top:207px; }
+
+	.padding-lk { padding-top:151px; }
+
+	.padding-bk { padding-top:89px; }
+
+	.padding-kpm { padding-top:0px; }
+
+	.padding-digit { padding-top:201px; }
+
+	.padding-arctica { padding-top:195px; }
+
+	.padding-kvant { padding-top:235px; }
+}
 
 
 .building-icon-m {

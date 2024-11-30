@@ -585,6 +585,7 @@ def read_excel_timetable(apps, schema_editor):
     AudienceStatus = apps.get_model('main', 'AudienceStatus')
     Audience = apps.get_model('main', 'Audience')
     DayHistory = apps.get_model('main', 'DayHistory')
+    Institute = apps.get_model('main', 'Institute')
 
     # Создаем мероприятия для поиска по ним
     EventItem = apps.get_model('events', 'EventItem')
@@ -594,7 +595,7 @@ def read_excel_timetable(apps, schema_editor):
     # Читаем данные файлов и записываем их в соответствующий класс
     audience_event_list = get_event_list("excel/res_aud.xlsx", "Лист1")
 
-    # Building.objects.all().delete()
+    Building.objects.all().delete()
     # AudienceStatus.objects.all().delete()
     Audience.objects.all().delete()
     DayHistory.objects.all().delete()
@@ -603,12 +604,11 @@ def read_excel_timetable(apps, schema_editor):
     # Получаем дефолтные значения
     audience_status = AudienceStatus.objects.get(name="Свободно")
     event_type = EventType.objects.get(name="Лекция")
+    institute = Institute.objects.get(name="МФТИ")
 
     log(f"================={aud_ev_len}===================", "i")
     for (index, audience_event) in enumerate(audience_event_list):
         log(f"{index}/{aud_ev_len} {audience_event}", "i")
-        if index == 100:
-            break
 
         audience_number = ""
         building_name = ""
@@ -646,6 +646,16 @@ def read_excel_timetable(apps, schema_editor):
 
         audience_list = Audience.objects.filter(number=audience_number)
         building_list = Building.objects.filter(name=building_name)
+
+        if len(Building.objects.filter(name=str(building_name))) == 0:
+            log(f"Create new building: b_name={str(building_name)} i={institute.name}", "i")
+            _building = Building.objects.create(
+                    name=str(building_name),
+                    description=str(building_name),
+                    institute=institute)
+            _building.save()
+            building_list = Building.objects.filter(name=building_name)
+
 
         if len(building_list) == 1:
             build = building_list[0]
@@ -708,6 +718,15 @@ def read_excel_timetable(apps, schema_editor):
 
         audience_number = audience.number
         building_name = audience.building
+
+        if len(Building.objects.filter(name=str(building_name))) == 0:
+            log(f"Create new building: b_name={str(building_name)} i={institute.name}", "i")
+            _building = Building.objects.create(
+                    name=str(building_name),
+                    description=str(building_name),
+                    institute=institute)
+            building_list = Building.objects.filter(name=building_name) 
+
 
         if len(Building.objects.filter(name=building_name)) == 1:
             build = Building.objects.get(name=building_name)

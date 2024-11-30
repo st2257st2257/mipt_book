@@ -14,7 +14,7 @@ import SearchView from "@/views/SearchView.vue";
 
 const routesAuth = [
     {path: '/auth/', component: AuthView},
-    {path: '/display/', component: DisplayView},
+    {path: '/', component: DisplayView},
     {path: '/search/', component: SearchView},
     {path: '/info/', component: InfoView},
     {path: '/auth/login/', component: AuthLoginView},
@@ -23,7 +23,7 @@ const routesAuth = [
 ]
 
 const routesBooking = [
-    {path: '/', component: BookView},
+    {path: '/book/', component: BookView},
     {path: '/test-page/', component: TestPageView},
     {path: '/book-history/', component: BookHistoryView}
 ]

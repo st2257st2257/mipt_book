@@ -23,9 +23,9 @@ class EventItemViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-        log(f"Запрос на получение всех запланированных мероприятий.", "i")
         queryset = super().get_queryset()
         search_text = self.request.query_params.get('search_text')
+        log(f"Запрос на получение всех запланированных мероприятий:{search_text}", "i")
         if search_text is not None:
             queryset = super().get_queryset().filter(name__icontains=search_text)
         return self.filter_queryset(queryset)

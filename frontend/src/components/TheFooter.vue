@@ -12,7 +12,7 @@ onMounted(()=>{
 
 <template>
 <footer>
-  <RouterLink to="/" custom v-slot="{navigate}">
+  <RouterLink to="/book/" custom v-slot="{navigate}">
     <div role="link" @click="navigate">
       <img src="@/assets/book.svg" class="icon-pic" alt=""><br>
       Бронирование
@@ -42,7 +42,7 @@ onMounted(()=>{
       История
     </div>
   </RouterLink>
-  <RouterLink to="/display/" custom v-slot="{navigate}">
+  <RouterLink to="/" custom v-slot="{navigate}">
     <div role="link" @click="navigate">
       <img src="@/assets/cloud.svg" class="icon-pic" alt=""><br>
       Аудитории
