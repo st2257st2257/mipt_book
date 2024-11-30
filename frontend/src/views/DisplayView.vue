@@ -470,6 +470,27 @@ function goToSearch() {
 </div>
 
 
+<!--  КПМ -->
+<div>
+         <div class="right-element">
+                <img id="kpm_section" src="@/assets/kpm_m.jpg" class="building-icon-m padding-kpm" alt="Рисунок КПМ">
+        </div>
+       <div class="centered-div" style="width: 50%;text-align: center;"><h3>Аудитории КПМ</h3></div>
+
+
+  <div class="room-list room-list-grid" style="padding-bottom: 70px;">
+    <template v-for="audience in audiences_kpm">
+        <div @click="showAudienceInfo(`${audience.number}`)" :class="['room-item', `background_${audience.audience_status.name}`, `number_of_users${audience.number_of_users}`]"
+        style="max-width: 150px; max-height: 100px; min-height: 100px; min-width: 150px;">
+            <i class="icon fas fa-door-open status-available"></i>
+            <p>Аудитория {{audience.number}} {{audience.building.name}}</p>
+            <p>{{audience.audience_status.name}}</p>
+        </div>
+    </template>
+  </div>
+</div>
+
+<!-- ЦИФРЫ -->
 <div>
 	<div class="right-element">
         	<img id="digit_section" src="@/assets/digit_m.jpg" class="building-icon-m padding-digit" alt="Рисунок цифры">
@@ -498,7 +519,7 @@ function goToSearch() {
 
 
   <div class="room-list room-list-grid" style="padding-bottom: 70px;">
-    <template v-for="audience in audiences_digit">
+    <template v-for="audience in audiences_arctica">
         <div @click="showAudienceInfo(`${audience.number}`)" :class="['room-item', `background_${audience.audience_status.name}`, `number_of_users${audience.number_of_users}`]"
         style="max-width: 150px; max-height: 100px; min-height: 100px; min-width: 150px;">
             <i class="icon fas fa-door-open status-available"></i>
@@ -509,26 +530,6 @@ function goToSearch() {
   </div>
 </div>
 
-
-<!--  КПМ -->
-<div>
-         <div class="right-element">
-                <img id="kpm_section" src="@/assets/kpm_m.jpg" class="building-icon-m padding-kpm" alt="Рисунок КПМ">
-        </div>
-       <div class="centered-div" style="width: 50%;text-align: center;"><h3>Аудитории КПМ</h3></div>
-
-
-  <div class="room-list room-list-grid" style="padding-bottom: 70px;">
-    <template v-for="audience in audiences_kpm">
-        <div @click="showAudienceInfo(`${audience.number}`)" :class="['room-item', `background_${audience.audience_status.name}`, `number_of_users${audience.number_of_users}`]"
-        style="max-width: 150px; max-height: 100px; min-height: 100px; min-width: 150px;">
-            <i class="icon fas fa-door-open status-available"></i>
-            <p>Аудитория {{audience.number}} {{audience.building.name}}</p>
-            <p>{{audience.audience_status.name}}</p>
-        </div>
-    </template>
-  </div>
-</div>
 
 
 <!--  БИОКОРПУС -->
