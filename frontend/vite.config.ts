@@ -19,7 +19,7 @@ export default defineConfig({
     },
     port: 8080,
     strictPort: true,
-    host: '0.0.0.0', // или 'localhost' или '127.0.0.1'
+    host: '0.0.0.0', // или 'localhost' или '127.0.0.1' или '0.0.0.0'
     proxy: {
       "/backend-api": {
         target: backend,

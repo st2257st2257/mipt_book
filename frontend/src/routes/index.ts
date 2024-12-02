@@ -10,6 +10,7 @@ import ProfileView from "@/views/ProfileView.vue";
 import DisplayView from "@/views/DisplayView.vue";
 import InfoView from "@/views/InfoView.vue";
 import SearchView from "@/views/SearchView.vue";
+import AddFlourView from "@/views/AddFlourView.vue";
 
 
 const routesAuth = [
@@ -32,8 +33,12 @@ const routesProfile = [
     {path: '/profile/', component: ProfileView}
 ]
 
+const routesAudiences = [
+    {path: '/add_new_flour/', component: AddFlourView}
+]
+
 const routes = [
-    ...routesAuth, ...routesBooking, ...routesProfile
+    ...routesAuth, ...routesBooking, ...routesProfile, ...routesAudiences
 ]
 
 const router = createRouter({
