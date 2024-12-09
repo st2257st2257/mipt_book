@@ -59,10 +59,6 @@ async function sendForm(){
 		<!-- <h2>Авторизация</h2>-->
   		<form @submit.prevent="sendForm">
 			<h2>Авторизация</h2>
-			
-			<head>
-    				<script src="https://yastatic.net/s3/passport-sdk/autofill/v1/sdk-suggest-with-polyfills-latest.js"></script>
-			</head>
     			
 			<h4>Введите логин</h4>
     			<input class="center-button auth-input" type="text" name="username" v-model="username">

@@ -17,7 +17,7 @@ export default defineConfig({
     watch: {
         usePolling: true,
     },
-    port: 8080,
+    port: 8000,
     strictPort: true,
     host: '0.0.0.0', // или 'localhost' или '127.0.0.1' или '0.0.0.0'
     proxy: {

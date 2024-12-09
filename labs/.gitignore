@@ -1,0 +1,29 @@
+# PYTHON
+
+__pycache__/
+target/
+
+
+# idea
+.idea/
+.venv/
+**/*.swo
+**/*.swp
+
+# certificate
+mipt.crt
+mipt.key
+
+# database
+pgdb_users/
+
+# logging
+debug.log
+debug_file.log
+info_file.log
+warning_file.log
+error_file.log
+critical_file.log
+
+# pycache
+__pycache__/*

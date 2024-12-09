@@ -3,14 +3,19 @@
     <button >Show Popup</button>
   </div>
 
-<svg width="1300" height="1300" id="mySvg" style="background-image: url(https://www.baryon.ru/wp-content/uploads/2021/02/%D1%81%D0%B5%D0%BA%D1%86%D0%B8%D0%BE%D0%BD%D0%BD%D1%8B%D0%B9.png); background-size: contain;"></svg>
+<svg
+    width="1300"
+    height="1300"
+    id="mySvg"
+    style="background-image: url(https://www.baryon.ru/wp-content/uploads/2021/02/%D1%81%D0%B5%D0%BA%D1%86%D0%B8%D0%BE%D0%BD%D0%BD%D1%8B%D0%B9.png); background-size: contain;"></svg>
 <div id="coordinates">
 
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.1.2/svg.min.js"></script>
+
 <form>
 <div id="my_data" style="padding-bottom: 100px;">
+    <button>Отправить</button>
     <div>
         <input value="id"/>
         <input value="x"/>
@@ -51,12 +56,15 @@ function myDeleteRect(idToRemove: number) {
 }
 
 function UpdateAllRect() {
-    const coordinatesDiv = document.getElementById('coordinates');
+    const coordinatesDiv = document.getElementById('my_data');
+    const rectDiv = document.getElementById('mySvg');
     console.log(coordinatesDiv);
     if (coordinatesDiv != null) {
-        // coordinatesDiv.innerHTML = '';
         while (coordinatesDiv.firstChild) {
             coordinatesDiv.removeChild(coordinatesDiv.lastChild);
+        }
+        while (rectDiv.firstChild) {
+            rectDiv.removeChild(rectDiv.lastChild);
         }
         click_data_array.value.forEach((rect) => {
             addRectangle(
@@ -152,7 +160,13 @@ function addRectangle(
     rect.setAttribute('y', String(y));
     rect.setAttribute('height', String(height));
     rect.setAttribute('width', String(width));
-    rect.setAttribute('fill', '#'+Math.round(0xffffff * Math.random()).toString(16));
+    rect.setAttribute('fill', '#F00');
+    rect.setAttribute('stroke', 'blue');
+    rect.setAttribute('stroke-width', '3');
+    rect.setAttribute('stroke-dasharray', 'v');
+    rect.setAttribute('rx', '10');
+    // stroke:blue; stroke-width:3; stroke-dasharray:5 5; fill:lightgreen;" rx="10" ry="10
+    // rect.setAttribute('fill', '#'+Math.round(0xffffff * Math.random()).toString(16));
 
     let mySvg = document.getElementById('mySvg');
     if (mySvg != null) {
@@ -187,7 +201,7 @@ function addRoom(
 
     // Добавляем кнопки редактирования элементов
     var b_delete = document.createElement('button');
-    b_delete.textContent = 'test value';
+    b_delete.textContent = 'Удалить';
     b_delete.setAttribute('type', "reset");
 
     b_delete.addEventListener('click', () => {
