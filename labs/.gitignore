@@ -6,6 +6,7 @@ target/
 
 # idea
 .idea/
+.venv
 .venv/
 .venv/*
 **/*.swo
